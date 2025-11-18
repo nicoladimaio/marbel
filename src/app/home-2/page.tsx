@@ -19,7 +19,7 @@ export default function Home2() {
     initial: { opacity: 0, y: 28 },
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true },
-    transition: { duration: 0.85, delay, ease: "easeOut" },
+    transition: { duration: 0.85, delay, ease: [0.16, 1, 0.3, 1] },
   });
   const [showContent, setShowContent] = useState(false);
   const [tabIndex, setTab] = useState(0);
@@ -60,7 +60,7 @@ export default function Home2() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.9, ease: "easeOut" },
+      transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] },
     },
   };
 
