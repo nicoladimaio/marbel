@@ -23,6 +23,7 @@ export default function Home() {
   });
   const [showContent, setShowContent] = useState(false);
   const [tabIndex, setTab] = useState(0);
+  const [valuesTab, setValuesTab] = useState<"metodo" | "valori">("metodo");
   const [offers, setOffers] = useState<
     { id: string; titolo: string; descrizione: string; immagine?: string }[]
   >([]);
@@ -53,6 +54,7 @@ export default function Home() {
 
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 700], [0, -150]);
+  const heroImageParallax = useTransform(scrollY, [0, 400], [0, -5]);
 
   const scrollReveal = {
     hidden: { opacity: 0, y: 40 },
@@ -105,6 +107,26 @@ export default function Home() {
 
   const safeTabIndex = Math.min(tabIndex, expertiseTabs.length - 1);
   const selectedTab = expertiseTabs[safeTabIndex];
+  const methodSteps = [
+    {
+      title: "Analisi",
+      description:
+        "Direzione lavori certificata, squadre coordinate e aggiornamenti su dashboard condivisa per partire con una visione chiara.",
+      image: "/gallery1.jpg",
+    },
+    {
+      title: "Realizzazione",
+      description:
+        "Materiali certificati, partner selezionati e mockup prima di andare in produzione assicurano cantiere controllato.",
+      image: "/gallery2.jpg",
+    },
+    {
+      title: "Consegna",
+      description:
+        "Preventivi chiari, milestone approvate dal cliente e garanzia scritta sui lavori eseguiti per una chiusura trasparente.",
+      image: "/gallery3.jpg",
+    },
+  ];
 
   const processSteps = [
     {
@@ -196,14 +218,22 @@ export default function Home() {
                   className="absolute inset-0 z-0"
                   style={{ y: heroY }}
                   id="hero-bg-parallax"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <Image
-                    src="/sfondo.jpg"
-                    alt="Sfondo hero"
-                    fill
-                    priority
-                    className="object-cover object-center"
-                  />
+                  <motion.div
+                    className="relative w-full h-full"
+                    style={{ y: heroImageParallax }}
+                  >
+                    <Image
+                      src="/sfondo.jpg"
+                      alt="Sfondo hero"
+                      fill
+                      priority
+                      className="object-cover object-center"
+                    />
+                  </motion.div>
                 </motion.div>
 
                 {/* Overlay gradient (sottile e professionale) */}
@@ -293,7 +323,7 @@ export default function Home() {
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.98 }}
                       href="/preventivo"
-                      className="px-10 py-3 rounded-xl bg-[#1a2a4e] text-white font-semibold shadow-lg hover:bg-[#274472] transition-all duration-250 text-lg"
+                      className="px-10 py-3 rounded-xl text-white font-semibold shadow-lg shadow-black/30 border border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-all duration-250 text-lg"
                     >
                       Calcola ora
                     </motion.a>
@@ -302,12 +332,24 @@ export default function Home() {
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.98 }}
                       href="/contatti"
-                      className="px-8 py-3 rounded-xl border border-white text-white font-semibold hover:bg-white/10 transition-all duration-250 text-lg"
+                      className="px-8 py-3 rounded-xl text-white font-semibold border border-white/20 bg-white/5 backdrop-blur-sm shadow-lg shadow-black/30 hover:bg-white/15 transition-all duration-250 text-lg"
                     >
                       Contattaci
                     </motion.a>
                   </motion.div>
                 </div>
+
+                <motion.div
+                  className="absolute bottom-10 inset-x-0 flex justify-center z-10"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.8,
+                    delay: 1.1,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  aria-hidden
+                ></motion.div>
               </div>
             </motion.section>
 
@@ -409,7 +451,7 @@ export default function Home() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={scrollReveal}
-              className="py-20 bg-[#f4f6fb]"
+              className="py-24 lg:py-28 bg-[#f4f6fb]"
             >
               <div className="max-w-7xl mx-auto px-6 space-y-10">
                 <div className="text-center space-y-4">
@@ -429,12 +471,14 @@ export default function Home() {
                 <div className="grid md:grid-cols-3 gap-6">
                   <motion.div
                     {...cardReveal(0)}
-                    className="rounded-3xl border border-white bg-white shadow-xl p-8"
+                    className="rounded-3xl border border-white bg-white shadow-xl p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
                     style={{ y: cardParallax, transformPerspective: 1200 }}
                     whileHover={{
-                      rotateX: 1,
-                      rotateY: -1,
-                      boxShadow: "0 25px 60px -35px rgba(26,42,78,0.45)",
+                      rotateX: 3,
+                      rotateY: -3,
+                      y: -10,
+                      boxShadow: "0 30px 70px -40px rgba(26,42,78,0.45)",
+                      transition: { duration: 0.35, ease: cubicBezier(0.22, 1, 0.36, 1) },
                     }}
                   >
                     <motion.div
@@ -470,12 +514,14 @@ export default function Home() {
 
                   <motion.div
                     {...cardReveal(0.12)}
-                    className="rounded-3xl border border-white bg-white shadow-xl p-8"
+                    className="rounded-3xl border border-white bg-white shadow-xl p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
                     style={{ y: cardParallax, transformPerspective: 1200 }}
                     whileHover={{
-                      rotateX: 1,
-                      rotateY: -1,
-                      boxShadow: "0 25px 60px -35px rgba(26,42,78,0.45)",
+                      rotateX: 3,
+                      rotateY: -3,
+                      y: -10,
+                      boxShadow: "0 30px 70px -40px rgba(26,42,78,0.45)",
+                      transition: { duration: 0.35, ease: cubicBezier(0.22, 1, 0.36, 1) },
                     }}
                   >
                     <motion.div
@@ -511,12 +557,14 @@ export default function Home() {
 
                   <motion.div
                     {...cardReveal(0.24)}
-                    className="rounded-3xl border border-white bg-white shadow-xl p-8"
+                    className="rounded-3xl border border-white bg-white shadow-xl p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
                     style={{ y: cardParallax, transformPerspective: 1200 }}
                     whileHover={{
-                      rotateX: 1,
-                      rotateY: -1,
-                      boxShadow: "0 25px 60px -35px rgba(26,42,78,0.45)",
+                      rotateX: 3,
+                      rotateY: -3,
+                      y: -10,
+                      boxShadow: "0 30px 70px -40px rgba(26,42,78,0.45)",
+                      transition: { duration: 0.35, ease: cubicBezier(0.22, 1, 0.36, 1) },
                     }}
                   >
                     <motion.div
@@ -552,6 +600,127 @@ export default function Home() {
                 </div>
               </div>
             </motion.section>
+
+            {/* METODO / VALORI PREMIUM TABS */}
+            <section className="py-24 bg-white">
+              <div className="max-w-6xl mx-auto px-6 space-y-12">
+                <div className="flex flex-col items-center space-y-6">
+                  <div className="flex gap-6 border-b border-[#e2e8f0]">
+                    {[
+                      { key: "metodo", label: "METODO" },
+                      { key: "valori", label: "VALORI" },
+                    ].map((tab) => (
+                      <button
+                        key={tab.key}
+                        onClick={() => setValuesTab(tab.key as "metodo" | "valori")}
+                        className={`px-10 py-4 text-lg font-semibold tracking-[0.2em] ${
+                          valuesTab === tab.key
+                            ? "text-[#0f172a]"
+                            : "text-[#94a3b8]"
+                        }`}
+                      >
+                        {tab.label}
+                        <span
+                          className={`block h-[2px] mt-3 transition-all duration-300 ${
+                            valuesTab === tab.key
+                              ? "bg-[#0f172a] w-full"
+                              : "bg-transparent w-0"
+                          }`}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {valuesTab === "metodo" && (
+                  <div className="space-y-10">
+                    {methodSteps.map((step, index) => (
+                      <motion.div
+                        key={step.title}
+                        initial={{ opacity: 0, x: index % 2 === 0 ? -40 : 40 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, amount: 0.4 }}
+                        transition={{
+                          duration: 0.7,
+                          ease: cubicBezier(0.22, 1, 0.36, 1),
+                        }}
+                        className="flex flex-col lg:flex-row items-center gap-8 bg-[#f8fafc] rounded-3xl p-6"
+                      >
+                        <div className="w-full lg:w-1/2 h-56 rounded-2xl overflow-hidden">
+                          <Image
+                            src={step.image}
+                            alt={step.title}
+                            width={800}
+                            height={400}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="w-full lg:w-1/2 space-y-3">
+                          <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
+                            Step {index + 1}
+                          </p>
+                          <h3 className="text-2xl font-bold text-[#0f172a]">
+                            {step.title}
+                          </h3>
+                          <p className="text-lg text-[#475569] leading-relaxed">
+                            {step.description}
+                          </p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+
+                {valuesTab === "valori" && (
+                  <div className="grid md:grid-cols-3 gap-6">
+                    {[0, 0.12, 0.24].map((delay, idx) => {
+                      const data = [
+                        {
+                          icon: FaHardHat,
+                          title: "Professionalità",
+                          text: "Direzione lavori certificata, squadre coordinate e aggiornamenti su dashboard condivisa.",
+                        },
+                        {
+                          icon: FaTools,
+                          title: "Qualità",
+                          text: "Materiali certificati, partner selezionati e mockup prima di andare in produzione.",
+                        },
+                        {
+                          icon: FaRedo,
+                          title: "Affidabilità",
+                          text: "Preventivi chiari, milestone approvate dal cliente e garanzia scritta sui lavori eseguiti.",
+                        },
+                      ][idx];
+                      const Icon = data.icon;
+                      return (
+                        <motion.div
+                          key={data.title}
+                          {...cardReveal(delay)}
+                          className="rounded-3xl border border-white bg-white shadow-xl p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                          style={{ y: cardParallax, transformPerspective: 1200 }}
+                          whileHover={{
+                            rotateX: 3,
+                            rotateY: -3,
+                            y: -10,
+                            boxShadow: "0 30px 70px -40px rgba(26,42,78,0.45)",
+                            transition: {
+                              duration: 0.35,
+                              ease: cubicBezier(0.22, 1, 0.36, 1),
+                            },
+                          }}
+                        >
+                          <Icon className="text-4xl text-[#1A2A4E] mb-4" />
+                          <h3 className="text-xl font-semibold uppercase tracking-wide mb-3 text-[#1A2A4E]">
+                            {data.title}
+                          </h3>
+                          <p className="text-[#3a4a5a] leading-relaxed">{data.text}</p>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </section>
 
             {/* SERVIZI */}
             <motion.section
@@ -638,22 +807,38 @@ export default function Home() {
                     return (
                       <motion.div
                         key={offer.id}
-                        whileHover={{ translateY: -6 }}
-                        className="bg-white rounded-3xl shadow-lg overflow-hidden flex flex-col h-full"
+                        whileHover={{ translateY: -8, scale: 1.015, rotate: 0.8 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 210,
+                          damping: 18,
+                        }}
+                        className="group bg-white rounded-3xl shadow-lg overflow-hidden flex flex-col h-full"
                       >
-                        <div className="relative h-48 w-full">
+                        <div className="relative h-48 w-full overflow-hidden">
                           <Image
                             src={imageSrc}
                             alt={offer.titolo}
                             fill
-                            className="object-cover w-full h-full"
+                            className="object-cover w-full h-full transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 group-hover:rotate-[1deg]"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none" />
+                          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/40 via-black/20 to-transparent pointer-events-none" />
                         </div>
                         <div className="p-6 flex flex-col gap-3 flex-1">
-                          <h3 className="text-xl font-bold text-[#1A2A4E]">
+                          <motion.h3
+                            initial={{ opacity: 0, y: 10 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.4 }}
+                            transition={{
+                              duration: 0.55,
+                              delay: 0.15,
+                              ease: cubicBezier(0.22, 1, 0.36, 1),
+                            }}
+                            className="text-xl font-bold text-[#1A2A4E]"
+                          >
                             {offer.titolo}
-                          </h3>
+                          </motion.h3>
                           <p className="text-[#3a4a5a] text-sm flex-1">
                             {offer.descrizione}
                           </p>
@@ -720,21 +905,31 @@ export default function Home() {
               style={{ minHeight: "300px" }}
             >
               <div className="max-w-2xl w-full mx-auto text-center flex flex-col items-center justify-center relative z-10">
-                <h2 className="text-3xl font-bold text-white mb-4 drop-shadow-lg">
+                <motion.h2
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.4 }}
+                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  className="text-3xl font-bold text-white mb-4 drop-shadow-lg"
+                >
                   Vuoi un preventivo gratuito?
-                </h2>
+                </motion.h2>
                 <p className="text-white text-lg mb-8 drop-shadow-lg">
                   Contattaci ora e ricevi una consulenza personalizzata per il
                   tuo progetto.
                 </p>
-                <a
+                <motion.a
+                  initial={{ opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.4 }}
+                  transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
                   href="/preventivo"
-                  className="px-8 py-3 rounded-xl bg-white text-[#1a2a4e] font-semibold shadow-lg hover:bg-blue-100 transition-all duration-300 text-lg"
+                  className="px-8 py-3 rounded-xl bg-white/90 text-[#1a2a4e] font-semibold shadow-[0_20px_35px_rgba(15,23,42,0.25)] hover:bg-white transition-colors duration-250 text-lg"
                 >
                   Richiedi preventivo
-                </a>
+                </motion.a>
               </div>
-              <div className="absolute inset-0 bg-black/10 z-0" />
+              <div className="absolute inset-0 bg-black/35 z-0" />
             </section>
 
             {/* CONTATTI E INFO */}
