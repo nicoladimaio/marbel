@@ -7,6 +7,7 @@ import {
   useTransform,
   motion,
   AnimatePresence,
+  cubicBezier,
 } from "framer-motion";
 import ServiceCarousel from "../components/ServiceCarousel";
 import { collection, getDocs } from "firebase/firestore";
@@ -19,7 +20,7 @@ export default function Home2() {
     initial: { opacity: 0, y: 28 },
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true },
-    transition: { duration: 0.85, delay, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.85, delay, ease: cubicBezier(0.16, 1, 0.3, 1) },
   });
   const [showContent, setShowContent] = useState(false);
   const [tabIndex, setTab] = useState(0);
@@ -60,7 +61,7 @@ export default function Home2() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] },
+      transition: { duration: 0.9, ease: cubicBezier(0.16, 1, 0.3, 1) },
     },
   };
 
@@ -230,7 +231,7 @@ export default function Home2() {
                     transition={{
                       duration: 0.8,
                       delay: 0.25,
-                      ease: [0.22, 1, 0.36, 1],
+                      ease: cubicBezier(0.22, 1, 0.36, 1),
                     }}
                     className="flex justify-center md:justify-start"
                   >
@@ -260,7 +261,7 @@ export default function Home2() {
                     transition={{
                       duration: 0.9,
                       delay: 0.4,
-                      ease: [0.22, 1, 0.36, 1],
+                      ease: cubicBezier(0.22, 1, 0.36, 1),
                     }}
                     className="text-5xl sm:text-6xl font-extrabold text-white tracking-tight leading-tight"
                   >
@@ -270,7 +271,11 @@ export default function Home2() {
                   <motion.p
                     initial={{ opacity: 0, y: 24 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.55 }}
+                    transition={{
+                      duration: 0.8,
+                      delay: 0.55,
+                      ease: cubicBezier(0.22, 1, 0.36, 1),
+                    }}
                     className="text-lg sm:text-xl text-white/80 max-w-3xl mx-auto md:mx-0"
                   >
                     Cantieri organizzati, finiture sartoriali e tecnologia a
@@ -281,7 +286,11 @@ export default function Home2() {
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.9, delay: 0.6 }}
+                    transition={{
+                      duration: 0.9,
+                      delay: 0.6,
+                      ease: cubicBezier(0.22, 1, 0.36, 1),
+                    }}
                     className="inline-flex items-center justify-center md:justify-start px-6 py-3 rounded-full bg-white/10 text-white font-semibold tracking-widest uppercase backdrop-blur"
                   >
                     Richiedi ora un preventivo gratuito e senza impegno
@@ -291,7 +300,11 @@ export default function Home2() {
                   <motion.div
                     initial={{ opacity: 0, y: 22 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.9, delay: 0.75 }}
+                    transition={{
+                      duration: 0.9,
+                      delay: 0.75,
+                      ease: cubicBezier(0.22, 1, 0.36, 1),
+                    }}
                     className="flex flex-col sm:flex-row gap-4 items-center md:items-start"
                   >
                     <motion.a
@@ -316,7 +329,11 @@ export default function Home2() {
                   <motion.div
                     initial={{ opacity: 0, y: 26 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.9, delay: 1 }}
+                    transition={{
+                      duration: 0.9,
+                      delay: 1,
+                      ease: cubicBezier(0.22, 1, 0.36, 1),
+                    }}
                     className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6"
                   >
                     {heroStats.map((stat) => (
@@ -340,7 +357,11 @@ export default function Home2() {
                   <motion.div
                     initial={{ opacity: 0, x: 60, y: 40 }}
                     animate={{ opacity: 1, x: 0, y: 0 }}
-                    transition={{ duration: 0.8, delay: 1.1 }}
+                    transition={{
+                      duration: 0.8,
+                      delay: 1.1,
+                      ease: cubicBezier(0.22, 1, 0.36, 1),
+                    }}
                     className="bg-white/95 text-[#1a2a4e] rounded-3xl shadow-2xl p-6 flex-col gap-3 w-full backdrop-blur hover:shadow-[0_35px_60px_-15px_rgba(26,42,78,0.35)] transition-shadow"
                   >
                     <div className="flex items-center gap-3">
@@ -371,7 +392,11 @@ export default function Home2() {
                   aria-hidden
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 1, delay: 0.9 }}
+                  transition={{
+                    duration: 1,
+                    delay: 0.9,
+                    ease: cubicBezier(0.22, 1, 0.36, 1),
+                  }}
                   className="absolute -bottom-32 left-12 w-48 h-48 bg-[#4b6cb7]/40 blur-3xl rounded-full"
                 />
               </div>
