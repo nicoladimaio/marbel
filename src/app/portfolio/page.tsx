@@ -37,21 +37,21 @@ function PortfolioImage({
   return (
     <div
       ref={ref}
-      className={`relative w-full overflow-hidden rounded-2xl cursor-pointer group transition-all duration-1000 ease-out ${
+      onClick={onClick}
+      style={{ minHeight: 240 }}
+      className={`relative w-full overflow-hidden rounded-2xl cursor-pointer group transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] shadow-lg ${
         visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
       }`}
-      style={{ minHeight: 220 }}
-      onClick={onClick}
     >
       <Image
         src={src}
         alt={alt}
         fill
         sizes="100vw"
-        className="object-cover w-full h-full rounded-2xl transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:brightness-90 group-hover:-rotate-1"
-        priority={false}
+        className="object-cover w-full h-full rounded-2xl transition-transform duration-700 group-hover:scale-105"
       />
-      <div className="absolute inset-0 pointer-events-none rounded-2xl group-hover:ring-4 group-hover:ring-blue-400 transition-all duration-300" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="absolute inset-0 pointer-events-none rounded-2xl ring-2 ring-transparent group-hover:ring-[#1a2a4e]/80 transition-all duration-300" />
     </div>
   );
 }
@@ -136,67 +136,95 @@ export default function Portfolio() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f5f6fa] flex flex-col items-center font-sans">
+    <main className="min-h-screen bg-[#f5f6fa] text-[#1a2a4e]">
       <SocialBar />
-      {/* HERO con immagine di sfondo */}
-      <div className="relative w-full h-[320px] sm:h-[400px] flex items-center justify-center mb-8">
-        {/* ...hero... */}
-      </div>
-      <section className="w-full mb-8">
-        <p className="text-lg text-[#3a4a5a] mb-4 text-center">
-          Alcuni dei nostri lavori realizzati: ristrutturazioni, nuove
-          costruzioni, restauri e molto altro.
-        </p>
-        {/* Menù orizzontale categorie centrato */}
-        <div className="w-full flex justify-center mb-6">
-          <div className="flex gap-2 min-w-max pb-2">
-            <button
-              className={`px-4 py-2 rounded-full font-semibold shadow text-sm transition whitespace-nowrap ${
-                categoriaFiltro === "TUTTE"
-                  ? "bg-[#1a2a4e] text-white"
-                  : "bg-gray-200 text-[#1a2a4e]"
-              }`}
-              onClick={() => setCategoriaFiltro("TUTTE")}
-            >
-              TUTTE
-            </button>
-            {categorie.map((cat) => (
-              <button
-                key={cat}
-                className={`px-4 py-2 rounded-full font-semibold shadow text-sm transition whitespace-nowrap ${
-                  categoriaFiltro === cat
-                    ? "bg-[#1a2a4e] text-white"
-                    : "bg-gray-200 text-[#1a2a4e]"
-                }`}
-                onClick={() => setCategoriaFiltro(cat || "")}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+
+      {/* HERO */}
+      <section className="relative min-h-[420px] flex items-center justify-center overflow-hidden">
+        <Image
+          src="/gallery2.jpg"
+          alt="Portfolio MarBel"
+          fill
+          priority
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+        <div className="relative z-10 max-w-4xl text-center px-6 space-y-4">
+          <p className="text-sm uppercase tracking-[0.4em] text-white/80">
+            Realizzazioni
+          </p>
+          <h1 className="text-white text-4xl sm:text-5xl font-extrabold uppercase tracking-[0.35em]">
+            PORTFOLIO
+          </h1>
+          <p className="text-white/85 text-lg sm:text-xl leading-relaxed">
+            Una selezione di cantieri chiavi in mano: interventi strutturali,
+            interior design e riqualificazioni coordinate da un unico team.
+          </p>
         </div>
-        {/* Griglia immagini masonry con margine minimo ai lati */}
-        <div
-          className={`transition-all duration-700 ${
-            gridVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
-          }`}
-        >
-          <div className="columns-1 sm:columns-2 md:columns-3 xl:columns-6 gap-4 [column-fill:_balance] w-full mx-1 sm:mx-2">
-            {/* effetto masonry */}
-            {lavoriFiltrati.length === 0 ? (
-              <div className="text-zinc-500 col-span-full text-center py-8">
-                Non ci sono elementi per questa categoria
-              </div>
-            ) : (
-              lavoriFiltrati.map((i, idx) => (
-                <PortfolioImage
-                  key={i.id}
-                  src={i.immagine || "/placeholder.jpg"}
-                  alt={i.titolo}
-                  onClick={() => openZoom(idx)}
-                />
-              ))
-            )}
+      </section>
+
+      {/* FILTRI E DESCRIZIONE */}
+      <section className="py-24 px-6">
+        <div className="max-w-6xl mx-auto space-y-12">
+          <div className="bg-white rounded-2xl shadow-xl p-8 space-y-6">
+            <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
+              Categorie
+            </p>
+            <h2 className="text-3xl font-extrabold uppercase tracking-wide">
+              FILTRA I PROGETTI
+            </h2>
+            <p className="text-lg text-[#475569] max-w-3xl">
+              Naviga tra cucine, bagni, riqualificazioni ed esterni: ogni
+              progetto racconta metodi, materiali e dettagli sartoriali.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <button
+                className={`px-6 py-3 rounded-full text-sm font-semibold tracking-[0.2em] transition-all ${
+                  categoriaFiltro === "TUTTE"
+                    ? "bg-[#1a2a4e] text-white shadow-lg shadow-[#1a2a4e]/30"
+                    : "border border-[#e5e7eb] bg-white text-[#1a2a4e] hover:bg-[#f5f6fa]"
+                }`}
+                onClick={() => setCategoriaFiltro("TUTTE")}
+              >
+                TUTTE
+              </button>
+              {categorie.map((cat) => (
+                <button
+                  key={cat}
+                  className={`px-6 py-3 rounded-full text-sm font-semibold tracking-[0.2em] whitespace-nowrap transition-all ${
+                    categoriaFiltro === cat
+                      ? "bg-[#1a2a4e] text-white shadow-lg shadow-[#1a2a4e]/30"
+                      : "border border-[#e5e7eb] bg-white text-[#1a2a4e] hover:bg-[#f5f6fa]"
+                  }`}
+                  onClick={() => setCategoriaFiltro(cat || "")}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div
+            className={`transition-all duration-700 ${
+              gridVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+          >
+            <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 [column-fill:_balance]">
+              {lavoriFiltrati.length === 0 ? (
+                <div className="bg-white rounded-2xl shadow-xl text-center py-16 text-[#94a3b8]">
+                  Non ci sono elementi per questa categoria
+                </div>
+              ) : (
+                lavoriFiltrati.map((i, idx) => (
+                  <PortfolioImage
+                    key={i.id}
+                    src={i.immagine || "/placeholder.jpg"}
+                    alt={i.titolo}
+                    onClick={() => openZoom(idx)}
+                  />
+                ))
+              )}
+            </div>
           </div>
         </div>
       </section>

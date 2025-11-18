@@ -24,6 +24,7 @@ export default function Home() {
   const [showContent, setShowContent] = useState(false);
   const [tabIndex, setTab] = useState(0);
   const [valuesTab, setValuesTab] = useState<"metodo" | "valori">("metodo");
+  const [methodTab, setMethodTab] = useState<"analisi" | "realizzazione" | "consegna">("analisi");
   const [offers, setOffers] = useState<
     { id: string; titolo: string; descrizione: string; immagine?: string }[]
   >([]);
@@ -54,7 +55,7 @@ export default function Home() {
 
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 700], [0, -150]);
-  const heroImageParallax = useTransform(scrollY, [0, 400], [0, -5]);
+  const heroImageParallax = useTransform(scrollY, [0, 400], [0, -40]);
 
   const scrollReveal = {
     hidden: { opacity: 0, y: 40 },
@@ -109,24 +110,52 @@ export default function Home() {
   const selectedTab = expertiseTabs[safeTabIndex];
   const methodSteps = [
     {
+      key: "analisi" as const,
       title: "Analisi",
       description:
         "Direzione lavori certificata, squadre coordinate e aggiornamenti su dashboard condivisa per partire con una visione chiara.",
       image: "/gallery1.jpg",
+      direction: "left" as const,
     },
     {
+      key: "realizzazione" as const,
       title: "Realizzazione",
       description:
         "Materiali certificati, partner selezionati e mockup prima di andare in produzione assicurano cantiere controllato.",
       image: "/gallery2.jpg",
+      direction: "right" as const,
     },
     {
+      key: "consegna" as const,
       title: "Consegna",
       description:
         "Preventivi chiari, milestone approvate dal cliente e garanzia scritta sui lavori eseguiti per una chiusura trasparente.",
       image: "/gallery3.jpg",
+      direction: "left" as const,
     },
   ];
+  const valueCards = [
+    {
+      icon: FaHardHat,
+      title: "Professionalità",
+      text: "Direzione lavori certificata, squadre coordinate e aggiornamenti su dashboard condivisa.",
+    },
+    {
+      icon: FaTools,
+      title: "Qualità",
+      text: "Materiali certificati, partner selezionati e mockup prima di andare in produzione.",
+    },
+    {
+      icon: FaRedo,
+      title: "Affidabilità",
+      text: "Preventivi chiari, milestone approvate dal cliente e garanzia scritta sui lavori eseguiti.",
+    },
+  ];
+  const activeMethodStep =
+    methodSteps.find((step) => step.key === methodTab) ?? methodSteps[0];
+  const activeMethodIndex = methodSteps.findIndex(
+    (step) => step.key === activeMethodStep.key
+  );
 
   const processSteps = [
     {
@@ -220,7 +249,7 @@ export default function Home() {
                   id="hero-bg-parallax"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <motion.div
                     className="relative w-full h-full"
@@ -231,7 +260,7 @@ export default function Home() {
                       alt="Sfondo hero"
                       fill
                       priority
-                      className="object-cover object-center"
+                      className="object-cover object-center will-change-transform"
                     />
                   </motion.div>
                 </motion.div>
@@ -241,7 +270,7 @@ export default function Home() {
                   className="absolute inset-0 z-5 pointer-events-none"
                   style={{
                     background:
-                      "linear-gradient(180deg, rgba(26,42,78,0.35) 0%, rgba(26,42,78,0.08) 35%, rgba(255,255,255,0) 80%)",
+                      "linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.1) 80%)",
                     transition: "opacity 0.8s ease",
                   }}
                   aria-hidden
@@ -288,7 +317,7 @@ export default function Home() {
                     }}
                     className="text-5xl sm:text-6xl font-extrabold text-[#1a2a4e] tracking-tight mb-2"
                     style={{
-                      textShadow: "0 2px 12px #fff, 0 1px 2px #e0e0e0",
+                      textShadow: "0 4px 18px rgba(0,0,0,0.35)",
                     }}
                   >
                     Costruiamo il tuo futuro
@@ -323,7 +352,7 @@ export default function Home() {
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.98 }}
                       href="/preventivo"
-                      className="px-10 py-3 rounded-xl text-white font-semibold shadow-lg shadow-black/30 border border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-all duration-250 text-lg"
+                      className="px-10 py-3 rounded-xl bg-[#1a2a4e] text-white font-semibold shadow-lg shadow-black/30 hover:bg-[#223867] transition-all duration-250 text-lg"
                     >
                       Calcola ora
                     </motion.a>
@@ -349,407 +378,11 @@ export default function Home() {
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   aria-hidden
-                >
-                  <motion.span
-                    className="text-white/80 text-sm tracking-[0.4em] uppercase flex flex-col items-center gap-2"
-                    animate={{ y: [0, 6, 0] }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 1.6,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    Scroll
-                    <span className="text-2xl leading-none">&darr;</span>
-                  </motion.span>
-                </motion.div>
+                ></motion.div>
               </div>
             </motion.section>
 
             {/* EXPERTISE TABS */}
-            <motion.section
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={scrollReveal}
-              className="py-24 bg-white"
-            >
-              <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-start">
-                <div className="space-y-6">
-                  <span className="text-sm font-semibold tracking-[0.4em] uppercase text-[#7c8cab]">
-                    Metodo
-                  </span>
-                  <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A2A4E] leading-tight">
-                    Strategia, design e cantieri controllati con un'unica regia.
-                  </h2>
-                  <p className="text-lg text-[#475569] leading-relaxed">
-                    Seleziona un focus per vedere come accompagniamo privati e
-                    aziende nel trasformare gli spazi.
-                  </p>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    {expertiseTabs.map((tab, index) => (
-                      <button
-                        key={tab.title}
-                        type="button"
-                        onClick={() => setTab(index)}
-                        className={`rounded-2xl border px-5 py-5 text-left transition-all ${
-                          safeTabIndex === index
-                            ? "border-[#1A2A4E] bg-[#1A2A4E] text-white shadow-lg shadow-[#1A2A4E]/30"
-                            : "border-[#e1e5ef] bg-white text-[#1A2A4E] hover:border-[#cbd3e3]"
-                        }`}
-                      >
-                        <p
-                          className={`text-xs uppercase tracking-[0.35em] ${
-                            safeTabIndex === index
-                              ? "text-white/70"
-                              : "text-[#7c8cab]"
-                          }`}
-                        >
-                          {tab.badge}
-                        </p>
-                        <p className="text-lg font-semibold mt-2">
-                          {tab.title}
-                        </p>
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="bg-[#f5f6fa] rounded-2xl p-6 space-y-4 border border-[#e1e5ef] shadow-inner">
-                    <p className="text-lg font-semibold text-[#1A2A4E]">
-                      {selectedTab.badge}
-                    </p>
-                    <p className="text-[#475569] leading-relaxed">
-                      {selectedTab.description}
-                    </p>
-                    <ul className="space-y-3">
-                      {selectedTab.bullets.map((bullet) => (
-                        <li
-                          key={bullet}
-                          className="flex items-start gap-3 text-sm"
-                        >
-                          <FaCheckCircle className="text-[#00c6ff] mt-1" />
-                          <span className="text-[#1A2A4E]">{bullet}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="w-full space-y-6 md:mt-10 lg:mt-16">
-                  <div className="relative h-[320px] sm:h-[420px] rounded-2xl overflow-hidden shadow-2xl border border-[#e6ebf5]">
-                    <Image
-                      src={selectedTab.cover}
-                      alt={selectedTab.title}
-                      fill
-                      className="object-cover w-full h-full"
-                      sizes="(max-width: 768px) 100vw, 480px"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#020710]/80 via-transparent to-transparent" />
-                    <div className="absolute bottom-6 left-6 right-6 text-white">
-                      <span className="text-xs tracking-[0.4em] uppercase text-white/70">
-                        {selectedTab.badge}
-                      </span>
-                      <h3 className="text-2xl font-bold mt-2">
-                        {selectedTab.title}
-                      </h3>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.section>
-
-            {/* PERCH�% SCEGLIERCI */}
-            <motion.section
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={scrollReveal}
-              className="py-24 lg:py-28 bg-[#f4f6fb]"
-            >
-              <div className="max-w-7xl mx-auto px-6 space-y-10">
-                <div className="text-center space-y-4">
-                  <p className="text-sm uppercase tracking-[0.4em] text-[#7c8cab]">
-                    Valori
-                  </p>
-                  <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A2A4E]">
-                    Perchè sceglierci
-                  </h2>
-                  <p className="text-[#475569] text-lg max-w-3xl mx-auto">
-                    Processi digitali, squadre dedicate e supervisione continua
-                    trasformano ogni progetto in un cantiere orchestrato al
-                    millimetro.
-                  </p>
-                </div>
-
-                <div className="grid md:grid-cols-3 gap-6">
-                  <motion.div
-                    {...cardReveal(0)}
-                    className="rounded-2xl border border-[#e2e8f0] bg-white shadow-lg p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                    style={{ y: cardParallax, transformPerspective: 1200 }}
-                    whileHover={{
-                      rotateX: 3,
-                      rotateY: -3,
-                      y: -10,
-                      boxShadow: "0 30px 70px -40px rgba(26,42,78,0.45)",
-                      transition: {
-                        duration: 0.35,
-                        ease: cubicBezier(0.22, 1, 0.36, 1),
-                      },
-                    }}
-                  >
-                    <motion.div
-                      initial={{ opacity: 0, x: -24 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{
-                        duration: 0.6,
-                        delay: 0.1,
-                        ease: cubicBezier(0.22, 1, 0.36, 1),
-                      }}
-                      viewport={{ once: true, amount: 0.6 }}
-                    >
-                      <FaHardHat className="text-4xl text-[#1A2A4E] mb-4" />
-                    </motion.div>
-                    <motion.h3
-                      initial={{ opacity: 0, x: 22 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{
-                        duration: 0.6,
-                        delay: 0.18,
-                        ease: cubicBezier(0.22, 1, 0.36, 1),
-                      }}
-                      viewport={{ once: true, amount: 0.6 }}
-                      className="text-xl font-semibold uppercase tracking-wide mb-3 text-[#1A2A4E]"
-                    >
-                      Professionalità
-                    </motion.h3>
-                    <p className="text-[#475569] leading-relaxed">
-                      Direzione lavori certificata, squadre coordinate e
-                      aggiornamenti su dashboard condivisa.
-                    </p>
-                  </motion.div>
-
-                  <motion.div
-                    {...cardReveal(0.12)}
-                    className="rounded-2xl border border-[#e2e8f0] bg-white shadow-lg p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                    style={{ y: cardParallax, transformPerspective: 1200 }}
-                    whileHover={{
-                      rotateX: 3,
-                      rotateY: -3,
-                      y: -10,
-                      boxShadow: "0 30px 70px -40px rgba(26,42,78,0.45)",
-                      transition: {
-                        duration: 0.35,
-                        ease: cubicBezier(0.22, 1, 0.36, 1),
-                      },
-                    }}
-                  >
-                    <motion.div
-                      initial={{ opacity: 0, x: -24 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{
-                        duration: 0.6,
-                        delay: 0.15,
-                        ease: cubicBezier(0.22, 1, 0.36, 1),
-                      }}
-                      viewport={{ once: true, amount: 0.6 }}
-                    >
-                      <FaTools className="text-4xl text-[#1A2A4E] mb-4" />
-                    </motion.div>
-                    <motion.h3
-                      initial={{ opacity: 0, x: 22 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{
-                        duration: 0.6,
-                        delay: 0.22,
-                        ease: cubicBezier(0.22, 1, 0.36, 1),
-                      }}
-                      viewport={{ once: true, amount: 0.6 }}
-                      className="text-xl font-semibold uppercase tracking-wide mb-3 text-[#1A2A4E]"
-                    >
-                      Qualità
-                    </motion.h3>
-                    <p className="text-[#475569] leading-relaxed">
-                      Materiali certificati, partner selezionati e mockup prima
-                      di andare in produzione.
-                    </p>
-                  </motion.div>
-
-                  <motion.div
-                    {...cardReveal(0.24)}
-                    className="rounded-2xl border border-[#e2e8f0] bg-white shadow-lg p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                    style={{ y: cardParallax, transformPerspective: 1200 }}
-                    whileHover={{
-                      rotateX: 3,
-                      rotateY: -3,
-                      y: -10,
-                      boxShadow: "0 30px 70px -40px rgba(26,42,78,0.45)",
-                      transition: {
-                        duration: 0.35,
-                        ease: cubicBezier(0.22, 1, 0.36, 1),
-                      },
-                    }}
-                  >
-                    <motion.div
-                      initial={{ opacity: 0, x: -24 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{
-                        duration: 0.6,
-                        delay: 0.2,
-                        ease: cubicBezier(0.22, 1, 0.36, 1),
-                      }}
-                      viewport={{ once: true, amount: 0.6 }}
-                    >
-                      <FaRedo className="text-4xl text-[#1A2A4E] mb-4" />
-                    </motion.div>
-                    <motion.h3
-                      initial={{ opacity: 0, x: 22 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{
-                        duration: 0.6,
-                        delay: 0.27,
-                        ease: cubicBezier(0.22, 1, 0.36, 1),
-                      }}
-                      viewport={{ once: true, amount: 0.6 }}
-                      className="text-xl font-semibold uppercase tracking-wide mb-3 text-[#1A2A4E]"
-                    >
-                      Affidabilità
-                    </motion.h3>
-                    <p className="text-[#475569] leading-relaxed">
-                      Preventivi chiari, milestone approvate dal cliente e
-                      garanzia scritta sui lavori eseguiti.
-                    </p>
-                  </motion.div>
-                </div>
-              </div>
-            </motion.section>
-
-            {/* METODO / VALORI PREMIUM TABS */}
-            <section className="py-24 bg-white">
-              <div className="max-w-6xl mx-auto px-6 space-y-12">
-                <div className="flex flex-col items-center space-y-6">
-                  <div className="flex gap-6 border-b border-[#e2e8f0]">
-                    {[
-                      { key: "metodo", label: "METODO" },
-                      { key: "valori", label: "VALORI" },
-                    ].map((tab) => (
-                      <button
-                        key={tab.key}
-                        onClick={() =>
-                          setValuesTab(tab.key as "metodo" | "valori")
-                        }
-                        className={`px-10 py-4 text-lg font-semibold tracking-[0.2em] ${
-                          valuesTab === tab.key
-                            ? "text-[#0f172a]"
-                            : "text-[#94a3b8]"
-                        }`}
-                      >
-                        {tab.label}
-                        <span
-                          className={`block h-[2px] mt-3 transition-all duration-300 ${
-                            valuesTab === tab.key
-                              ? "bg-[#0f172a] w-full"
-                              : "bg-transparent w-0"
-                          }`}
-                        />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {valuesTab === "metodo" && (
-                  <div className="space-y-10">
-                    {methodSteps.map((step, index) => (
-                      <motion.div
-                        key={step.title}
-                        initial={{ opacity: 0, x: index % 2 === 0 ? -40 : 40 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true, amount: 0.4 }}
-                        transition={{
-                          duration: 0.7,
-                          ease: cubicBezier(0.22, 1, 0.36, 1),
-                        }}
-                        className="flex flex-col lg:flex-row items-center gap-8 bg-[#f8fafc] rounded-2xl p-8"
-                      >
-                        <div className="w-full lg:w-1/2 h-56 rounded-2xl overflow-hidden">
-                          <Image
-                            src={step.image}
-                            alt={step.title}
-                            width={800}
-                            height={400}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="w-full lg:w-1/2 space-y-3">
-                          <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
-                            Step {index + 1}
-                          </p>
-                          <h3 className="text-2xl font-bold text-[#0f172a]">
-                            {step.title}
-                          </h3>
-                          <p className="text-lg text-[#475569] leading-relaxed">
-                            {step.description}
-                          </p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                )}
-
-                {valuesTab === "valori" && (
-                  <div className="grid md:grid-cols-3 gap-6">
-                    {[0, 0.12, 0.24].map((delay, idx) => {
-                      const data = [
-                        {
-                          icon: FaHardHat,
-                          title: "Professionalità",
-                          text: "Direzione lavori certificata, squadre coordinate e aggiornamenti su dashboard condivisa.",
-                        },
-                        {
-                          icon: FaTools,
-                          title: "Qualità",
-                          text: "Materiali certificati, partner selezionati e mockup prima di andare in produzione.",
-                        },
-                        {
-                          icon: FaRedo,
-                          title: "Affidabilità",
-                          text: "Preventivi chiari, milestone approvate dal cliente e garanzia scritta sui lavori eseguiti.",
-                        },
-                      ][idx];
-                      const Icon = data.icon;
-                      return (
-                        <motion.div
-                          key={data.title}
-                          {...cardReveal(delay)}
-                          className="rounded-2xl border border-[#e2e8f0] bg-white shadow-lg p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                          style={{
-                            y: cardParallax,
-                            transformPerspective: 1200,
-                          }}
-                          whileHover={{
-                            rotateX: 3,
-                            rotateY: -3,
-                            y: -10,
-                            boxShadow: "0 30px 70px -40px rgba(26,42,78,0.45)",
-                            transition: {
-                              duration: 0.35,
-                              ease: cubicBezier(0.22, 1, 0.36, 1),
-                            },
-                          }}
-                        >
-                          <Icon className="text-4xl text-[#1A2A4E] mb-4" />
-                          <h3 className="text-xl font-semibold uppercase tracking-wide mb-3 text-[#1A2A4E]">
-                            {data.title}
-                          </h3>
-                          <p className="text-[#475569] leading-relaxed">
-                            {data.text}
-                          </p>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </section>
 
             {/* SERVIZI */}
             <motion.section
@@ -803,6 +436,125 @@ export default function Home() {
                 </div>
               </div>
             </motion.section>
+
+            {/* METODO / VALORI */}
+            <section className="py-24 bg-white">
+              <div className="max-w-6xl mx-auto px-6 space-y-12">
+                <div className="flex flex-col items-center space-y-8">
+                  <div className="flex gap-8 border-b border-[#e2e8f0]">
+                    {[
+                      { key: "metodo", label: "METODO" },
+                      { key: "valori", label: "VALORI" },
+                    ].map((tab) => (
+                      <button
+                        key={tab.key}
+                        type="button"
+                        onClick={() => setValuesTab(tab.key as "metodo" | "valori")}
+                        className={`px-10 py-4 text-sm font-semibold tracking-[0.4em] ${
+                          valuesTab === tab.key ? "text-[#1a2a4e]" : "text-[#94a3b8]"
+                        }`}
+                      >
+                        {tab.label}
+                        <span
+                          className={`block h-[2px] mt-3 transition-all duration-300 ${
+                            valuesTab === tab.key
+                              ? "bg-[#1a2a4e] w-full"
+                              : "bg-transparent w-0"
+                          }`}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {valuesTab === "metodo" && (
+                  <div className="space-y-10">
+                    <div className="flex flex-wrap items-center justify-center gap-4">
+                      {methodSteps.map((step) => (
+                        <button
+                          key={step.key}
+                          type="button"
+                          onClick={() => setMethodTab(step.key)}
+                          className={`px-8 py-3 rounded-2xl border text-sm font-semibold tracking-[0.35em] uppercase transition-all ${
+                            methodTab === step.key
+                              ? "border-[#1a2a4e] text-[#1a2a4e] bg-white shadow-lg shadow-[#1a2a4e]/20"
+                              : "border-[#d8dee7] text-[#94a3b8] hover:text-[#1a2a4e]"
+                          }`}
+                        >
+                          {step.title}
+                        </button>
+                      ))}
+                    </div>
+
+                    <motion.div
+                      key={activeMethodStep.key}
+                      initial={{
+                        opacity: 0,
+                        x: activeMethodStep.direction === "left" ? -40 : 40,
+                      }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        duration: 0.75,
+                        ease: cubicBezier(0.22, 1, 0.36, 1),
+                      }}
+                      className="flex flex-col lg:flex-row items-center gap-10 bg-[#f8fafc] rounded-2xl p-8 shadow-[0_25px_60px_-35px_rgba(15,23,42,0.35)]"
+                    >
+                      <div className="relative w-full lg:w-1/2 h-72 rounded-2xl overflow-hidden">
+                        <Image
+                          src={activeMethodStep.image}
+                          alt={activeMethodStep.title}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="w-full lg:w-1/2 space-y-4">
+                        <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
+                          Step {String(activeMethodIndex + 1).padStart(2, "0")}
+                        </p>
+                        <h3 className="text-3xl font-bold text-[#1a2a4e]">
+                          {activeMethodStep.title}
+                        </h3>
+                        <p className="text-lg text-[#475569] leading-relaxed">
+                          {activeMethodStep.description}
+                        </p>
+                      </div>
+                    </motion.div>
+                  </div>
+                )}
+
+                {valuesTab === "valori" && (
+                  <div className="grid md:grid-cols-3 gap-6">
+                    {valueCards.map((card, index) => {
+                      const Icon = card.icon;
+                      return (
+                        <motion.div
+                          key={card.title}
+                          {...cardReveal(index * 0.12)}
+                          className="rounded-2xl border border-[#e2e8f0] bg-white shadow-lg p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                          style={{ y: cardParallax, transformPerspective: 1200 }}
+                          whileHover={{
+                            rotateX: 3,
+                            rotateY: -3,
+                            y: -10,
+                            boxShadow: "0 30px 70px -40px rgba(26,42,78,0.45)",
+                            transition: {
+                              duration: 0.35,
+                              ease: cubicBezier(0.22, 1, 0.36, 1),
+                            },
+                          }}
+                        >
+                          <Icon className="text-4xl text-[#1A2A4E] mb-4" />
+                          <h3 className="text-xl font-semibold uppercase tracking-wide mb-3 text-[#1A2A4E]">
+                            {card.title}
+                          </h3>
+                          <p className="text-[#475569] leading-relaxed">{card.text}</p>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </section>
 
             {/* OFFERTE */}
             <motion.section
