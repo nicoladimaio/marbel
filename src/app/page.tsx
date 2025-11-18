@@ -199,7 +199,7 @@ export default function Home() {
   const highlightOffers = (offers.length ? offers : fallbackOffers).slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-[#f5f6fa] font-sans">
+    <div className="min-h-screen bg-[#f8fafc] font-sans">
       {/* Social vertical bar */}
       <SocialBar />
       <AnimatePresence>
@@ -349,7 +349,20 @@ export default function Home() {
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   aria-hidden
-                ></motion.div>
+                >
+                  <motion.span
+                    className="text-white/80 text-sm tracking-[0.4em] uppercase flex flex-col items-center gap-2"
+                    animate={{ y: [0, 6, 0] }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 1.6,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    Scroll
+                    <span className="text-2xl leading-none">&darr;</span>
+                  </motion.span>
+                </motion.div>
               </div>
             </motion.section>
 
@@ -359,7 +372,7 @@ export default function Home() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={scrollReveal}
-              className="py-20 bg-white"
+              className="py-24 bg-white"
             >
               <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-start">
                 <div className="space-y-6">
@@ -369,7 +382,7 @@ export default function Home() {
                   <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A2A4E] leading-tight">
                     Strategia, design e cantieri controllati con un'unica regia.
                   </h2>
-                  <p className="text-lg text-[#3a4a5a] leading-relaxed">
+                  <p className="text-lg text-[#475569] leading-relaxed">
                     Seleziona un focus per vedere come accompagniamo privati e
                     aziende nel trasformare gli spazi.
                   </p>
@@ -405,7 +418,7 @@ export default function Home() {
                     <p className="text-lg font-semibold text-[#1A2A4E]">
                       {selectedTab.badge}
                     </p>
-                    <p className="text-[#3a4a5a] leading-relaxed">
+                    <p className="text-[#475569] leading-relaxed">
                       {selectedTab.description}
                     </p>
                     <ul className="space-y-3">
@@ -423,7 +436,7 @@ export default function Home() {
                 </div>
 
                 <div className="w-full space-y-6 md:mt-10 lg:mt-16">
-                  <div className="relative h-[320px] sm:h-[420px] rounded-[32px] overflow-hidden shadow-2xl border border-[#e6ebf5]">
+                  <div className="relative h-[320px] sm:h-[420px] rounded-2xl overflow-hidden shadow-2xl border border-[#e6ebf5]">
                     <Image
                       src={selectedTab.cover}
                       alt={selectedTab.title}
@@ -461,7 +474,7 @@ export default function Home() {
                   <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A2A4E]">
                     Perchè sceglierci
                   </h2>
-                  <p className="text-[#3a4a5a] text-lg max-w-3xl mx-auto">
+                  <p className="text-[#475569] text-lg max-w-3xl mx-auto">
                     Processi digitali, squadre dedicate e supervisione continua
                     trasformano ogni progetto in un cantiere orchestrato al
                     millimetro.
@@ -471,14 +484,17 @@ export default function Home() {
                 <div className="grid md:grid-cols-3 gap-6">
                   <motion.div
                     {...cardReveal(0)}
-                    className="rounded-3xl border border-white bg-white shadow-xl p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                    className="rounded-2xl border border-[#e2e8f0] bg-white shadow-lg p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
                     style={{ y: cardParallax, transformPerspective: 1200 }}
                     whileHover={{
                       rotateX: 3,
                       rotateY: -3,
                       y: -10,
                       boxShadow: "0 30px 70px -40px rgba(26,42,78,0.45)",
-                      transition: { duration: 0.35, ease: cubicBezier(0.22, 1, 0.36, 1) },
+                      transition: {
+                        duration: 0.35,
+                        ease: cubicBezier(0.22, 1, 0.36, 1),
+                      },
                     }}
                   >
                     <motion.div
@@ -506,7 +522,7 @@ export default function Home() {
                     >
                       Professionalità
                     </motion.h3>
-                    <p className="text-[#3a4a5a] leading-relaxed">
+                    <p className="text-[#475569] leading-relaxed">
                       Direzione lavori certificata, squadre coordinate e
                       aggiornamenti su dashboard condivisa.
                     </p>
@@ -514,14 +530,17 @@ export default function Home() {
 
                   <motion.div
                     {...cardReveal(0.12)}
-                    className="rounded-3xl border border-white bg-white shadow-xl p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                    className="rounded-2xl border border-[#e2e8f0] bg-white shadow-lg p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
                     style={{ y: cardParallax, transformPerspective: 1200 }}
                     whileHover={{
                       rotateX: 3,
                       rotateY: -3,
                       y: -10,
                       boxShadow: "0 30px 70px -40px rgba(26,42,78,0.45)",
-                      transition: { duration: 0.35, ease: cubicBezier(0.22, 1, 0.36, 1) },
+                      transition: {
+                        duration: 0.35,
+                        ease: cubicBezier(0.22, 1, 0.36, 1),
+                      },
                     }}
                   >
                     <motion.div
@@ -549,7 +568,7 @@ export default function Home() {
                     >
                       Qualità
                     </motion.h3>
-                    <p className="text-[#3a4a5a] leading-relaxed">
+                    <p className="text-[#475569] leading-relaxed">
                       Materiali certificati, partner selezionati e mockup prima
                       di andare in produzione.
                     </p>
@@ -557,14 +576,17 @@ export default function Home() {
 
                   <motion.div
                     {...cardReveal(0.24)}
-                    className="rounded-3xl border border-white bg-white shadow-xl p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                    className="rounded-2xl border border-[#e2e8f0] bg-white shadow-lg p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
                     style={{ y: cardParallax, transformPerspective: 1200 }}
                     whileHover={{
                       rotateX: 3,
                       rotateY: -3,
                       y: -10,
                       boxShadow: "0 30px 70px -40px rgba(26,42,78,0.45)",
-                      transition: { duration: 0.35, ease: cubicBezier(0.22, 1, 0.36, 1) },
+                      transition: {
+                        duration: 0.35,
+                        ease: cubicBezier(0.22, 1, 0.36, 1),
+                      },
                     }}
                   >
                     <motion.div
@@ -592,7 +614,7 @@ export default function Home() {
                     >
                       Affidabilità
                     </motion.h3>
-                    <p className="text-[#3a4a5a] leading-relaxed">
+                    <p className="text-[#475569] leading-relaxed">
                       Preventivi chiari, milestone approvate dal cliente e
                       garanzia scritta sui lavori eseguiti.
                     </p>
@@ -612,7 +634,9 @@ export default function Home() {
                     ].map((tab) => (
                       <button
                         key={tab.key}
-                        onClick={() => setValuesTab(tab.key as "metodo" | "valori")}
+                        onClick={() =>
+                          setValuesTab(tab.key as "metodo" | "valori")
+                        }
                         className={`px-10 py-4 text-lg font-semibold tracking-[0.2em] ${
                           valuesTab === tab.key
                             ? "text-[#0f172a]"
@@ -644,7 +668,7 @@ export default function Home() {
                           duration: 0.7,
                           ease: cubicBezier(0.22, 1, 0.36, 1),
                         }}
-                        className="flex flex-col lg:flex-row items-center gap-8 bg-[#f8fafc] rounded-3xl p-6"
+                        className="flex flex-col lg:flex-row items-center gap-8 bg-[#f8fafc] rounded-2xl p-8"
                       >
                         <div className="w-full lg:w-1/2 h-56 rounded-2xl overflow-hidden">
                           <Image
@@ -696,8 +720,11 @@ export default function Home() {
                         <motion.div
                           key={data.title}
                           {...cardReveal(delay)}
-                          className="rounded-3xl border border-white bg-white shadow-xl p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                          style={{ y: cardParallax, transformPerspective: 1200 }}
+                          className="rounded-2xl border border-[#e2e8f0] bg-white shadow-lg p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                          style={{
+                            y: cardParallax,
+                            transformPerspective: 1200,
+                          }}
                           whileHover={{
                             rotateX: 3,
                             rotateY: -3,
@@ -713,7 +740,9 @@ export default function Home() {
                           <h3 className="text-xl font-semibold uppercase tracking-wide mb-3 text-[#1A2A4E]">
                             {data.title}
                           </h3>
-                          <p className="text-[#3a4a5a] leading-relaxed">{data.text}</p>
+                          <p className="text-[#475569] leading-relaxed">
+                            {data.text}
+                          </p>
                         </motion.div>
                       );
                     })}
@@ -728,7 +757,7 @@ export default function Home() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={scrollReveal}
-              className="py-20 bg-gradient-to-b from-[#0d1b2a] to-[#1a2a4e] text-white"
+              className="py-24 bg-gradient-to-b from-[#0f172a] to-[#1a2a4e] text-white"
             >
               <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[1fr,1.2fr] gap-12 items-center">
                 <div className="space-y-6">
@@ -769,7 +798,7 @@ export default function Home() {
                     </a>
                   </div>
                 </div>
-                <div className="bg-white/5 rounded-[32px] p-6 backdrop-blur border border-white/10 shadow-2xl">
+                <div className="bg-white/5 rounded-2xl p-6 backdrop-blur border border-white/10 shadow-2xl">
                   <ServiceCarousel />
                 </div>
               </div>
@@ -781,7 +810,7 @@ export default function Home() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={scrollReveal}
-              className="py-20 bg-[#F7F7F7]"
+              className="py-24 bg-[#f1f5f9]"
             >
               <div className="max-w-7xl mx-auto px-6 space-y-12">
                 <div className="text-center space-y-4">
@@ -791,7 +820,7 @@ export default function Home() {
                   <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A2A4E]">
                     Offerte attive
                   </h2>
-                  <p className="text-lg text-[#3a4a5a] max-w-3xl mx-auto">
+                  <p className="text-lg text-[#475569] max-w-3xl mx-auto">
                     Promo dedicate su bagni, cucine e riqualificazioni per
                     partire subito con il tuo progetto.
                   </p>
@@ -807,13 +836,17 @@ export default function Home() {
                     return (
                       <motion.div
                         key={offer.id}
-                        whileHover={{ translateY: -8, scale: 1.015, rotate: 0.8 }}
+                        whileHover={{
+                          translateY: -8,
+                          scale: 1.015,
+                          rotate: 0.8,
+                        }}
                         transition={{
                           type: "spring",
                           stiffness: 210,
                           damping: 18,
                         }}
-                        className="group bg-white rounded-3xl shadow-lg overflow-hidden flex flex-col h-full"
+                        className="group bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full"
                       >
                         <div className="relative h-48 w-full overflow-hidden">
                           <Image
@@ -839,7 +872,7 @@ export default function Home() {
                           >
                             {offer.titolo}
                           </motion.h3>
-                          <p className="text-[#3a4a5a] text-sm flex-1">
+                          <p className="text-[#475569] text-sm flex-1">
                             {offer.descrizione}
                           </p>
                           <a
@@ -922,7 +955,11 @@ export default function Home() {
                   initial={{ opacity: 0, y: 18 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.4 }}
-                  transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.1,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
                   href="/preventivo"
                   className="px-8 py-3 rounded-xl bg-white/90 text-[#1a2a4e] font-semibold shadow-[0_20px_35px_rgba(15,23,42,0.25)] hover:bg-white transition-colors duration-250 text-lg"
                 >
@@ -939,7 +976,7 @@ export default function Home() {
                   <h3 className="text-2xl font-bold text-[#1a2a4e] mb-4">
                     Contattaci
                   </h3>
-                  <ul className="text-[#3a4a5a] text-lg space-y-2">
+                  <ul className="text-[#475569] text-lg space-y-2">
                     <li>
                       <strong>Indirizzo:</strong> Via Roma 123, 20100 Milano
                       (MI)
@@ -972,7 +1009,7 @@ export default function Home() {
                     <h4 className="text-lg font-semibold text-[#1a2a4e] mb-2">
                       Link utili
                     </h4>
-                    <ul className="text-[#3a4a5a] space-y-1">
+                    <ul className="text-[#475569] space-y-1">
                       <li>
                         <a href="/privacy" className="hover:underline">
                           Privacy Policy
