@@ -7,6 +7,7 @@ import {
   FaCalculator,
   FaEnvelope,
   FaUser,
+  FaStar,
 } from "react-icons/fa";
 
 export const navIcons = {
@@ -18,4 +19,5 @@ export const navIcons = {
   "/preventivo": FaCalculator,
   "/contatti": FaEnvelope,
   "/login": FaUser,
+  "home-2": FaStar,
 };

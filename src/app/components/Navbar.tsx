@@ -14,6 +14,7 @@ const navItems = [
   { href: "/preventivo", label: "Preventivo" },
   { href: "/contatti", label: "Contatti" },
   { href: "/login", label: "Login" },
+  { href: "/home-2", label: "Home2" },
 ];
 
 export default function Navbar() {

@@ -1,13 +1,13 @@
 "use client";
 import Image from "next/image";
-import {
-  FaFacebook,
-  FaInstagram,
-  FaEnvelope,
-  FaWhatsapp,
-} from "react-icons/fa";
+import SocialBar from "./components/SocialBar";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  useScroll,
+  useTransform,
+  motion,
+  AnimatePresence,
+} from "framer-motion";
 import ServiceCarousel from "./components/ServiceCarousel";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebaseConfig";
@@ -35,91 +35,98 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 700], [0, -60]);
+
   return (
     <div className="min-h-screen bg-[#f5f6fa] font-sans">
       {/* Social vertical bar */}
-      <div className="fixed top-1/2 right-4 z-50 flex flex-col gap-4 -translate-y-1/2">
-        <a
-          href="https://facebook.com"
-          target="_blank"
-          rel="noopener"
-          className="w-12 h-12 flex items-center justify-center bg-white rounded-xl shadow-lg text-blue-600 hover:text-blue-800 transition-colors duration-300"
-        >
-          <FaFacebook size={28} />
-        </a>
-        <a
-          href="https://instagram.com"
-          target="_blank"
-          rel="noopener"
-          className="w-12 h-12 flex items-center justify-center bg-white rounded-xl shadow-lg text-pink-500 hover:text-pink-700 transition-colors duration-300"
-        >
-          <FaInstagram size={28} />
-        </a>
-        <a
-          href="https://wa.me/393331234567"
-          target="_blank"
-          rel="noopener"
-          className="w-12 h-12 flex items-center justify-center bg-white rounded-xl shadow-lg text-green-500 hover:text-green-700 transition-colors duration-300"
-        >
-          <FaWhatsapp size={28} />
-        </a>
-        <a
-          href="mailto:info@impresaedile.it"
-          className="w-12 h-12 flex items-center justify-center bg-white rounded-xl shadow-lg text-zinc-600 hover:text-blue-700 transition-colors duration-300"
-        >
-          <FaEnvelope size={28} />
-        </a>
-      </div>
+      <SocialBar />
       <AnimatePresence>
         {showContent && (
           <>
             {/* HERO SECTION */}
             <motion.section
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 40 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6 }}
               className="w-full p-0 m-0"
             >
               <div className="relative w-full h-screen flex items-center justify-center overflow-hidden">
-                <Image
-                  src="/sfondo.jpg"
-                  alt="Sfondo hero"
-                  fill
-                  priority
-                  className="object-cover absolute inset-0 z-0"
-                />
-                {/* Overlay gradiente solo nella parte alta */}
-                <div
-                  className="absolute inset-0 z-0 pointer-events-none"
-                  style={{
-                    background:
-                      "linear-gradient(to bottom, rgba(26,42,78,0.65) 0%, rgba(26,42,78,0.15) 30%, rgba(255,255,255,0) 70%)",
-                  }}
-                />
+                {/* Background image with subtle parallax */}
                 <motion.div
-                  initial={{ opacity: 0, y: 40 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5, duration: 0.8 }}
-                  className="relative z-10 flex flex-col items-center justify-center gap-4 text-center"
+                  className="absolute inset-0 z-0"
+                  style={
+                    {
+                      // translateY leggera verrà collegata alla scroll più sotto
+                    }
+                  }
+                  // animated y from scroll via useScroll/useTransform (see below)
+                  id="hero-bg-parallax"
                 >
                   <Image
-                    src="/logo.png"
-                    alt="Logo"
-                    width={240}
-                    height={80}
+                    src="/sfondo.jpg"
+                    alt="Sfondo hero"
+                    fill
                     priority
-                    className="mb-4 drop-shadow-lg"
+                    className="object-cover object-center"
                   />
-                  <h1
+                </motion.div>
+
+                {/* Overlay gradient (sottile e professionale) */}
+                <div
+                  className="absolute inset-0 z-5 pointer-events-none"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(26,42,78,0.6) 0%, rgba(26,42,78,0.12) 30%, rgba(255,255,255,0) 70%)",
+                  }}
+                  aria-hidden
+                />
+
+                {/* Content stack: logo, title, subtitle, cta */}
+                <div className="relative z-10 flex flex-col items-center justify-center gap-4 text-center px-4">
+                  {/* Logo (la tua immagine rimane) */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.8,
+                      delay: 0.25,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                  >
+                    <Image
+                      src="/logo.png"
+                      alt="Logo"
+                      width={240}
+                      height={80}
+                      priority
+                      className="mb-4 drop-shadow-md"
+                    />
+                  </motion.div>
+
+                  {/* Title: reveal letter-block style (simple translate+opacity) */}
+                  <motion.h1
+                    initial={{ opacity: 0, y: 26 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.9,
+                      delay: 0.4,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
                     className="text-5xl sm:text-6xl font-extrabold text-[#1a2a4e] tracking-tight mb-2"
                     style={{
                       textShadow: "0 2px 12px #fff, 0 1px 2px #e0e0e0",
                     }}
                   >
                     Costruiamo il tuo futuro
-                  </h1>
-                  <span
+                  </motion.h1>
+
+                  {/* Subtitle / badge (slightly different reveal & emphasis) */}
+                  <motion.span
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.9, delay: 0.6 }}
                     className="text-xl sm:text-2xl text-white font-bold px-4 py-2 rounded-xl"
                     style={{
                       textShadow:
@@ -127,14 +134,34 @@ export default function Home() {
                     }}
                   >
                     RICHIEDI ORA UN PREVENTIVO GRATUITO E SENZA IMPEGNO
-                  </span>
-                  <a
-                    href="/preventivo"
-                    className="mt-6 px-8 py-3 rounded-xl bg-[#1a2a4e] text-white font-semibold shadow-lg hover:bg-[#274472] transition-all duration-300 text-lg"
+                  </motion.span>
+
+                  {/* CTAs: styled and animated */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 22 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.9, delay: 0.85 }}
+                    className="mt-6 flex flex-col sm:flex-row gap-4 items-center"
                   >
-                    Calcola ora
-                  </a>
-                </motion.div>
+                    <motion.a
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.98 }}
+                      href="/preventivo"
+                      className="px-10 py-3 rounded-xl bg-[#1a2a4e] text-white font-semibold shadow-lg hover:bg-[#274472] transition-all duration-250 text-lg"
+                    >
+                      Calcola ora
+                    </motion.a>
+
+                    <motion.a
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.98 }}
+                      href="/contatti"
+                      className="px-8 py-3 rounded-xl border border-white text-white font-semibold hover:bg-white/10 transition-all duration-250 text-lg"
+                    >
+                      Contattaci
+                    </motion.a>
+                  </motion.div>
+                </div>
               </div>
             </motion.section>
             {/* SEZIONE TRE SCHEDE STILE EDILGC.IT */}

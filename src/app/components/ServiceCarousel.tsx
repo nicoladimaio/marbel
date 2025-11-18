@@ -42,10 +42,12 @@ export default function ServiceCarousel() {
   const perPage = 4;
   const maxPage = Math.ceil(servizi.length / perPage) - 1;
   const visible = servizi.slice(page * perPage, page * perPage + perPage);
+  const placeholderCount = Math.max(0, perPage - visible.length);
+  const placeholders = Array.from({ length: placeholderCount });
 
   return (
     <div className="w-full flex flex-col items-center">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-4 w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-4 w-full min-h-[360px]">
         {visible.map((servizio) => (
           <Link
             key={servizio.key}
@@ -69,6 +71,13 @@ export default function ServiceCarousel() {
               Scopri di più
             </span>
           </Link>
+        ))}
+        {placeholders.map((_, index) => (
+          <div
+            key={`placeholder-${index}`}
+            aria-hidden="true"
+            className="hidden sm:block border border-transparent rounded-2xl min-h-[180px]"
+          />
         ))}
       </div>
       <div className="flex gap-4 mt-2">
