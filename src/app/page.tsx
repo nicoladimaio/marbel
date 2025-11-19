@@ -24,7 +24,9 @@ export default function Home() {
   const [showContent, setShowContent] = useState(false);
   const [tabIndex, setTab] = useState(0);
   const [valuesTab, setValuesTab] = useState<"metodo" | "valori">("metodo");
-  const [methodTab, setMethodTab] = useState<"analisi" | "realizzazione" | "consegna">("analisi");
+  const [methodTab, setMethodTab] = useState<
+    "analisi" | "realizzazione" | "consegna"
+  >("analisi");
   const [offers, setOffers] = useState<
     { id: string; titolo: string; descrizione: string; immagine?: string }[]
   >([]);
@@ -54,8 +56,7 @@ export default function Home() {
   }, []);
 
   const { scrollY } = useScroll();
-  const heroY = useTransform(scrollY, [0, 700], [0, -150]);
-  const heroImageParallax = useTransform(scrollY, [0, 400], [0, -40]);
+  const heroY = useTransform(scrollY, [0, 200], [0, -40]);
 
   const scrollReveal = {
     hidden: { opacity: 0, y: 40 },
@@ -241,7 +242,7 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               className="w-full p-0 m-0"
             >
-              <div className="relative w-full h-screen flex items-center justify-center overflow-hidden">
+              <div className="relative w-full h-screen min-h-screen flex items-center justify-center overflow-hidden">
                 {/* Background image with subtle parallax */}
                 <motion.div
                   className="absolute inset-0 z-0"
@@ -251,10 +252,7 @@ export default function Home() {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <motion.div
-                    className="relative w-full h-full"
-                    style={{ y: heroImageParallax }}
-                  >
+                  <motion.div className="relative w-full h-full overflow-hidden">
                     <Image
                       src="/sfondo.jpg"
                       alt="Sfondo hero"
@@ -270,7 +268,7 @@ export default function Home() {
                   className="absolute inset-0 z-5 pointer-events-none"
                   style={{
                     background:
-                      "linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.1) 80%)",
+                      "linear-gradient(180deg, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0.18) 45%, rgba(0,0,0,0.05) 80%)",
                     transition: "opacity 0.8s ease",
                   }}
                   aria-hidden
@@ -315,9 +313,10 @@ export default function Home() {
                       delay: 0.4,
                       ease: [0.22, 1, 0.36, 1],
                     }}
-                    className="text-5xl sm:text-6xl font-extrabold text-[#1a2a4e] tracking-tight mb-2"
+                    className="text-5xl sm:text-6xl font-extrabold text-white tracking-tight mb-2"
                     style={{
-                      textShadow: "0 4px 18px rgba(0,0,0,0.35)",
+                      textShadow:
+                        "0 2px 8px rgba(0, 0, 0, 0.7), 0 0px 2px #000000ff, 1px 1px 0 #000000ff, -1px -1px 0 #000000ff",
                     }}
                   >
                     Costruiamo il tuo futuro
@@ -382,61 +381,6 @@ export default function Home() {
               </div>
             </motion.section>
 
-            {/* EXPERTISE TABS */}
-
-            {/* SERVIZI */}
-            <motion.section
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={scrollReveal}
-              className="py-24 bg-gradient-to-b from-[#0f172a] to-[#1a2a4e] text-white"
-            >
-              <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[1fr,1.2fr] gap-12 items-center">
-                <div className="space-y-6">
-                  <p className="text-sm tracking-[0.4em] uppercase text-white/60">
-                    Servizi
-                  </p>
-                  <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">
-                    Dalla progettazione al collaudo, ogni fase ha una squadra
-                    dedicata.
-                  </h2>
-                  <p className="text-lg text-white/80">
-                    Scopri le lavorazioni disponibili e naviga tra le proposte
-                    pensate per cucine, bagni, pavimenti e impianti.
-                  </p>
-                  <ul className="space-y-3">
-                    {serviceHighlights.map((item) => (
-                      <li
-                        key={item}
-                        className="flex items-start gap-3 text-white/90"
-                      >
-                        <FaCheckCircle className="mt-1 text-[#8de8ff]" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="flex gap-4 pt-4">
-                    <a
-                      href="/servizi"
-                      className="px-8 py-3 rounded-2xl bg-white text-[#1a2a4e] font-semibold shadow-xl hover:bg-blue-50 transition-all duration-300"
-                    >
-                      Scopri tutti i servizi
-                    </a>
-                    <a
-                      href="/portfolio"
-                      className="px-8 py-3 rounded-2xl border border-white/50 text-white font-semibold hover:bg-white/10 transition-all duration-300"
-                    >
-                      Guarda i lavori
-                    </a>
-                  </div>
-                </div>
-                <div className="bg-white/5 rounded-2xl p-6 backdrop-blur border border-white/10 shadow-2xl">
-                  <ServiceCarousel />
-                </div>
-              </div>
-            </motion.section>
-
             {/* METODO / VALORI */}
             <section className="py-24 bg-white">
               <div className="max-w-6xl mx-auto px-6 space-y-12">
@@ -449,9 +393,13 @@ export default function Home() {
                       <button
                         key={tab.key}
                         type="button"
-                        onClick={() => setValuesTab(tab.key as "metodo" | "valori")}
+                        onClick={() =>
+                          setValuesTab(tab.key as "metodo" | "valori")
+                        }
                         className={`px-10 py-4 text-sm font-semibold tracking-[0.4em] ${
-                          valuesTab === tab.key ? "text-[#1a2a4e]" : "text-[#94a3b8]"
+                          valuesTab === tab.key
+                            ? "text-[#1a2a4e]"
+                            : "text-[#94a3b8]"
                         }`}
                       >
                         {tab.label}
@@ -531,7 +479,10 @@ export default function Home() {
                           key={card.title}
                           {...cardReveal(index * 0.12)}
                           className="rounded-2xl border border-[#e2e8f0] bg-white shadow-lg p-8 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                          style={{ y: cardParallax, transformPerspective: 1200 }}
+                          style={{
+                            y: cardParallax,
+                            transformPerspective: 1200,
+                          }}
                           whileHover={{
                             rotateX: 3,
                             rotateY: -3,
@@ -547,7 +498,9 @@ export default function Home() {
                           <h3 className="text-xl font-semibold uppercase tracking-wide mb-3 text-[#1A2A4E]">
                             {card.title}
                           </h3>
-                          <p className="text-[#475569] leading-relaxed">{card.text}</p>
+                          <p className="text-[#475569] leading-relaxed">
+                            {card.text}
+                          </p>
                         </motion.div>
                       );
                     })}
@@ -555,6 +508,59 @@ export default function Home() {
                 )}
               </div>
             </section>
+
+            {/* SERVIZI */}
+            <motion.section
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={scrollReveal}
+              className="py-24 bg-gradient-to-b from-[#0f172a] to-[#1a2a4e] text-white"
+            >
+              <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[1fr,1.2fr] gap-12 items-center">
+                <div className="space-y-6">
+                  <p className="text-sm tracking-[0.4em] uppercase text-white/60">
+                    Servizi
+                  </p>
+                  <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">
+                    Dalla progettazione al collaudo, ogni fase ha una squadra
+                    dedicata.
+                  </h2>
+                  <p className="text-lg text-white/80">
+                    Scopri le lavorazioni disponibili e naviga tra le proposte
+                    pensate per cucine, bagni, pavimenti e impianti.
+                  </p>
+                  <ul className="space-y-3">
+                    {serviceHighlights.map((item) => (
+                      <li
+                        key={item}
+                        className="flex items-start gap-3 text-white/90"
+                      >
+                        <FaCheckCircle className="mt-1 text-[#8de8ff]" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="flex gap-4 pt-4">
+                    <a
+                      href="/servizi"
+                      className="px-8 py-3 rounded-2xl bg-white text-[#1a2a4e] font-semibold shadow-xl hover:bg-blue-50 transition-all duration-300"
+                    >
+                      Scopri tutti i servizi
+                    </a>
+                    <a
+                      href="/portfolio"
+                      className="px-8 py-3 rounded-2xl border border-white/50 text-white font-semibold hover:bg-white/10 transition-all duration-300"
+                    >
+                      Guarda i lavori
+                    </a>
+                  </div>
+                </div>
+                <div className="bg-white/5 rounded-2xl p-6 backdrop-blur border border-white/10 shadow-2xl">
+                  <ServiceCarousel />
+                </div>
+              </div>
+            </motion.section>
 
             {/* OFFERTE */}
             <motion.section

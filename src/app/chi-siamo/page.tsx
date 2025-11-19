@@ -1,191 +1,261 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
+import SocialBar from "../components/SocialBar";
+import PreventivoFooter from "../components/PreventivoFooter";
+import { motion, useScroll, useTransform } from "framer-motion";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const introText =
+  "MarBel nasce con l’idea di rendere semplice ogni fase: ascolto, progettazione e consegna chiavi in mano coordinata da un unico interlocutore.";
+
+const timeline = [
+  {
+    title: "Fondazione",
+    text: "Piccolo studio artigiano che unisce tecnici e maestranze locali.",
+  },
+  {
+    title: "Crescita",
+    text: "Apertura di nuovi cantieri chiavi in mano e gestione digitale dei processi.",
+  },
+  {
+    title: "Oggi",
+    text: "Team multidisciplinare con approccio sartoriale e controllo qualità costante.",
+  },
+];
+
+const valori = [
+  {
+    title: "Precisione",
+    icon: "•",
+    text: "Ogni dettaglio è tracciato, misurato, approvato insieme.",
+  },
+  {
+    title: "Ascolto",
+    icon: "•",
+    text: "Un unico referente per dialoghi chiari e aggiornamenti costanti.",
+  },
+  {
+    title: "Durabilità",
+    icon: "•",
+    text: "Materiali selezionati e verifiche continue in cantiere.",
+  },
+];
 
 export default function ChiSiamo() {
-  const highlightStatements = [
-    "DIAMO FORMA ALLE TUE IDEE",
-    "COSTRUIAMO SICUREZZA E BELLEZZA",
-    "OGNI PROGETTO È UN VALORE",
-  ];
-
-  const values = [
-    {
-      title: "Professionalità",
-      text: "Precisione, tempi rispettati e team qualificato in ogni fase.",
-    },
-    {
-      title: "Qualità",
-      text: "Materiali selezionati, dettagli curati e finiture sartoriali.",
-    },
-    {
-      title: "Affidabilità",
-      text: "Comunicazione chiara, garanzie sui lavori e supporto costante.",
-    },
-  ];
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start end", "end start"],
+  });
+  const heroParallax = useTransform(scrollYProgress, [0, 1], [15, 0]);
 
   return (
-    <main className="min-h-screen bg-[#f5f6fa] text-[#1a2a4e]">
+    <main className="min-h-screen bg-white text-[#1a2a4e] font-sans">
+      <SocialBar />
+
       {/* HERO */}
-      <section className="relative min-h-[520px] md:min-h-[640px] overflow-hidden">
-        <Image
-          src="/gallery2.jpg"
-          alt="Hero MarBel"
-          fill
-          priority
-          className="object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/10" />
-        <div className="relative z-10 flex flex-col items-center justify-center h-full px-6 text-center gap-6">
-          <p className="text-sm uppercase tracking-[0.4em] text-white/80">
-            MarBel Studio
-          </p>
-          <h1 className="text-white text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-[0.35em] uppercase">
+      <section
+        ref={heroRef}
+        className="relative min-h-[40vh] flex items-center justify-center overflow-hidden"
+      >
+        <motion.div style={{ y: heroParallax }} className="absolute inset-0">
+          <Image
+            src="/chi-siamo-hero.jpg"
+            alt="Studio MarBel"
+            fill
+            className="object-cover"
+            priority
+          />
+        </motion.div>
+        <div className="absolute inset-0 bg-[rgba(0,0,0,0.25)]" />
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="relative z-10 text-center px-8 space-y-4 text-white"
+        >
+          <h1 className="text-4xl sm:text-5xl font-extrabold uppercase tracking-[0.4em]">
             CHI SIAMO
           </h1>
-          <p className="text-white/90 text-lg md:text-2xl font-medium max-w-3xl">
-            MarBel è ristrutturazioni che durano, design che emoziona. Dalla
-            visione alla realizzazione, con cura artigianale e attenzione al
-            dettaglio.
+          <p className="text-base sm:text-lg text-white/85">
+            Costruiamo spazi che parlano di voi, curando ogni fase con
+            precisione artigianale.
           </p>
-        </div>
+          <span className="inline-block h-px w-16 bg-white/70" />
+        </motion.div>
       </section>
 
-      {/* STORIA */}
-      <section className="py-24 px-6">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-[1.1fr,0.9fr] gap-10 items-center">
-          <div className="relative h-[420px] rounded-2xl overflow-hidden shadow-2xl">
+      {/* INTRO */}
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        className="py-24 px-6 bg-white"
+      >
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6">
+            <p className="text-sm uppercase tracking-[0.35em] text-[#94a3b8]">
+              Chi siamo
+            </p>
+            <p className="text-xl text-[#475569] leading-relaxed">
+              {introText}
+            </p>
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="relative h-72 rounded-2xl overflow-hidden shadow-[0_25px_70px_-50px_rgba(15,23,42,0.6)]"
+          >
             <Image
               src="/team.jpg"
               alt="Team MarBel"
               fill
-              priority
-              className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
+              className="object-cover transition-transform duration-500 hover:scale-[1.01]"
             />
-          </div>
-          <div className="bg-white rounded-2xl shadow-xl p-10 space-y-5">
-            <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
-              Metodo
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-wide">
-              LA NOSTRA STORIA
-            </h2>
-            <p className="text-lg text-[#475569] leading-relaxed">
-              Da una piccola idea a grandi progetti. Cresciamo insieme, ogni
-              giorno, con passione e professionalità. Un team di esperti, sempre
-              aggiornati sulle tecniche e materiali più innovativi.
-            </p>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* APPROCCIO */}
-      <section className="py-24 px-6">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-[0.9fr,1.1fr] gap-10 items-center">
-          <div className="bg-white rounded-2xl shadow-xl p-10 space-y-5 order-2 md:order-1">
-            <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
-              Visione
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-wide">
-              PROGETTARE CON INTELLETTO, COSTRUIRE CON CURA
-            </h2>
-            <p className="text-lg text-[#475569] leading-relaxed">
-              Lavoriamo come studio: progetto, materiali scelti e attenzione ai
-              dettagli. Ogni intervento è pensato per durare; ogni finitura
-              racconta una scelta precisa.
-            </p>
-            <p className="text-lg text-[#475569] leading-relaxed">
-              Crediamo in soluzioni sostenibili e in interventi chiari: zero
-              sorprese, tempi rispettati e risultati misurabili.
-            </p>
-            <ul className="grid gap-3 mt-6">
-              {["Consulenza progettuale", "Gestione pratica e cantiere", "Soluzioni chiavi in mano"].map(
-                (item) => (
-                  <li
-                    key={item}
-                    className="flex items-center gap-3 text-sm uppercase tracking-[0.3em] font-semibold text-[#1a2a4e]"
-                  >
-                    <span className="h-1.5 w-10 bg-[#1a2a4e] block rounded-full" />
-                    {item}
-                  </li>
-                )
-              )}
-            </ul>
-          </div>
-          <div className="relative h-[420px] rounded-2xl overflow-hidden shadow-2xl order-1 md:order-2">
+      {/* LA NOSTRA STORIA */}
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        className="py-24 px-6 bg-[#f5f6fa]"
+      >
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="relative h-80 rounded-3xl overflow-hidden shadow-2xl"
+          >
             <Image
               src="/gallery3.jpg"
               alt="Progetto MarBel"
               fill
-              priority
-              className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
+              className="object-cover"
             />
+          </motion.div>
+          <div className="space-y-8">
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              className="space-y-4"
+            >
+              <p className="text-sm uppercase tracking-[0.35em] text-[#94a3b8]">
+                La nostra storia
+              </p>
+              <h2 className="text-3xl font-semibold uppercase tracking-[0.25em]">
+                Progettare con intelletto, costruire con cura
+              </h2>
+              <p className="text-lg text-[#475569] leading-relaxed">
+                Dal laboratorio artigiano ai progetti su larga scala, MarBel
+                evolve mantenendo intatta l’attenzione per il dettaglio e la
+                trasparenza con il cliente.
+              </p>
+            </motion.div>
+            <motion.div
+              initial={{ height: 0 }}
+              whileInView={{ height: "100%" }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              className="relative border-l border-[#1a2a4e]/30 pl-8 space-y-8"
+            >
+              {timeline.map((step) => (
+                <div key={step.title} className="space-y-1">
+                  <p className="text-sm uppercase tracking-[0.35em] text-[#94a3b8]">
+                    {step.title}
+                  </p>
+                  <p className="text-base text-[#475569]">{step.text}</p>
+                </div>
+              ))}
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* HIGHLIGHT STATEMENTS */}
-      <section className="py-24 bg-[#f7f7f7] px-6">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-          {highlightStatements.map((statement) => (
-            <div
-              key={statement}
-              className="bg-white rounded-2xl shadow-lg p-8 text-center uppercase text-xl font-extrabold tracking-[0.3em] hover:-translate-y-1 transition-transform"
-            >
-              {statement}
-            </div>
-          ))}
+      {/* VALORI */}
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        className="py-24 px-6 bg-white"
+      >
+        <div className="max-w-5xl mx-auto text-center space-y-12">
+          <div className="space-y-3">
+            <p className="text-sm uppercase tracking-[0.35em] text-[#94a3b8]">
+              I nostri valori
+            </p>
+            <h3 className="text-3xl font-semibold uppercase tracking-[0.25em]">
+              La cura in ogni scelta
+            </h3>
+          </div>
+          <div className="grid gap-8 md:grid-cols-3 text-left">
+            {valori.map((valore) => (
+              <motion.div
+                key={valore.title}
+                whileHover={{ rotateX: 2, rotateY: -2, scale: 1.01 }}
+                className="rounded-2xl border border-[#e5e7eb] p-8 shadow-md transition-transform duration-300"
+              >
+                <div className="text-2xl text-[#1a2a4e] mb-3">
+                  {valore.icon}
+                </div>
+                <h4 className="text-lg font-semibold uppercase tracking-[0.3em] mb-2">
+                  {valore.title}
+                </h4>
+                <p className="text-[#475569] leading-relaxed text-sm">
+                  {valore.text}
+                </p>
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* IMMERSIVE SECTION */}
-      <section className="relative h-[360px] flex items-center justify-center my-10 mx-6 rounded-2xl overflow-hidden shadow-2xl">
-        <Image
-          src="/gallery3.jpg"
-          alt="Lavori MarBel"
-          fill
-          priority
-          className="object-cover w-full h-full"
-        />
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="relative z-10 max-w-4xl text-center px-6">
-          <p className="text-white text-2xl md:text-3xl font-medium leading-relaxed">
-            Ristrutturazioni, restauri, nuove costruzioni: ogni progetto è
-            seguito con cura e attenzione ai dettagli.
+      {/* CTA */}
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        className="py-24 px-6 bg-[#f5f6fa] text-center"
+      >
+        <div className="max-w-3xl mx-auto space-y-5">
+          <p className="text-sm uppercase tracking-[0.35em] text-[#94a3b8]">
+            Vuoi conoscerci meglio?
           </p>
+          <h4 className="text-2xl font-semibold uppercase tracking-[0.3em]">
+            Scopri i nostri servizi
+          </h4>
+          <a
+            href="/servizi"
+            className="inline-flex items-center justify-center px-8 py-3 rounded-xl bg-[#1a2a4e] text-white font-semibold shadow-lg shadow-[#1a2a4e]/30 hover:bg-[#223867] transition-colors duration-300"
+          >
+            Vai ai servizi
+          </a>
         </div>
-      </section>
+      </motion.section>
 
-      {/* IMPACT PHRASE */}
-      <section className="py-24 px-6">
-        <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl p-10 text-center space-y-6">
-          <h3 className="text-3xl md:text-4xl font-extrabold uppercase tracking-[0.3em]">
-            OGNI PROGETTO È UN ATTO DI CURA
-          </h3>
-          <p className="text-lg text-[#475569] leading-relaxed">
-            Dal primo sopralluogo alla consegna finale, accompagniamo il cliente
-            con chiarezza e progettualità: il risultato è estetica,
-            funzionalità e durabilità.
-          </p>
-        </div>
-      </section>
-
-      {/* VALUES GRID */}
-      <section className="py-24 px-6 bg-[#f7f7f7]">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-          {values.map((value) => (
-            <div
-              key={value.title}
-              className="bg-white rounded-2xl shadow-lg p-8 border border-[#e5e7eb] hover:-translate-y-1 transition-transform"
-            >
-              <h4 className="text-xl font-extrabold uppercase tracking-[0.2em] mb-3">
-                {value.title}
-              </h4>
-              <p className="text-[#475569] leading-relaxed">{value.text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <PreventivoFooter />
     </main>
   );
 }
