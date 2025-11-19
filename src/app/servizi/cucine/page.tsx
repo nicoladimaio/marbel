@@ -6,6 +6,7 @@ import PreventivoFooter from "../../components/PreventivoFooter";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { cubicBezier } from "framer-motion";
 import { FaTools, FaHardHat, FaRedo } from "react-icons/fa";
 
 type GalleryItem = {
@@ -106,7 +107,7 @@ export default function CucineSuMisura() {
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.9, ease: cubicBezier(0.22, 1, 0.36, 1) }}
           className="relative z-10 text-center text-white max-w-4xl space-y-4"
         >
           <p className="text-sm uppercase tracking-[0.45em] text-white/75">
@@ -129,7 +130,7 @@ export default function CucineSuMisura() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
             className="w-full lg:w-1/2 space-y-4"
           >
             <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
@@ -149,7 +150,7 @@ export default function CucineSuMisura() {
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
             className="relative w-full lg:w-1/2 h-72 sm:h-96 rounded-3xl overflow-hidden shadow-2xl"
           >
             <Image
@@ -170,7 +171,7 @@ export default function CucineSuMisura() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
             className="text-center space-y-3"
           >
             <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
@@ -187,7 +188,10 @@ export default function CucineSuMisura() {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                transition={{
+                  duration: 0.8,
+                  ease: cubicBezier(0.22, 1, 0.36, 1),
+                }}
                 whileHover={{ y: -6, scale: 1.02 }}
                 className="rounded-2xl border border-[#e5e7eb] bg-white p-8 shadow-lg shadow-[#0b152e]/10 space-y-4"
               >
@@ -211,7 +215,7 @@ export default function CucineSuMisura() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
             className="text-center space-y-3"
           >
             <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
@@ -228,7 +232,10 @@ export default function CucineSuMisura() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                transition={{
+                  duration: 0.7,
+                  ease: cubicBezier(0.22, 1, 0.36, 1),
+                }}
                 className="relative h-64 rounded-2xl overflow-hidden shadow-xl group"
               >
                 <Image
@@ -259,7 +266,7 @@ export default function CucineSuMisura() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
             className="text-center space-y-2"
           >
             <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
@@ -287,7 +294,10 @@ export default function CucineSuMisura() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                transition={{
+                  duration: 0.8,
+                  ease: cubicBezier(0.22, 1, 0.36, 1),
+                }}
                 className="space-y-4"
               >
                 <div className="relative h-64 rounded-2xl overflow-hidden shadow-xl">
@@ -323,7 +333,7 @@ export default function CucineSuMisura() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
           className="relative z-10 max-w-4xl mx-auto text-center text-white space-y-5"
         >
           <p className="text-sm uppercase tracking-[0.4em] text-white/70">

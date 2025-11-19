@@ -6,6 +6,7 @@ import Image from "next/image";
 import SocialBar from "../components/SocialBar";
 import PreventivoFooter from "../components/PreventivoFooter";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { cubicBezier } from "framer-motion";
 
 type PortfolioItem = {
   id: string;
@@ -110,9 +111,7 @@ export default function Portfolio() {
   // Estrai categorie uniche dai lavori
   const categorie = Array.from(
     new Set(
-      items
-        .map((i) => (i.categoria || "").trim())
-        .filter((c) => c.length > 0)
+      items.map((i) => (i.categoria || "").trim()).filter((c) => c.length > 0)
     )
   );
   const categorieUI = [
@@ -181,7 +180,7 @@ export default function Portfolio() {
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
           className="relative z-10 max-w-4xl text-center px-6 space-y-3 text-white"
         >
           <h1 className="text-4xl sm:text-5xl font-extrabold uppercase tracking-[0.35em]">
@@ -200,7 +199,7 @@ export default function Portfolio() {
           visible: {
             opacity: 1,
             y: 0,
-            transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+            transition: { duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) },
           },
         }}
         initial="hidden"
@@ -223,7 +222,9 @@ export default function Portfolio() {
               >
                 <span className="inline-flex items-center gap-2 transition-transform duration-300 hover:scale-[1.02]">
                   {cat}
-                  {isActive && <span className="block h-[2px] w-full bg-white" />}
+                  {isActive && (
+                    <span className="block h-[2px] w-full bg-white" />
+                  )}
                 </span>
               </button>
             );
@@ -238,7 +239,7 @@ export default function Portfolio() {
           visible: {
             opacity: 1,
             y: 0,
-            transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] },
+            transition: { duration: 0.9, ease: cubicBezier(0.22, 1, 0.36, 1) },
           },
         }}
         initial="hidden"
@@ -258,7 +259,11 @@ export default function Portfolio() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.7, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                transition={{
+                  duration: 0.7,
+                  delay: index * 0.08,
+                  ease: cubicBezier(0.22, 1, 0.36, 1),
+                }}
                 onClick={() => setSelectedProject(project)}
                 className="rounded-2xl shadow-lg overflow-hidden bg-white border border-[#e5e7eb] transition-transform duration-500 hover:-translate-y-2 hover:rotate-[1deg] cursor-pointer"
               >
@@ -328,7 +333,9 @@ export default function Portfolio() {
 
           <div
             className={`transition-all duration-700 ${
-              gridVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              gridVisible
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-8"
             }`}
           >
             <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 [column-fill:_balance]">
@@ -439,7 +446,7 @@ export default function Portfolio() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.35, ease: cubicBezier(0.22, 1, 0.36, 1) }}
             className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full overflow-hidden"
           >
             <button
@@ -465,7 +472,9 @@ export default function Portfolio() {
               <h3 className="text-2xl font-extrabold uppercase tracking-[0.3em] text-[#1a2a4e]">
                 {selectedProject.titolo}
               </h3>
-              <p>{selectedProject.descrizione || "Progetto sartoriale MarBel."}</p>
+              <p>
+                {selectedProject.descrizione || "Progetto sartoriale MarBel."}
+              </p>
               <div className="text-sm space-y-1">
                 <p className="font-semibold text-[#1a2a4e]">
                   Categoria: {selectedProject.categoria || "Progetto su misura"}
@@ -481,7 +490,11 @@ export default function Portfolio() {
       <motion.section
         variants={{
           hidden: { opacity: 0, y: 20 },
-          visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } },
+          visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.9, ease: cubicBezier(0.22, 1, 0.36, 1) },
+          },
         }}
         initial="hidden"
         whileInView="visible"
@@ -490,14 +503,24 @@ export default function Portfolio() {
       >
         <div className="max-w-6xl mx-auto grid gap-8 md:grid-cols-2">
           {[
-            { label: "Prima", text: "Ambiente datato, poca luce e spazi frammentati.", image: "/gallery1.jpg" },
-            { label: "Dopo", text: "Volumi armonizzati, luce naturale e materiali sartoriali.", image: "/gallery2.jpg" },
+            {
+              label: "Prima",
+              text: "Ambiente datato, poca luce e spazi frammentati.",
+              image: "/gallery1.jpg",
+            },
+            {
+              label: "Dopo",
+              text: "Volumi armonizzati, luce naturale e materiali sartoriali.",
+              image: "/gallery2.jpg",
+            },
           ].map(({ label, text, image }) => (
             <motion.div key={label} className="space-y-4">
               <div className="relative h-72 rounded-2xl overflow-hidden shadow-lg">
                 <Image src={image} alt={label} fill className="object-cover" />
               </div>
-              <h4 className="text-lg font-semibold uppercase tracking-[0.3em]">{label}</h4>
+              <h4 className="text-lg font-semibold uppercase tracking-[0.3em]">
+                {label}
+              </h4>
               <p className="text-[#475569]">{text}</p>
             </motion.div>
           ))}
@@ -507,7 +530,11 @@ export default function Portfolio() {
       <motion.section
         variants={{
           hidden: { opacity: 0, y: 20 },
-          visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } },
+          visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.9, ease: cubicBezier(0.22, 1, 0.36, 1) },
+          },
         }}
         initial="hidden"
         whileInView="visible"
@@ -515,12 +542,15 @@ export default function Portfolio() {
         className="py-24 px-6 bg-white text-center"
       >
         <div className="max-w-4xl mx-auto space-y-4">
-          <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">Vuoi un risultato come questi?</p>
+          <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
+            Vuoi un risultato come questi?
+          </p>
           <h4 className="text-3xl font-semibold uppercase tracking-[0.3em] text-[#1a2a4e]">
             Scopri cosa possiamo fare per te
           </h4>
           <p className="text-lg text-[#475569]">
-            Pianifichiamo insieme il tuo intervento con materiali coordinati e team dedicati.
+            Pianifichiamo insieme il tuo intervento con materiali coordinati e
+            team dedicati.
           </p>
           <a
             href="/preventivo"

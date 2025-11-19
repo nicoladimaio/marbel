@@ -4,6 +4,7 @@ import Image from "next/image";
 import SocialBar from "../components/SocialBar";
 import PreventivoFooter from "../components/PreventivoFooter";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { cubicBezier } from "framer-motion";
 import { FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 
 const contactInfo = [
@@ -103,7 +104,7 @@ export default function Contatti() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.9, ease: cubicBezier(0.22, 1, 0.36, 1) }}
           className="relative z-10 text-center text-white space-y-4 max-w-3xl"
         >
           <p className="text-sm uppercase tracking-[0.4em] text-white/80">
@@ -127,7 +128,10 @@ export default function Contatti() {
               initial={{ opacity: 0, y: 25 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              transition={{
+                duration: 0.7,
+                ease: cubicBezier(0.22, 1, 0.36, 1),
+              }}
               whileHover={{ scale: 1.02 }}
               className="rounded-2xl border border-[#e5e7eb] bg-[#f5f6fa] p-6 shadow-lg shadow-[#0b152e]/10 space-y-3"
             >
@@ -151,7 +155,7 @@ export default function Contatti() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
             onSubmit={handleSubmit}
             className="bg-white rounded-2xl shadow-xl p-10 space-y-5"
           >
@@ -218,7 +222,7 @@ export default function Contatti() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
             className="w-full h-full min-h-[320px] rounded-2xl overflow-hidden shadow-xl"
           >
             <iframe
@@ -247,7 +251,7 @@ export default function Contatti() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
           className="relative z-10 max-w-4xl mx-auto text-center text-white space-y-4"
         >
           <p className="text-sm uppercase tracking-[0.4em] text-white/70">

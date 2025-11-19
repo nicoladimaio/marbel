@@ -5,6 +5,7 @@ import { useRef } from "react";
 import SocialBar from "../components/SocialBar";
 import PreventivoFooter from "../components/PreventivoFooter";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { cubicBezier } from "framer-motion";
 import {
   FiLayers,
   FiDroplet,
@@ -119,7 +120,7 @@ export default function Servizi() {
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.9, ease: cubicBezier(0.22, 1, 0.36, 1) }}
           className="relative z-10 text-center text-white max-w-4xl space-y-4"
         >
           <p className="text-sm uppercase tracking-[0.45em] text-white/80">
@@ -142,7 +143,7 @@ export default function Servizi() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
             className="text-center space-y-3"
           >
             <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
@@ -164,7 +165,10 @@ export default function Servizi() {
                 initial={{ opacity: 0, y: 35 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                transition={{
+                  duration: 0.8,
+                  ease: cubicBezier(0.22, 1, 0.36, 1),
+                }}
                 whileHover={{ y: -8, rotate: 0.5 }}
                 className="rounded-2xl border border-[#e5e7eb] bg-[#f5f6fa] p-8 shadow-lg shadow-[#0b152e]/10"
               >
@@ -196,7 +200,7 @@ export default function Servizi() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
             className="text-center space-y-3"
           >
             <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
@@ -218,7 +222,10 @@ export default function Servizi() {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                transition={{
+                  duration: 0.8,
+                  ease: cubicBezier(0.22, 1, 0.36, 1),
+                }}
                 whileHover={{ y: -6 }}
                 className="rounded-2xl bg-white/90 border border-[#e5e7eb] p-8 shadow-xl shadow-[#0b152e]/10 flex gap-6"
               >
@@ -250,7 +257,7 @@ export default function Servizi() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
           className="relative z-10 max-w-4xl mx-auto text-center text-white space-y-5"
         >
           <p className="text-sm uppercase tracking-[0.4em] text-white/70">
