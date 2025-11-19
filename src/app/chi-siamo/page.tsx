@@ -4,13 +4,14 @@ import Image from "next/image";
 import SocialBar from "../components/SocialBar";
 import PreventivoFooter from "../components/PreventivoFooter";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { cubicBezier } from "framer-motion";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.9, ease: cubicBezier(0.22, 1, 0.36, 1) },
   },
 };
 
