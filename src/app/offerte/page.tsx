@@ -4,7 +4,6 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import Image from "next/image";
 import SocialBar from "../components/SocialBar";
-import PreventivoFooter from "../components/PreventivoFooter";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { cubicBezier } from "framer-motion";
 
@@ -135,15 +134,15 @@ export default function Offerte() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
         </div>
-        <div className="flex-1 p-8 space-y-4">
+        <div className="flex-1 p-10 space-y-5">
           <div className="flex items-center gap-3 text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
             <span className="h-2 w-2 rounded-full bg-[#1a2a4e]" />
             Pacchetto {String(index + 1).padStart(2, "0")}
           </div>
-          <h3 className="text-2xl font-extrabold uppercase tracking-wide text-[#1a2a4e]">
+          <h3 className="text-3xl font-extrabold uppercase tracking-wide text-[#1a2a4e]">
             {offerta.titolo}
           </h3>
-          <p className="text-lg text-[#475569] leading-relaxed">
+          <p className="text-lg text-[#475569] leading-[1.65]">
             {offerta.descrizione}
           </p>
           <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1a2a4e] text-white font-semibold shadow-lg shadow-[#1a2a4e]/40 hover:bg-[#223867] transition-colors duration-300">
@@ -165,7 +164,7 @@ export default function Offerte() {
       >
         <motion.div style={{ y: heroParallax }} className="absolute inset-0">
           <Image
-            src="/gallery1.jpg"
+            src="/offerte-hero.jpg"
             alt="Offerte MarBel"
             fill
             priority
@@ -191,7 +190,7 @@ export default function Offerte() {
       </section>
 
       {/* CARDS */}
-      <section className="py-24 px-6">
+      <section className="py-28 px-6">
         <div className="max-w-6xl mx-auto space-y-10">
           <motion.div
             variants={fadeUp}
@@ -227,22 +226,23 @@ export default function Offerte() {
       </section>
 
       {/* BLOCCO PROMO */}
-      <section className="py-24 px-6 bg-[#f5f6fa]">
+      <section className="py-28 px-6 bg-[#f5f6fa]">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="space-y-4"
-          >
-            <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
-              Promo dedicata
-            </p>
-            <h3 className="text-3xl font-extrabold uppercase tracking-wide">
-              Cucine e bagni chiavi in mano, tempi certi.
-            </h3>
-            <p className="text-lg text-[#475569] leading-relaxed">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -4 }}
+              className="bg-white rounded-3xl p-10 space-y-5 shadow-[0_8px_22px_rgba(0,0,0,0.12)] transition-all duration-300"
+            >
+              <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
+                Promo dedicata
+              </p>
+              <h3 className="text-4xl font-extrabold uppercase tracking-wide">
+                Cucine e bagni chiavi in mano, tempi certi.
+              </h3>
+              <p className="text-lg text-[#475569] leading-[1.6]">
               Coordinamento fornitori, mockup 3D, direzione lavori certificata:
               tutto dentro un’unica offerta trasparente.
             </p>
@@ -271,7 +271,7 @@ export default function Offerte() {
       </section>
 
       {/* FAQ */}
-      <section className="py-24 px-6 bg-white">
+      <section className="py-28 px-6 bg-white">
         <div className="max-w-5xl mx-auto space-y-8">
           <motion.div
             variants={fadeUp}
@@ -330,7 +330,13 @@ export default function Offerte() {
       </section>
 
       {/* CTA FINALE */}
-      <section className="relative py-24 px-6 overflow-hidden">
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        className="relative py-20 px-6 overflow-hidden"
+      >
         <motion.div style={{ y: heroParallax }} className="absolute inset-0">
           <Image
             src="/gallery1.jpg"
@@ -341,10 +347,10 @@ export default function Offerte() {
         </motion.div>
         <div className="absolute inset-0 bg-[#1a2a4e]/80" />
         <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="relative z-10 max-w-3xl mx-auto text-center text-white space-y-4"
         >
           <p className="text-sm uppercase tracking-[0.4em] text-white/70">
@@ -354,15 +360,14 @@ export default function Offerte() {
             Blocca ora un sopralluogo dedicato.
           </h4>
           <a
-            href="/preventivo"
+            href="/contatti"
             className="inline-flex items-center justify-center px-8 py-3 rounded-xl bg-white text-[#1a2a4e] font-semibold shadow-lg hover:bg-white/90 transition-colors duration-300"
           >
-            Prenota una call
+            Prenota una consulenza
           </a>
         </motion.div>
-      </section>
+      </motion.section>
 
-      <PreventivoFooter />
     </main>
   );
 }

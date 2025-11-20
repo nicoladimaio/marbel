@@ -70,11 +70,11 @@ export default function ChiSiamo() {
       >
         <motion.div style={{ y: heroParallax }} className="absolute inset-0">
           <Image
-            src="/chi-siamo-hero.jpg"
+            src="/chi-siamo-hero-2.jpg"
             alt="Studio MarBel"
             fill
-            className="object-cover"
             priority
+            className="object-cover object-[30%_10%]"
           />
         </motion.div>
         <div className="absolute inset-0 bg-[rgba(0,0,0,0.25)]" />
@@ -83,12 +83,12 @@ export default function ChiSiamo() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
-          className="relative z-10 text-center px-8 space-y-4 text-white"
+          className="relative z-10 text-center px-6 space-y-3 text-white"
         >
-          <h1 className="text-4xl sm:text-5xl font-extrabold uppercase tracking-[0.4em]">
+          <h1 className="text-4xl sm:text-5xl font-extrabold uppercase tracking-[0.35em]">
             CHI SIAMO
           </h1>
-          <p className="text-base sm:text-lg text-white/85">
+          <p className="text-lg sm:text-xl text-white/85">
             Costruiamo spazi che parlano di voi, curando ogni fase con
             precisione artigianale.
           </p>
@@ -144,13 +144,13 @@ export default function ChiSiamo() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="relative h-80 rounded-3xl overflow-hidden shadow-2xl"
+            className="relative w-full h-[550px] rounded-3xl overflow-hidden"
           >
             <Image
-              src="/gallery3.jpg"
+              src="/la-nostra-storia-chi-siamo.jpg"
               alt="Progetto MarBel"
               fill
-              className="object-cover"
+              className="object-cover object-center"
             />
           </motion.div>
           <div className="space-y-8">

@@ -115,7 +115,7 @@ export default function Home() {
       title: "Analisi",
       description:
         "Direzione lavori certificata, squadre coordinate e aggiornamenti su dashboard condivisa per partire con una visione chiara.",
-      image: "/gallery1.jpg",
+      image: "/analisi-home.jpg",
       direction: "left" as const,
     },
     {
@@ -123,7 +123,7 @@ export default function Home() {
       title: "Realizzazione",
       description:
         "Materiali certificati, partner selezionati e mockup prima di andare in produzione assicurano cantiere controllato.",
-      image: "/gallery2.jpg",
+      image: "/realizzazione-home.jpg",
       direction: "right" as const,
     },
     {
@@ -131,7 +131,7 @@ export default function Home() {
       title: "Consegna",
       description:
         "Preventivi chiari, milestone approvate dal cliente e garanzia scritta sui lavori eseguiti per una chiusura trasparente.",
-      image: "/gallery3.jpg",
+      image: "/consegna-home.jpg",
       direction: "left" as const,
     },
   ];
@@ -197,9 +197,9 @@ export default function Home() {
   ];
 
   const serviceHighlights = [
-    "Squadre specializzate coordinate da un unico project manager",
-    "Report fotografici, timeline e costi disponibili su area riservata",
-    "Gestione pratiche fiscali, bonus e soluzioni finanziarie dedicate",
+    "Squadre specializzate e interventi eseguiti con precisione e rispetto delle tempistiche.",
+    "Materiali certificati, tecniche moderne e cura dei dettagli in ogni fase ",
+    "Trasparenza, comunicazione continua e lavori garantiti dalla progettazione alla consegna.",
   ];
 
   const fallbackOffers = [

@@ -104,28 +104,25 @@ export default function Servizi() {
       {/* HERO */}
       <section
         ref={heroRef}
-        className="relative min-h-[50vh] flex items-center justify-center overflow-hidden px-6 pt-24"
+        className="relative min-h-[40vh] flex items-center justify-center overflow-hidden px-6 pt-24"
       >
         <motion.div style={{ y: heroParallax }} className="absolute inset-0">
           <Image
-            src="/gallery2.jpg"
+            src="/hero-servizi.jpg"
             alt="Hero servizi"
             fill
             priority
             className="object-cover scale-105"
           />
         </motion.div>
-        <div className="absolute inset-0 bg-[#0c1326]/60 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-black/25" />
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.9, ease: cubicBezier(0.22, 1, 0.36, 1) }}
-          className="relative z-10 text-center text-white max-w-4xl space-y-4"
+          className="relative z-10 max-w-4xl text-center px-6 space-y-3 text-white"
         >
-          <p className="text-sm uppercase tracking-[0.45em] text-white/80">
-            Soluzioni integrate
-          </p>
           <h1 className="text-4xl sm:text-5xl font-extrabold uppercase tracking-[0.35em]">
             I nostri servizi
           </h1>
@@ -244,42 +241,12 @@ export default function Servizi() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="relative py-24 px-6">
-        <Image
-          src="/gallery1.jpg"
-          alt="CTA servizi"
-          fill
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-[#1a2a4e]/85" />
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
-          className="relative z-10 max-w-4xl mx-auto text-center text-white space-y-5"
-        >
-          <p className="text-sm uppercase tracking-[0.4em] text-white/70">
-            Hai un progetto in mente?
-          </p>
-          <h3 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-[0.3em]">
-            Richiedi un preventivo
-          </h3>
-          <p className="text-white/80 text-lg">
-            Ti affianchiamo nella definizione del budget, nella scelta dei
-            materiali e nella pianificazione delle fasi operative.
-          </p>
-          <Link
-            href="/preventivo"
-            className="inline-flex items-center justify-center px-8 py-3 rounded-2xl bg-white text-[#1a2a4e] font-semibold shadow-xl shadow-black/30 hover:bg-[#f5f6fa] transition-colors"
-          >
-            Richiedi un preventivo
-          </Link>
-        </motion.div>
-      </section>
-
-      <PreventivoFooter />
+      <PreventivoFooter
+        eyebrow="Hai un progetto in mente?"
+        title="Richiedi un preventivo"
+        subtitle="Ti affianchiamo nella definizione del budget, nella scelta dei materiali e nella pianificazione delle fasi operative."
+        buttonText="Richiedi un preventivo"
+      />
     </main>
   );
 }
