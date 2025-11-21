@@ -13,6 +13,7 @@ import ServiceCarousel from "./components/ServiceCarousel";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { FaCheckCircle, FaHardHat, FaRedo, FaTools } from "react-icons/fa";
+import PreventivoFooter from "./components/PreventivoFooter";
 
 export default function Home() {
   const cardReveal = (delay = 0) => ({
@@ -691,41 +692,12 @@ export default function Home() {
             </motion.section>
 
             {/* CTA FINALE con effetto parallax */}
-            <section
-              className="w-full flex flex-col items-center justify-center py-16 px-4 bg-[url('/sfondo.jpg')] bg-cover bg-center bg-fixed relative"
-              style={{ minHeight: "300px" }}
-            >
-              <div className="max-w-2xl w-full mx-auto text-center flex flex-col items-center justify-center relative z-10">
-                <motion.h2
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.4 }}
-                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-3xl font-bold text-white mb-4 drop-shadow-lg"
-                >
-                  Vuoi un preventivo gratuito?
-                </motion.h2>
-                <p className="text-white text-lg mb-8 drop-shadow-lg">
-                  Contattaci ora e ricevi una consulenza personalizzata per il
-                  tuo progetto.
-                </p>
-                <motion.a
-                  initial={{ opacity: 0, y: 18 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.4 }}
-                  transition={{
-                    duration: 0.6,
-                    delay: 0.1,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  href="/preventivo"
-                  className="px-8 py-3 rounded-xl bg-white/90 text-[#1a2a4e] font-semibold shadow-[0_20px_35px_rgba(15,23,42,0.25)] hover:bg-white transition-colors duration-250 text-lg"
-                >
-                  Richiedi preventivo
-                </motion.a>
-              </div>
-              <div className="absolute inset-0 bg-black/35 z-0" />
-            </section>
+            <PreventivoFooter
+              eyebrow="Pronto a iniziare?"
+              title="Trasforma la tua casa con MarBel"
+              subtitle="Ti guidiamo passo dopo passo: analisi, progetto, realizzazione e consegna chiavi in mano."
+              buttonText="Richiedi preventivo"
+            />
 
             {/* CONTATTI E INFO */}
             <section className="w-full flex flex-col items-center py-12 px-4 bg-white border-t border-gray-200">

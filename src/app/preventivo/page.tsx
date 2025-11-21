@@ -4,6 +4,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import SocialBar from "../components/SocialBar";
 import PreventivoFooter from "../components/PreventivoFooter";
+import Hero from "../components/Hero";
 
 export default function Preventivo() {
   const [voci, setVoci] = useState<
@@ -26,14 +27,15 @@ export default function Preventivo() {
   return (
     <main className="min-h-screen bg-[#f5f6fa] flex flex-col items-center font-sans">
       <SocialBar />
-      <h1 className="text-4xl sm:text-5xl font-extrabold text-[#1a2a4e] mb-8 mt-24">
-        Preventivo
-      </h1>
+      <Hero
+        image="/hero-preventivo-new.jpg"
+        title="Preventivo"
+        subtitle="Consulta le voci di preventivo oppure richiedi una stima personalizzata"
+        height="min-h-[40vh]"
+        darkness={35}
+        centerImage={false}
+      />
       <section className="w-full max-w-3xl mb-8">
-        <p className="text-lg text-[#3a4a5a] mb-4 text-center">
-          Consulta le voci di preventivo oppure richiedi una stima
-          personalizzata.
-        </p>
         <table className="w-full border-collapse rounded-2xl shadow overflow-hidden mb-8">
           <thead>
             <tr>
@@ -90,7 +92,12 @@ export default function Preventivo() {
           </button>
         </form>
       </section>
-      <PreventivoFooter />
+      <PreventivoFooter
+        eyebrow="Hai domande sul preventivo?"
+        title="Parla con un nostro tecnico"
+        subtitle="Possiamo aiutarti a capire costi, fasi e tempistiche del tuo progetto."
+        buttonText="Contattaci subito"
+      />
     </main>
   );
 }

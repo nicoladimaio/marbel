@@ -16,6 +16,7 @@ import {
   FiShield,
   FiAward,
 } from "react-icons/fi";
+import Hero from "../components/Hero";
 
 const services = [
   {
@@ -90,48 +91,20 @@ const premiumReasons = [
 ];
 
 export default function Servizi() {
-  const heroRef = useRef<HTMLElement | null>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start end", "end start"],
-  });
-  const heroParallax = useTransform(scrollYProgress, [0, 1], [20, -20]);
-
   return (
     <main className="min-h-screen bg-[#f5f6fa] text-[#1a2a4e]">
       <SocialBar />
 
       {/* HERO */}
-      <section
-        ref={heroRef}
-        className="relative min-h-[40vh] flex items-center justify-center overflow-hidden px-6 pt-24"
-      >
-        <motion.div style={{ y: heroParallax }} className="absolute inset-0">
-          <Image
-            src="/hero-servizi.jpg"
-            alt="Hero servizi"
-            fill
-            priority
-            className="object-cover scale-105"
-          />
-        </motion.div>
-        <div className="absolute inset-0 bg-black/25" />
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.9, ease: cubicBezier(0.22, 1, 0.36, 1) }}
-          className="relative z-10 max-w-4xl text-center px-6 space-y-3 text-white"
-        >
-          <h1 className="text-4xl sm:text-5xl font-extrabold uppercase tracking-[0.35em]">
-            I nostri servizi
-          </h1>
-          <p className="text-white/85 text-lg sm:text-xl leading-relaxed">
-            Dalla fase di concept alla consegna chiavi in mano, coordiniamo
-            impianti, finiture e forniture con un approccio sartoriale.
-          </p>
-        </motion.div>
-      </section>
+
+      <Hero
+        image="/hero-servizi-new.jpg"
+        title="I nostri servizi"
+        subtitle="Dalla fase di concept alla consegna chiavi in mano, coordiniamo impianti, finiture e forniture con un approccio sartoriale."
+        height="min-h-[40vh]"
+        darkness={35}
+        centerImage={false}
+      />
 
       {/* GRID SERVIZI */}
       <section className="py-24 px-6 bg-white">
@@ -242,10 +215,10 @@ export default function Servizi() {
       </section>
 
       <PreventivoFooter
-        eyebrow="Hai un progetto in mente?"
-        title="Richiedi un preventivo"
-        subtitle="Ti affianchiamo nella definizione del budget, nella scelta dei materiali e nella pianificazione delle fasi operative."
-        buttonText="Richiedi un preventivo"
+        eyebrow="Hai un progetto in mente?  "
+        title="Scegli il servizio più adatto alle tue esigenze"
+        subtitle="Dalla ristrutturazione completa agli impianti, ti offriamo soluzioni su misura e tempi chiari."
+        buttonText="Chiedi un preventivo"
       />
     </main>
   );

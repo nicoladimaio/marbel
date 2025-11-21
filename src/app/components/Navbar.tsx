@@ -48,7 +48,6 @@ export default function Navbar() {
             height={40}
             className="drop-shadow"
           />
-          <span className="font-bold text-xl text-[#1a2a4e]">Mar.Bel.</span>
         </div>
         {/* Desktop menu minimal: solo testo */}
         <ul className="hidden md:flex gap-6">

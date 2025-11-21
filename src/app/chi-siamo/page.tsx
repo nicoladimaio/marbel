@@ -5,6 +5,7 @@ import SocialBar from "../components/SocialBar";
 import PreventivoFooter from "../components/PreventivoFooter";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { cubicBezier } from "framer-motion";
+import Hero from "../components/Hero";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -52,49 +53,20 @@ const valori = [
 ];
 
 export default function ChiSiamo() {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start end", "end start"],
-  });
-  const heroParallax = useTransform(scrollYProgress, [0, 1], [15, 0]);
-
   return (
     <main className="min-h-screen bg-white text-[#1a2a4e] font-sans">
       <SocialBar />
 
       {/* HERO */}
-      <section
-        ref={heroRef}
-        className="relative min-h-[40vh] flex items-center justify-center overflow-hidden"
-      >
-        <motion.div style={{ y: heroParallax }} className="absolute inset-0">
-          <Image
-            src="/chi-siamo-hero-2.jpg"
-            alt="Studio MarBel"
-            fill
-            priority
-            className="object-cover object-[30%_10%]"
-          />
-        </motion.div>
-        <div className="absolute inset-0 bg-[rgba(0,0,0,0.25)]" />
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          className="relative z-10 text-center px-6 space-y-3 text-white"
-        >
-          <h1 className="text-4xl sm:text-5xl font-extrabold uppercase tracking-[0.35em]">
-            CHI SIAMO
-          </h1>
-          <p className="text-lg sm:text-xl text-white/85">
-            Costruiamo spazi che parlano di voi, curando ogni fase con
-            precisione artigianale.
-          </p>
-          <span className="inline-block h-px w-16 bg-white/70" />
-        </motion.div>
-      </section>
+
+      <Hero
+        image="/hero-chi-siamo-new.jpg"
+        title="Chi siamo"
+        subtitle="Una storia fatta di passione, competenza e risultati"
+        height="min-h-[40vh]"
+        darkness={35}
+        centerImage={true}
+      />
 
       {/* INTRO */}
       <motion.section
@@ -256,7 +228,13 @@ export default function ChiSiamo() {
         </div>
       </motion.section>
 
-      <PreventivoFooter />
+      {/* CTA FINALE con effetto parallax */}
+      <PreventivoFooter
+        eyebrow="Da oltre 15 anni nel settore"
+        title="Affida la tua casa a professionisti certificati"
+        subtitle="Esperienza, affidabilità e un metodo di lavoro collaudato per garantirti risultati senza stress."
+        buttonText="Parla con noi"
+      />
     </main>
   );
 }

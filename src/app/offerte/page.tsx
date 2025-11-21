@@ -6,6 +6,8 @@ import Image from "next/image";
 import SocialBar from "../components/SocialBar";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { cubicBezier } from "framer-motion";
+import Hero from "../components/Hero";
+import PreventivoFooter from "../components/PreventivoFooter";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -66,13 +68,6 @@ export default function Offerte() {
     };
     fetchOfferte();
   }, []);
-
-  const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start end", "end start"],
-  });
-  const heroParallax = useTransform(scrollYProgress, [0, 1], [20, 0]);
 
   const fallbackOffers = [
     {
@@ -158,37 +153,15 @@ export default function Offerte() {
       <SocialBar />
 
       {/* HERO */}
-      <section
-        ref={heroRef}
-        className="relative min-h-[40vh] flex items-center justify-center overflow-hidden"
-      >
-        <motion.div style={{ y: heroParallax }} className="absolute inset-0">
-          <Image
-            src="/offerte-hero.jpg"
-            alt="Offerte MarBel"
-            fill
-            priority
-            className="object-cover object-center"
-          />
-        </motion.div>
-        <div className="absolute inset-0 bg-black/25" />
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          className="relative z-10 text-center px-6 space-y-3 text-white"
-        >
-          <h1 className="text-4xl sm:text-5xl font-extrabold uppercase tracking-[0.35em]">
-            LE NOSTRE OFFERTE
-          </h1>
-          <p className="text-lg sm:text-xl text-white/85">
-            Selezione di pacchetti chiavi in mano per intervenire subito su
-            cucine, bagni e riqualificazioni.
-          </p>
-        </motion.div>
-      </section>
 
+      <Hero
+        image="/hero-offerte-new.jpg"
+        title="Le nostre offerte"
+        subtitle="Selezione di pacchetti chiavi in mano per intervenire subito su cucine, bagni e riqualificazioni."
+        height="min-h-[40vh]"
+        darkness={35}
+        centerImage={true}
+      />
       {/* CARDS */}
       <section className="py-28 px-6">
         <div className="max-w-6xl mx-auto space-y-10">
@@ -228,21 +201,20 @@ export default function Offerte() {
       {/* BLOCCO PROMO */}
       <section className="py-28 px-6 bg-[#f5f6fa]">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.4 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ y: -4 }}
-              className="bg-white rounded-3xl p-10 space-y-5 shadow-[0_8px_22px_rgba(0,0,0,0.12)] transition-all duration-300"
-            >
-              <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
-                Promo dedicata
-              </p>
-              <h3 className="text-4xl font-extrabold uppercase tracking-wide">
-                Cucine e bagni chiavi in mano, tempi certi.
-              </h3>
-              <p className="text-lg text-[#475569] leading-[1.6]">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="space-y-4"
+          >
+            <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
+              Promo dedicata
+            </p>
+            <h3 className="text-3xl font-extrabold uppercase tracking-wide">
+              Cucine e bagni chiavi in mano, tempi certi.
+            </h3>
+            <p className="text-lg text-[#475569] leading-relaxed">
               Coordinamento fornitori, mockup 3D, direzione lavori certificata:
               tutto dentro un’unica offerta trasparente.
             </p>
@@ -330,44 +302,13 @@ export default function Offerte() {
       </section>
 
       {/* CTA FINALE */}
-      <motion.section
-        variants={fadeUp}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        className="relative py-20 px-6 overflow-hidden"
-      >
-        <motion.div style={{ y: heroParallax }} className="absolute inset-0">
-          <Image
-            src="/gallery1.jpg"
-            alt="Contattaci"
-            fill
-            className="object-cover"
-          />
-        </motion.div>
-        <div className="absolute inset-0 bg-[#1a2a4e]/80" />
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10 max-w-3xl mx-auto text-center text-white space-y-4"
-        >
-          <p className="text-sm uppercase tracking-[0.4em] text-white/70">
-            Pronto a iniziare?
-          </p>
-          <h4 className="text-3xl font-semibold uppercase tracking-[0.3em]">
-            Blocca ora un sopralluogo dedicato.
-          </h4>
-          <a
-            href="/contatti"
-            className="inline-flex items-center justify-center px-8 py-3 rounded-xl bg-white text-[#1a2a4e] font-semibold shadow-lg hover:bg-white/90 transition-colors duration-300"
-          >
-            Prenota una consulenza
-          </a>
-        </motion.div>
-      </motion.section>
 
+      <PreventivoFooter
+        eyebrow="Pronto a iniziare? "
+        title="Approfitta delle promozioni attive"
+        subtitle="Sconti stagionali e pacchetti dedicati per ristrutturazioni complete o interventi mirati."
+        buttonText="Richiedi la tua offerta"
+      />
     </main>
   );
 }

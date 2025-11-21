@@ -12,7 +12,6 @@ export default function Footer() {
           height={40}
           className="drop-shadow"
         />
-        <span className="text-blue-700 font-bold text-lg">Mar.Bel.</span>
       </div>
       <div className="flex items-center gap-6">
         <a

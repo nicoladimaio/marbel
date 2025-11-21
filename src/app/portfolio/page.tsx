@@ -7,6 +7,7 @@ import SocialBar from "../components/SocialBar";
 import PreventivoFooter from "../components/PreventivoFooter";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { cubicBezier } from "framer-motion";
+import Hero from "../components/Hero";
 
 type PortfolioItem = {
   id: string;
@@ -27,7 +28,6 @@ export default function Portfolio() {
     null
   );
   const imageContainerRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -59,26 +59,22 @@ export default function Portfolio() {
       items.map((i) => (i.categoria || "").trim()).filter((c) => c.length > 0)
     )
   );
-const categorieUI = [
-  "Tutti",
-  ...categorie.filter((cat) => cat.toLowerCase() !== "tutti"),
-];
-const lavoriFiltrati =
-  categoriaFiltro === "Tutti"
-    ? items
-    : items.filter((i) => i.categoria === categoriaFiltro);
-const cardHeights = ["h-64", "h-80", "h-72", "h-96"];
+  const categorieUI = [
+    "Tutti",
+    ...categorie.filter((cat) => cat.toLowerCase() !== "tutti"),
+  ];
+  const lavoriFiltrati =
+    categoriaFiltro === "Tutti"
+      ? items
+      : items.filter((i) => i.categoria === categoriaFiltro);
+  const cardHeights = ["h-64", "h-80", "h-72", "h-96"];
 
   // Funzione per aprire la modale su una certa immagine
   const openZoom = (idx: number) => {
     setZoomIndex(idx);
     setFullscreen(false);
   };
-  const { scrollYProgress: heroProgress } = useScroll({
-    target: heroRef,
-    offset: ["start end", "end start"],
-  });
-  const heroParallax = useTransform(heroProgress, [0, 1], [15, 0]);
+
   const closeZoom = () => setZoomIndex(null);
   const nextZoom = () => {
     if (zoomIndex !== null && lavoriFiltrati.length > 0) {
@@ -108,35 +104,15 @@ const cardHeights = ["h-64", "h-80", "h-72", "h-96"];
       <SocialBar />
 
       {/* HERO */}
-      <section
-        ref={heroRef}
-        className="relative min-h-[40vh] flex items-center justify-center overflow-hidden"
-      >
-        <motion.div style={{ y: heroParallax }} className="absolute inset-0">
-          <Image
-            src="/portfolio-hero.jpg"
-            alt="Portfolio MarBel"
-            fill
-            priority
-            className="object-cover object-[30%_10%]"
-          />
-        </motion.div>
-        <div className="absolute inset-0 bg-black/25" />
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
-          className="relative z-10 max-w-4xl text-center px-6 space-y-3 text-white"
-        >
-          <h1 className="text-4xl sm:text-5xl font-extrabold uppercase tracking-[0.35em]">
-            Portfolio lavori
-          </h1>
-          <p className="text-white/85 text-lg sm:text-xl leading-relaxed">
-            Alcuni dei nostri interventi recenti.
-          </p>
-        </motion.div>
-      </section>
+
+      <Hero
+        image="/hero-portfolio-new.jpg"
+        title="Portfolio lavori"
+        subtitle="Alcuni dei nostri lavori recenti"
+        height="min-h-[40vh]"
+        darkness={35}
+        centerImage={true}
+      />
 
       {/* FILTRI */}
       <motion.section
@@ -215,7 +191,9 @@ const cardHeights = ["h-64", "h-80", "h-72", "h-96"];
                 className="relative mb-6 overflow-hidden rounded-3xl shadow-xl cursor-pointer transition-transform duration-500 [break-inside:avoid]"
               >
                 <div
-                  className={`relative w-full ${cardHeights[index % cardHeights.length]} overflow-hidden`}
+                  className={`relative w-full ${
+                    cardHeights[index % cardHeights.length]
+                  } overflow-hidden`}
                 >
                   <Image
                     src={project.immagine || "/placeholder.jpg"}
@@ -349,86 +327,13 @@ const cardHeights = ["h-64", "h-80", "h-72", "h-96"];
           </motion.div>
         </div>
       )}
-      <motion.section
-        variants={{
-          hidden: { opacity: 0, y: 20 },
-          visible: {
-            opacity: 1,
-            y: 0,
-            transition: { duration: 0.9, ease: cubicBezier(0.22, 1, 0.36, 1) },
-          },
-        }}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-        className="py-24 px-6 bg-[#f7f7f7]"
-      >
-        <div className="max-w-6xl mx-auto grid gap-8 md:grid-cols-2">
-          {[
-            {
-              label: "Prima",
-              text: "Ambiente datato, poca luce e spazi frammentati.",
-              image: "/gallery1.jpg",
-            },
-            {
-              label: "Dopo",
-              text: "Volumi armonizzati, luce naturale e materiali sartoriali.",
-              image: "/gallery2.jpg",
-            },
-          ].map(({ label, text, image }) => (
-            <motion.div key={label} className="space-y-4">
-              <div className="relative h-72 rounded-2xl overflow-hidden shadow-lg">
-                <Image src={image} alt={label} fill className="object-cover" />
-              </div>
-              <h4 className="text-lg font-semibold uppercase tracking-[0.3em]">
-                {label}
-              </h4>
-              <p className="text-[#475569]">{text}</p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.section>
 
-      <motion.section
-        variants={{
-          hidden: { opacity: 0, y: 25 },
-          visible: {
-            opacity: 1,
-            y: 0,
-            transition: { duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) },
-          },
-        }}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.25 }}
-        className="py-24 px-6 bg-white text-center"
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7, ease: cubicBezier(0.22, 1, 0.36, 1) }}
-          className="max-w-4xl mx-auto space-y-4"
-        >
-          <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
-            Vuoi un risultato come questi?
-          </p>
-          <h4 className="text-3xl font-semibold uppercase tracking-[0.3em] text-[#1a2a4e]">
-            Scopri cosa possiamo fare per te
-          </h4>
-          <p className="text-lg text-[#475569]">
-            Pianifichiamo insieme il tuo intervento con materiali coordinati e
-            team dedicati.
-          </p>
-          <a
-            href="/preventivo"
-            className="inline-flex items-center justify-center px-8 py-3 rounded-xl bg-[#1a2a4e] text-white font-semibold shadow-lg shadow-[#1a2a4e]/30 hover:bg-[#223867] transition-colors duration-300"
-          >
-            Richiedi un preventivo gratuito
-          </a>
-        </motion.div>
-      </motion.section>
-      <PreventivoFooter />
+      <PreventivoFooter
+        eyebrow="Vuoi un risultato come questi?"
+        title="Scopri cosa possiamo fare per te"
+        subtitle="Dai piccoli interventi alle ristrutturazioni totali: lasciati ispirare dai nostri risultati reali."
+        buttonText="Richiedi la tua offerta"
+      />
     </main>
   );
 }
