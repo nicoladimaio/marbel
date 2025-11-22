@@ -12,8 +12,9 @@ import {
 import ServiceCarousel from "./components/ServiceCarousel";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import { FaCheckCircle, FaHardHat, FaRedo, FaTools } from "react-icons/fa";
+import { FaHardHat, FaRedo, FaTools } from "react-icons/fa";
 import PreventivoFooter from "./components/PreventivoFooter";
+import { FiCheck } from "react-icons/fi";
 
 export default function Home() {
   const cardReveal = (delay = 0) => ({
@@ -195,12 +196,6 @@ export default function Home() {
       author: "Luca & Martina",
       role: "Villa privata",
     },
-  ];
-
-  const serviceHighlights = [
-    "Squadre specializzate e interventi eseguiti con precisione e rispetto delle tempistiche.",
-    "Materiali certificati, tecniche moderne e cura dei dettagli in ogni fase ",
-    "Trasparenza, comunicazione continua e lavori garantiti dalla progettazione alla consegna.",
   ];
 
   const fallbackOffers = [
@@ -516,11 +511,11 @@ export default function Home() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={scrollReveal}
-              className="py-24 bg-gradient-to-b from-[#0f172a] to-[#1a2a4e] text-white"
+              className="py-24 bg-[#0f172a]"
             >
-              <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[1fr,1.2fr] gap-12 items-center">
-                <div className="space-y-6">
-                  <p className="text-sm tracking-[0.4em] uppercase text-white/60">
+              <div className="max-w-7xl mx-auto px-6 space-y-12">
+                <div className="text-center space-y-4 text-left">
+                  <p className="text-sm uppercase tracking-[0.4em] text-white/60">
                     Servizi
                   </p>
                   <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">
@@ -531,35 +526,42 @@ export default function Home() {
                     Scopri le lavorazioni disponibili e naviga tra le proposte
                     pensate per cucine, bagni, pavimenti e impianti.
                   </p>
-                  <ul className="space-y-3">
-                    {serviceHighlights.map((item) => (
+                  <ul className="mt-6 space-y-4">
+                    {[
+                      "Squadre specializzate e interventi eseguiti con precisione e rispetto delle tempistiche.",
+                      "Materiali certificati, tecniche moderne e cura dei dettagli in ogni fase.",
+                      "Trasparenza, comunicazione continua e lavori garantiti dalla progettazione alla consegna.",
+                    ].map((item, index) => (
                       <li
-                        key={item}
-                        className="flex items-start gap-3 text-white/90"
+                        key={index}
+                        className="flex items-start gap-3 text-white/80"
                       >
-                        <FaCheckCircle className="mt-1 text-[#8de8ff]" />
+                        <span className="w-4 h-4 flex items-center justify-center rounded-full bg-[#8de8ff] text-white flex-shrink-0">
+                          <FiCheck
+                            className="text-[#0f172a] stroke-[3]"
+                            size={14}
+                          />
+                        </span>
                         <span>{item}</span>
                       </li>
                     ))}
                   </ul>
-                  <div className="flex gap-4 pt-4">
-                    <a
-                      href="/servizi"
-                      className="px-8 py-3 rounded-2xl bg-white text-[#1a2a4e] font-semibold shadow-xl hover:bg-blue-50 transition-all duration-300"
-                    >
-                      Scopri tutti i servizi
-                    </a>
-                    <a
-                      href="/portfolio"
-                      className="px-8 py-3 rounded-2xl border border-white/50 text-white font-semibold hover:bg-white/10 transition-all duration-300"
-                    >
-                      Guarda i lavori
-                    </a>
-                  </div>
                 </div>
-                <div className="bg-white/5 rounded-2xl p-6 backdrop-blur border border-white/10 shadow-2xl">
-                  <ServiceCarousel />
+                <div className="flex gap-4 pt-4">
+                  <a
+                    href="/servizi"
+                    className="px-8 py-3 rounded-2xl bg-white text-[#1a2a4e] font-semibold shadow-xl hover:bg-blue-50 transition-all duration-300"
+                  >
+                    Scopri tutti i servizi
+                  </a>
+                  <a
+                    href="/portfolio"
+                    className="px-8 py-3 rounded-2xl border border-white/50 text-white font-semibold hover:bg-white/10 transition-all duration-300"
+                  >
+                    Guarda i lavori
+                  </a>
                 </div>
+                <ServiceCarousel />
               </div>
             </motion.section>
 

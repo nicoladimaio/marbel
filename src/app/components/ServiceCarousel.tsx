@@ -1,101 +1,82 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
-import { useState } from "react";
-
-const servizi = [
-  {
-    key: "pavimenti",
-    titolo: "Ristrutturazione pavimenti",
-    descrizione: "Rinnovo e posa di pavimenti in ogni ambiente.",
-    img: "/service1.png",
-  },
-  {
-    key: "cucine",
-    titolo: "Ristrutturazione cucine",
-    descrizione: "Progettazione e rifacimento cucine moderne e funzionali.",
-    img: "/service2.png",
-  },
-  {
-    key: "bagni",
-    titolo: "Ristrutturazione bagni",
-    descrizione: "Restyling completo di bagni, sanitari e rivestimenti.",
-    img: "/service3.png",
-  },
-  {
-    key: "elettrici",
-    titolo: "Impianti elettrici",
-    descrizione: "Installazione e adeguamento impianti elettrici a norma.",
-    img: "/service1.png",
-  },
-  {
-    key: "idraulici",
-    titolo: "Impianti idraulici",
-    descrizione: "Realizzazione e manutenzione impianti idraulici efficienti.",
-    img: "/service2.png",
-  },
-  // Puoi aggiungere altri servizi qui
-];
+import { useRef } from "react";
+import { motion } from "framer-motion";
+import { cubicBezier } from "framer-motion";
+import { servicesList } from "../../data/services";
 
 export default function ServiceCarousel() {
-  const [page, setPage] = useState(0);
-  const perPage = 4;
-  const maxPage = Math.ceil(servizi.length / perPage) - 1;
-  const visible = servizi.slice(page * perPage, page * perPage + perPage);
-  const placeholderCount = Math.max(0, perPage - visible.length);
-  const placeholders = Array.from({ length: placeholderCount });
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const scrollBy = (direction: "prev" | "next") => {
+    if (!trackRef.current) return;
+    const cardWidth = 320;
+    trackRef.current.scrollBy({
+      left: direction === "next" ? cardWidth : -cardWidth,
+      behavior: "smooth",
+    });
+  };
 
   return (
-    <div className="w-full flex flex-col items-center">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-4 w-full min-h-[360px]">
-        {visible.map((servizio) => (
-          <Link
-            key={servizio.key}
-            href={`/servizi/${servizio.key}`}
-            className="bg-white border border-[#1a2a4e]/20 rounded-2xl shadow-lg p-6 flex flex-col items-center hover:shadow-xl transition-shadow duration-300 min-h-[180px]"
-          >
-            <Image
-              src={servizio.img}
-              alt={servizio.titolo}
-              width={56}
-              height={56}
-              className="mb-3"
-            />
-            <h2 className="text-lg font-bold text-[#1a2a4e] mb-1 text-center">
-              {servizio.titolo}
-            </h2>
-            <p className="text-[#3a4a5a] text-center mb-2 text-sm">
-              {servizio.descrizione}
-            </p>
-            <span className="mt-2 px-4 py-1 rounded-xl bg-[#1a2a4e] text-white font-semibold shadow hover:bg-[#274472] transition-colors text-sm">
-              Scopri di più
-            </span>
-          </Link>
-        ))}
-        {placeholders.map((_, index) => (
-          <div
-            key={`placeholder-${index}`}
-            aria-hidden="true"
-            className="hidden sm:block border border-transparent rounded-2xl min-h-[180px]"
-          />
-        ))}
+    <div className="space-y-5">
+      <div
+        ref={trackRef}
+        className="flex gap-6 overflow-x-auto pb-4 -mx-1 px-1 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {servicesList.map(
+          ({ key, title, description, icon: Icon, href }, i) => (
+            <motion.div
+              key={key}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{
+                duration: 0.6,
+                delay: i * 0.05,
+                ease: cubicBezier(0.22, 1, 0.36, 1),
+              }}
+              whileHover={{ y: -8 }}
+              className="snap-center min-w-[300px] sm:min-w-[320px] rounded-2xl border border-[#e5e7eb] bg-white/90 p-7 shadow-lg shadow-[#0b152e]/10 flex flex-col justify-between"
+            >
+              <div className="flex flex-col gap-5">
+                <div className="w-14 h-14 rounded-full bg-white text-[#1a2a4e] flex items-center justify-center shadow-md">
+                  <Icon size={26} />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-bold uppercase tracking-[0.35em] text-[#1a2a4e]">
+                    {title}
+                  </h3>
+                  <p className="text-sm text-[#475569] leading-relaxed">
+                    {description}
+                  </p>
+                </div>
+              </div>
+              <Link
+                href={href}
+                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.3em] text-[#1a2a4e] hover:text-[#102046] transition-colors"
+              >
+                Scopri di più →
+              </Link>
+            </motion.div>
+          )
+        )}
       </div>
-      <div className="flex gap-4 mt-2">
+      <div className="flex justify-center gap-3">
         <button
-          onClick={() => setPage((p) => Math.max(0, p - 1))}
-          disabled={page === 0}
-          className={`px-4 py-2 rounded-full bg-[#f5f6fa] text-[#1a2a4e] font-bold shadow hover:bg-[#e0e3ea] transition-all duration-200 disabled:opacity-40`}
-          aria-label="Precedente"
+          type="button"
+          onClick={() => scrollBy("prev")}
+          className="w-10 h-10 rounded-full bg-white shadow-md border border-[#e2e8f0] text-[#1a2a4e] font-bold hover:bg-[#f5f6fa] transition"
+          aria-label="Servizi precedenti"
         >
-          &#8592;
+          ‹
         </button>
         <button
-          onClick={() => setPage((p) => Math.min(maxPage, p + 1))}
-          disabled={page === maxPage}
-          className={`px-4 py-2 rounded-full bg-[#f5f6fa] text-[#1a2a4e] font-bold shadow hover:bg-[#e0e3ea] transition-all duration-200 disabled:opacity-40`}
-          aria-label="Successivo"
+          type="button"
+          onClick={() => scrollBy("next")}
+          className="w-10 h-10 rounded-full bg-white shadow-md border border-[#e2e8f0] text-[#1a2a4e] font-bold hover:bg-[#f5f6fa] transition"
+          aria-label="Servizi successivi"
         >
-          &#8594;
+          ›
         </button>
       </div>
     </div>

@@ -1,67 +1,12 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
-import { useRef } from "react";
 import SocialBar from "../components/SocialBar";
 import PreventivoFooter from "../components/PreventivoFooter";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { cubicBezier } from "framer-motion";
-import {
-  FiLayers,
-  FiDroplet,
-  FiPackage,
-  FiTool,
-  FiZap,
-  FiGrid,
-  FiShield,
-  FiAward,
-} from "react-icons/fi";
+import { FiShield, FiAward, FiTool, FiLayers } from "react-icons/fi";
 import Hero from "../components/Hero";
-
-const services = [
-  {
-    title: "Ristrutturazioni complete",
-    description:
-      "Coordinamento totale di demolizioni, impianti e finiture con un unico project manager.",
-    icon: FiLayers,
-    href: "/servizi",
-  },
-  {
-    title: "Bagni e spa sartoriali",
-    description:
-      "Rivestimenti waterproof, illuminazione scenografica e accessori di alta gamma.",
-    icon: FiDroplet,
-    href: "/servizi/bagni",
-  },
-  {
-    title: "Cucine su misura",
-    description:
-      "Layout funzionali, integrazione elettrodomestici e materiali premium per la zona living.",
-    icon: FiPackage,
-    href: "/servizi/cucine",
-  },
-  {
-    title: "Impianti idraulici",
-    description:
-      "Realizziamo e adeguiamo impianti idrici certificati con tecnici specializzati.",
-    icon: FiTool,
-    href: "/servizi/idraulici",
-  },
-  {
-    title: "Impianti elettrici",
-    description:
-      "Quadri, distribuzione e domotica seguendo le normative CEI e tempi garantiti.",
-    icon: FiZap,
-    href: "/servizi/elettrici",
-  },
-  {
-    title: "Pavimenti e rivestimenti",
-    description:
-      "Posa sartoriale di superfici tecniche e naturali per interni ed esterni.",
-    icon: FiGrid,
-    href: "/servizi/pavimenti",
-  },
-];
+import { servicesList } from "../../data/services";
 
 const premiumReasons = [
   {
@@ -129,7 +74,7 @@ export default function Servizi() {
           </motion.div>
 
           <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-            {services.map(({ title, description, icon: Icon, href }) => (
+            {servicesList.map(({ title, description, icon: Icon, href }) => (
               <motion.div
                 key={title}
                 initial={{ opacity: 0, y: 35 }}
@@ -139,21 +84,25 @@ export default function Servizi() {
                   duration: 0.8,
                   ease: cubicBezier(0.22, 1, 0.36, 1),
                 }}
-                whileHover={{ y: -8, rotate: 0.5 }}
-                className="rounded-2xl border border-[#e5e7eb] bg-[#f5f6fa] p-8 shadow-lg shadow-[#0b152e]/10"
+                whileHover={{ y: -8 }}
+                className="rounded-2xl border border-[#e5e7eb] bg-white/90 p-8 shadow-lg shadow-[#0b152e]/10 flex flex-col justify-between"
               >
-                <div className="w-14 h-14 rounded-xl bg-white text-[#1a2a4e] flex items-center justify-center shadow-md mb-6">
-                  <Icon size={28} />
+                <div className="flex flex-col gap-5">
+                  <div className="w-14 h-14 rounded-full bg-white text-[#1a2a4e] flex items-center justify-center shadow-md">
+                    <Icon size={26} />
+                  </div>
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-bold uppercase tracking-[0.35em] text-[#1a2a4e]">
+                      {title}
+                    </h3>
+                    <p className="text-[#475569] leading-relaxed text-sm">
+                      {description}
+                    </p>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold uppercase tracking-[0.25em] mb-3">
-                  {title}
-                </h3>
-                <p className="text-[#475569] leading-relaxed mb-6">
-                  {description}
-                </p>
                 <Link
                   href={href}
-                  className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.3em] text-[#1a2a4e] hover:text-[#102046] transition-colors"
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.3em] text-[#1a2a4e] hover:text-[#102046] transition-colors"
                 >
                   Scopri di più →
                 </Link>
