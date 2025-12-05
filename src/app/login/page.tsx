@@ -20,11 +20,14 @@ export default function Login() {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/admin");
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Errore di autenticazione.");
-      }
+      const message =
+        err &&
+        typeof err === "object" &&
+        "code" in err &&
+        err.code === "auth/invalid-credential"
+          ? "Credenziali non valide. Riprova."
+          : "Errore di autenticazione.";
+      setError(message);
     } finally {
       setLoading(false);
     }

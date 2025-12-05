@@ -1,13 +1,14 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import Image from "next/image";
 import SocialBar from "../components/SocialBar";
 import PreventivoFooter from "../components/PreventivoFooter";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { cubicBezier } from "framer-motion";
 import Hero from "../components/Hero";
+import { FiX, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 type PortfolioItem = {
   id: string;
@@ -20,14 +21,7 @@ type PortfolioItem = {
 export default function Portfolio() {
   const [items, setItems] = useState<PortfolioItem[]>([]);
   const [categoriaFiltro, setCategoriaFiltro] = useState("Tutti");
-  const [zoomSrc, setZoomSrc] = useState<string | null>(null);
   const [zoomIndex, setZoomIndex] = useState<number | null>(null);
-  const [fullscreen, setFullscreen] = useState(false);
-  const [zoomed, setZoomed] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<PortfolioItem | null>(
-    null
-  );
-  const imageContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -53,7 +47,6 @@ export default function Portfolio() {
     fetchItems();
   }, []);
 
-  // Estrai categorie uniche dai lavori
   const categorie = Array.from(
     new Set(
       items.map((i) => (i.categoria || "").trim()).filter((c) => c.length > 0)
@@ -68,42 +61,56 @@ export default function Portfolio() {
       ? items
       : items.filter((i) => i.categoria === categoriaFiltro);
   const cardHeights = ["h-64", "h-80", "h-72", "h-96"];
+  const activeItem =
+    zoomIndex !== null && lavoriFiltrati[zoomIndex]
+      ? lavoriFiltrati[zoomIndex]
+      : null;
 
-  // Funzione per aprire la modale su una certa immagine
   const openZoom = (idx: number) => {
     setZoomIndex(idx);
-    setFullscreen(false);
   };
 
-  const closeZoom = () => setZoomIndex(null);
+  const closeZoom = () => {
+    setZoomIndex(null);
+  };
+
   const nextZoom = () => {
-    if (zoomIndex !== null && lavoriFiltrati.length > 0) {
-      setZoomIndex((zoomIndex + 1) % lavoriFiltrati.length);
-    }
+    setZoomIndex((current) => {
+      if (current === null) return current;
+      if (current >= lavoriFiltrati.length - 1) return current;
+      return current + 1;
+    });
   };
+
   const prevZoom = () => {
-    if (zoomIndex !== null && lavoriFiltrati.length > 0) {
-      setZoomIndex(
-        (zoomIndex - 1 + lavoriFiltrati.length) % lavoriFiltrati.length
-      );
-    }
+    setZoomIndex((current) => {
+      if (current === null) return current;
+      if (current <= 0) return current;
+      return current - 1;
+    });
   };
-  const handleFullscreen = () => {
-    setFullscreen((prev) => !prev);
-    if (imageContainerRef.current) {
-      if (!fullscreen) {
-        imageContainerRef.current.requestFullscreen?.();
-      } else {
-        document.exitFullscreen?.();
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (zoomIndex === null) return;
+      if (event.key === "Escape") {
+        closeZoom();
       }
-    }
-  };
+      if (event.key === "ArrowRight") {
+        nextZoom();
+      }
+      if (event.key === "ArrowLeft") {
+        prevZoom();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [zoomIndex, lavoriFiltrati.length]);
 
   return (
     <main className="min-h-screen bg-[#f5f6fa] text-[#1a2a4e]">
       <SocialBar />
-
-      {/* HERO */}
 
       <Hero
         image="/hero-portfolio-new.jpg"
@@ -114,7 +121,6 @@ export default function Portfolio() {
         centerImage={true}
       />
 
-      {/* FILTRI */}
       <motion.section
         variants={{
           hidden: { opacity: 0, y: 20 },
@@ -154,7 +160,6 @@ export default function Portfolio() {
         </div>
       </motion.section>
 
-      {/* GRID PORTFOLIO */}
       <motion.section
         variants={{
           hidden: { opacity: 0, y: 24 },
@@ -187,7 +192,7 @@ export default function Portfolio() {
                   ease: cubicBezier(0.22, 1, 0.36, 1),
                 }}
                 whileHover={{ scale: 1.05 }}
-                onClick={() => setSelectedProject(project)}
+                onClick={() => openZoom(index)}
                 className="relative mb-6 overflow-hidden rounded-3xl shadow-xl cursor-pointer transition-transform duration-500 [break-inside:avoid]"
               >
                 <div
@@ -209,124 +214,77 @@ export default function Portfolio() {
         </div>
       </motion.section>
 
-      {/* MODALE ZOOM MIGLIORATA */}
-      {zoomIndex !== null && lavoriFiltrati[zoomIndex] && (
-        <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          onClick={closeZoom}
-        >
+      <AnimatePresence>
+        {activeItem && zoomIndex !== null && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="relative w-[90vw] h-[90vh] flex items-center justify-center"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeZoom}
           >
             <button
-              className="absolute top-6 right-6 bg-black/70 rounded-full p-3 text-2xl font-bold text-white shadow-lg hover:bg-blue-400 transition-all"
-              onClick={closeZoom}
+              className="absolute top-4 right-4 rounded-full bg-white/10 border border-white/15 p-3 text-white hover:bg-white/20 transition-colors z-50"
+              onClick={(e) => {
+                e.stopPropagation();
+                closeZoom();
+              }}
               aria-label="Chiudi"
             >
-              ×
+              <FiX className="text-2xl" />
             </button>
+
             <button
-              className="absolute top-6 right-24 bg-black/70 rounded-full p-3 text-2xl text-white shadow-lg hover:bg-blue-400 transition-all flex items-center gap-2"
-              onClick={() => setZoomed((prev) => !prev)}
-              aria-label="Zoom"
+              className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 rounded-full bg-white/10 border border-white/15 p-3 text-white shadow-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/20 z-50"
+              onClick={(e) => {
+                e.stopPropagation();
+                prevZoom();
+              }}
+              disabled={zoomIndex === 0}
+              aria-label="Immagine precedente"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <circle cx="11" cy="11" r="8" strokeWidth="2" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" strokeWidth="2" />
-              </svg>
+              <FiChevronLeft className="text-2xl" />
             </button>
+
             <button
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/70 rounded-full p-4 text-3xl font-bold text-white shadow-lg hover:bg-blue-400 transition-all"
-              onClick={prevZoom}
-              aria-label="Precedente"
+              className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 rounded-full bg-white/10 border border-white/15 p-3 text-white shadow-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/20 z-50"
+              onClick={(e) => {
+                e.stopPropagation();
+                nextZoom();
+              }}
+              disabled={zoomIndex === lavoriFiltrati.length - 1}
+              aria-label="Immagine successiva"
             >
-              {"<"}
+              <FiChevronRight className="text-2xl" />
             </button>
-            <div className="relative w-full h-full max-w-[90vw] max-h-[90vh]">
-              <Image
-                src={lavoriFiltrati[zoomIndex].immagine || "/placeholder.jpg"}
-                alt={lavoriFiltrati[zoomIndex].titolo}
-                fill
-                className={`object-contain transition-transform duration-500 ${
-                  zoomed ? "scale-110" : "scale-100"
-                }`}
-                priority
-              />
-            </div>
-            <button
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/70 rounded-full p-4 text-3xl font-bold text-white shadow-lg hover:bg-blue-400 transition-all"
-              onClick={nextZoom}
-              aria-label="Successiva"
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="relative flex items-center justify-center w-full"
+              onClick={(e) => e.stopPropagation()}
             >
-              {">"}
-            </button>
-          </motion.div>
-        </motion.div>
-      )}
-      {selectedProject && (
-        <div
-          className="fixed inset-0 z-[70] bg-black/60 flex items-center justify-center px-4"
-          onClick={() => setSelectedProject(null)}
-        >
-          <motion.div
-            onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.35, ease: cubicBezier(0.22, 1, 0.36, 1) }}
-            className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full overflow-hidden"
-          >
-            <button
-              className="absolute top-4 right-4 text-[#1a2a4e] text-2xl font-semibold"
-              onClick={() => setSelectedProject(null)}
-              aria-label="Chiudi"
-            >
-              ×
-            </button>
-            <div className="relative h-72 sm:h-96">
-              <Image
-                src={selectedProject.immagine || "/placeholder.jpg"}
-                alt={selectedProject.titolo}
-                fill
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-            </div>
-            <div className="p-8 space-y-4 text-[#475569]">
-              <p className="text-sm uppercase tracking-[0.35em] text-[#94a3b8]">
-                Dettagli progetto
-              </p>
-              <h3 className="text-2xl font-extrabold uppercase tracking-[0.3em] text-[#1a2a4e]">
-                {selectedProject.titolo}
-              </h3>
-              <p>
-                {selectedProject.descrizione || "Progetto sartoriale MarBel."}
-              </p>
-              <div className="text-sm space-y-1">
-                <p className="font-semibold text-[#1a2a4e]">
-                  Categoria: {selectedProject.categoria || "Progetto su misura"}
-                </p>
-                <p className="font-semibold text-[#1a2a4e]">
-                  Riferimento: {selectedProject.id}
-                </p>
+              <div className="relative w-[90vw] h-[90vh] max-w-[90vw] max-h-[90vh] flex items-center justify-center">
+                <Image
+                  src={activeItem.immagine || "/placeholder.jpg"}
+                  alt={activeItem.titolo}
+                  fill
+                  sizes="90vw"
+                  className="object-contain"
+                  priority
+                />
+                <span className="absolute top-4 right-16 px-3 py-1 rounded-full bg-black/40 backdrop-blur-sm text-white/90 text-xs font-semibold uppercase tracking-wide">
+                  {categoriaFiltro === "Tutti"
+                    ? activeItem.categoria || "Progetto"
+                    : categoriaFiltro}
+                </span>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
       <PreventivoFooter
         eyebrow="Vuoi un risultato come questi?"

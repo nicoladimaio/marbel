@@ -29,19 +29,24 @@ const tabs = [
 
 // Colore blu scuro usato nella homepage
 const bluScuro = "#1a2a4e";
+// UID autorizzato da Firebase Console (sostituisci con quello reale)
 
 export default function Admin() {
   const [user, setUser] = useState<User | null>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [activeTab, setActiveTab] = useState("offerte");
   const router = useRouter();
-  const glassRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
       if (!currentUser) {
+        setUser(null);
+        setCheckingAuth(false);
         router.push("/login");
+        return;
       }
+      setUser(currentUser);
+      setCheckingAuth(false);
     });
     return () => unsubscribe();
   }, [router]);
@@ -51,8 +56,16 @@ export default function Admin() {
     router.push("/login");
   };
 
+  if (checkingAuth) {
+    return (
+      <main className="min-h-screen bg-white flex flex-col items-center justify-center py-16 px-4 sm:px-8 font-sans">
+        <p className="text-[#1a2a4e] text-lg font-semibold">Caricamento…</p>
+      </main>
+    );
+  }
+
   if (!user) {
-    return null; // oppure un loader
+    return null;
   }
 
   return (

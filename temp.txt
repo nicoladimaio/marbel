@@ -1,0 +1,40 @@
+                  </p>
+                </div>
+              </div>
+              <Link
+                href={href}
+                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.3em] text-[#1a2a4e] hover:text-[#102046] transition-colors"
+              >
+                Scopri di più
+              </Link>
+            </motion.div>
+          )
+        )}
+      </div>
+      <div className="flex justify-center gap-3">
+        <button
+          type="button"
+          onClick={() => scrollBy("prev")}
+          disabled={!canPrev}
+          className={`w-10 h-10 rounded-full bg-white shadow-md border border-[#e2e8f0] text-[#1a2a4e] font-bold transition ${
+            canPrev ? "hover:bg-[#f5f6fa]" : "opacity-40 cursor-not-allowed"
+          }`}
+          aria-label="Servizi precedenti"
+        >
+          ←
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollBy("next")}
+          disabled={!canNext}
+          className={`w-10 h-10 rounded-full bg-white shadow-md border border-[#e2e8f0] text-[#1a2a4e] font-bold transition ${
+            canNext ? "hover:bg-[#f5f6fa]" : "opacity-40 cursor-not-allowed"
+          }`}
+          aria-label="Servizi successivi"
+        >
+          →
+        </button>
+      </div>
+    </div>
+  );
+}

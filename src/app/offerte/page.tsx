@@ -1,13 +1,18 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import Image from "next/image";
 import SocialBar from "../components/SocialBar";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { cubicBezier } from "framer-motion";
+import { AnimatePresence, motion, cubicBezier } from "framer-motion";
 import Hero from "../components/Hero";
 import PreventivoFooter from "../components/PreventivoFooter";
+import { FaWhatsapp } from "react-icons/fa";
+import { FiMail } from "react-icons/fi";
+
+const CONTACT_ENDPOINT =
+  process.env.NEXT_PUBLIC_CONTACT_ENDPOINT ?? "/api/contact";
+type ModalStatus = "idle" | "loading" | "success" | "error";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -17,6 +22,260 @@ const fadeUp = {
     transition: { duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) },
   },
 };
+
+function OfferModal({
+  title,
+  isOpen,
+  onClose,
+}: {
+  title: string;
+  isOpen: boolean;
+  onClose: () => void;
+}) {
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState(
+    `Vorrei informazioni sull'offerta: ${title}`
+  );
+  const [status, setStatus] = useState<ModalStatus>("idle");
+  const [error, setError] = useState("");
+  const [contactMode, setContactMode] = useState<"none" | "whatsapp" | "form">(
+    "none"
+  );
+
+  useEffect(() => {
+    if (isOpen) {
+      setFullName("");
+      setPhone("");
+      setEmail("");
+      setMessage(`Vorrei informazioni sull'offerta: ${title}`);
+      setStatus("idle");
+      setError("");
+      setContactMode("none");
+    }
+  }, [isOpen, title]);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!fullName.trim() || !phone.trim()) {
+      setError("Nome e telefono sono obbligatori.");
+      return;
+    }
+
+    setStatus("loading");
+    setError("");
+
+    try {
+      const response = await fetch(CONTACT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName,
+          phone,
+          email,
+          message,
+          body: message,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Invio non riuscito. Riprova tra poco.");
+      }
+
+      setStatus("success");
+    } catch (err) {
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "Si e' verificato un errore. Riprova.";
+      setError(msg);
+      setStatus("error");
+    }
+  };
+
+  const isSubmitting = status === "loading";
+  const whatsappMessage = `Vorrei informazioni sull'offerta: ${title}`;
+  const whatsappLink = `https://wa.me/?text=${encodeURIComponent(
+    whatsappMessage
+  )}`;
+  const handleWhatsappClick = () => {
+    window.open(whatsappLink, "_blank", "noopener,noreferrer");
+    onClose();
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.2 }}
+            className="relative w-full max-w-lg bg-white rounded-2xl px-8 py-8 shadow-2xl my-8 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={onClose}
+              className="absolute top-4 right-4 text-[#1a2a4e] hover:text-[#223867] text-xl font-bold"
+              aria-label="Chiudi"
+            >
+              &times;
+            </button>
+            <h3 className="text-2xl font-bold text-[#1a2a4e] mb-1">
+              Come vuoi essere contattato?
+            </h3>
+            <p className="text-sm text-[#475569] mb-5">
+              Scegli il metodo che preferisci per l'offerta "{title}".
+            </p>
+
+            {contactMode !== "form" && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <button
+                  type="button"
+                  onClick={handleWhatsappClick}
+                  className="flex items-center gap-3 p-4 border border-[#e2e8f0] rounded-2xl shadow-sm hover:shadow-md hover:border-[#22c55e]/50 transition duration-200 text-left"
+                >
+                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#22c55e]/10 text-[#22c55e]">
+                    <FaWhatsapp size={24} />
+                  </span>
+                  <span className="flex flex-col">
+                    <span className="text-base font-semibold text-[#1a2a4e]">
+                      WhatsApp
+                    </span>
+                    <span className="text-sm text-[#475569]">
+                      Contatto immediato
+                    </span>
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setContactMode("form")}
+                  className="flex items-center gap-3 p-4 border border-[#e2e8f0] rounded-2xl shadow-sm hover:shadow-md hover:border-[#1a2a4e]/40 transition duration-200 text-left"
+                >
+                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1a2a4e]/10 text-[#1a2a4e]">
+                    <FiMail size={22} />
+                  </span>
+                  <span className="flex flex-col">
+                    <span className="text-base font-semibold text-[#1a2a4e]">
+                      Modulo online
+                    </span>
+                    <span className="text-sm text-[#475569]">
+                      Compila in 30 secondi
+                    </span>
+                  </span>
+                </button>
+              </div>
+            )}
+
+            <AnimatePresence initial={false}>
+              {contactMode === "form" && (
+                <motion.form
+                  key="contact-form"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="space-y-4 pt-2"
+                  onSubmit={handleSubmit}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setContactMode("none")}
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#1a2a4e] hover:text-[#223867] transition-colors"
+                  >
+                    <span className="text-lg">←</span>
+                    <span>Indietro</span>
+                  </button>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-[#1a2a4e]">
+                      Nome*
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="w-full rounded-xl border border-[#e2e8f0] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-[#1a2a4e]">
+                      Telefono*
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="w-full rounded-xl border border-[#e2e8f0] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-[#1a2a4e]">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full rounded-xl border border-[#e2e8f0] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-[#1a2a4e]">
+                      Messaggio
+                    </label>
+                    <textarea
+                      rows={4}
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      className="w-full rounded-xl border border-[#e2e8f0] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]"
+                    />
+                  </div>
+                  {error && (
+                    <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                      {error}
+                    </p>
+                  )}
+                  {status === "success" && (
+                    <p className="text-sm text-green-700 bg-green-50 border border-green-100 rounded-lg px-3 py-2">
+                      Richiesta inviata. Ti contatteremo a breve.
+                    </p>
+                  )}
+                  <div className="flex justify-end gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className="px-5 py-3 rounded-xl border border-[#e2e8f0] text-[#1a2a4e] font-semibold hover:bg-[#f5f6fa] transition-colors"
+                    >
+                      Annulla
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="px-6 py-3 rounded-xl bg-[#1a2a4e] text-white font-semibold shadow-lg shadow-[#1a2a4e]/30 hover:bg-[#223867] transition-colors disabled:opacity-60"
+                    >
+                      {isSubmitting ? "Invio..." : "Invia richiesta"}
+                    </button>
+                  </div>
+                </motion.form>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
 
 const faqs = [
   {
@@ -46,6 +305,8 @@ export default function Offerte() {
     { id: string; titolo: string; descrizione: string; immagine: string }[]
   >([]);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTitle, setSelectedTitle] = useState("");
 
   useEffect(() => {
     const fetchOfferte = async () => {
@@ -98,6 +359,7 @@ export default function Offerte() {
   function OffertaCard({
     offerta,
     index,
+    onOpenModal,
   }: {
     offerta: {
       id: string;
@@ -106,6 +368,7 @@ export default function Offerte() {
       immagine: string;
     };
     index: number;
+    onOpenModal: (title: string) => void;
   }) {
     return (
       <motion.div
@@ -140,8 +403,12 @@ export default function Offerte() {
           <p className="text-lg text-[#475569] leading-[1.65]">
             {offerta.descrizione}
           </p>
-          <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1a2a4e] text-white font-semibold shadow-lg shadow-[#1a2a4e]/40 hover:bg-[#223867] transition-colors duration-300">
-            Chiedi un preventivo
+          <button
+            type="button"
+            onClick={() => onOpenModal(offerta.titolo)}
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#1a2a4e] text-white font-semibold uppercase tracking-[0.15em] shadow-lg shadow-[#1a2a4e]/40 hover:bg-[#223867] transition-colors duration-300"
+          >
+            RICHIEDI INFORMAZIONI
           </button>
         </div>
       </motion.div>
@@ -191,7 +458,15 @@ export default function Offerte() {
           ) : (
             <div className="grid gap-10">
               {showcase.map((offerta, index) => (
-                <OffertaCard key={offerta.id} offerta={offerta} index={index} />
+                <OffertaCard
+                  key={offerta.id}
+                  offerta={offerta}
+                  index={index}
+                  onOpenModal={(title) => {
+                    setSelectedTitle(title);
+                    setIsModalOpen(true);
+                  }}
+                />
               ))}
             </div>
           )}
@@ -308,6 +583,11 @@ export default function Offerte() {
         title="Approfitta delle promozioni attive"
         subtitle="Sconti stagionali e pacchetti dedicati per ristrutturazioni complete o interventi mirati."
         buttonText="Richiedi la tua offerta"
+      />
+      <OfferModal
+        title={selectedTitle}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
       />
     </main>
   );

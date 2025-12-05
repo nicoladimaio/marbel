@@ -23,7 +23,7 @@ export const servicesList: ServiceItem[] = [
     description:
       "Coordinamento totale di demolizioni, impianti e finiture con un unico project manager.",
     icon: FiLayers,
-    href: "/servizi",
+    href: "/servizi/ristrutturazioni",
   },
   {
     key: "bagni",
