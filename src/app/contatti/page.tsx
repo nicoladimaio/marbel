@@ -20,9 +20,9 @@ export default function Contatti() {
       />
 
       {/* info cards */}
-      <section className="py-16 px-6">
+      <section className="py-16">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto mt-16">
-          <div className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-start text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+          <div className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-center text-center sm:items-start sm:text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
             <div className="w-14 h-14 bg-white rounded-xl shadow flex items-center justify-center mb-5">
               <PhoneIcon className="w-6 h-6 text-[#1a2a4e]" />
             </div>
@@ -37,7 +37,7 @@ export default function Contatti() {
             </div>
           </div>
 
-          <div className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-start text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+          <div className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-center text-center sm:items-start sm:text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
             <div className="w-14 h-14 bg-white rounded-xl shadow flex items-center justify-center mb-5">
               <EnvelopeIcon className="w-6 h-6 text-[#1a2a4e]" />
             </div>
@@ -52,7 +52,7 @@ export default function Contatti() {
             </div>
           </div>
 
-          <div className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-start text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+          <div className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-center text-center sm:items-start sm:text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
             <div className="w-14 h-14 bg-white rounded-xl shadow flex items-center justify-center mb-5">
               <MapPinIcon className="w-6 h-6 text-[#1a2a4e]" />
             </div>
@@ -60,7 +60,7 @@ export default function Contatti() {
               INDIRIZZO
             </div>
             <div className="text-lg font-semibold text-[#1a2a4e] mt-1.5">
-              Via Roma 123, Milano (MI)
+              Via Nazario Sauro 36, Marcianise (CE)
             </div>
             <div className="text-sm text-[#6b7280] mt-1">
               Riceviamo su appuntamento
@@ -70,7 +70,7 @@ export default function Contatti() {
       </section>
 
       {/* form + map */}
-      <section className="py-16 px-6">
+      <section className="py-16">
         <div className="max-w-6xl mx-auto mt-10 grid md:grid-cols-2 gap-10 items-stretch">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -121,7 +121,7 @@ export default function Contatti() {
           <div className="rounded-2xl border border-[#e5e7eb] shadow-[0_20px_45px_rgba(11,21,46,0.05)] overflow-hidden h-full min-h-[420px]">
             <iframe
               title="MarBel Location"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2796.7815685218187!2d9.18998231571947!3d45.46421167910156!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDUuNDY0MjExLCA5LjE4OTk4MjM!5e0!3m2!1sit!2sit!4v1700000000000"
+              src="https://www.google.com/maps?q=Via+Nazario+Sauro+36,+Marcianise+(CE)&output=embed"
               className="w-full h-full border-0"
               allowFullScreen
               loading="lazy"

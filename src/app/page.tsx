@@ -27,7 +27,6 @@ export default function Home() {
     transition: { duration: 0.85, delay, ease: cubicBezier(0.16, 1, 0.3, 1) },
   });
   const [showContent, setShowContent] = useState(false);
-  const [tabIndex, setTab] = useState(0);
   const [valuesTab, setValuesTab] = useState<"metodo" | "valori">("metodo");
   const [methodTab, setMethodTab] = useState<
     "analisi" | "realizzazione" | "consegna"
@@ -61,7 +60,9 @@ export default function Home() {
   }, []);
 
   const { scrollY } = useScroll();
-  const heroY = useTransform(scrollY, [0, 200], [0, -40]);
+  // Disattiva parallax su mobile
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+  const heroY = useTransform(scrollY, [0, 200], isMobile ? [0, 0] : [0, -40]);
 
   const scrollReveal = {
     hidden: { opacity: 0, y: 40 },
@@ -73,47 +74,6 @@ export default function Home() {
   };
   const cardParallax = useTransform(scrollY, [0, 1200], [6, -3]);
 
-  const expertiseTabs = [
-    {
-      title: "Ristrutturazioni chiavi in mano",
-      description:
-        "Soluzioni complete che integrano progettazione, permessi, coordinamento fornitori e consegna puntuale dell'opera finita.",
-      badge: "Project management completo",
-      cover: "/gallery1.jpg",
-      bullets: [
-        "Direzione lavori e gestione squadre certificate",
-        "Unico interlocutore per il cliente in ogni fase",
-        "Aggiornamenti digitali su avanzamento e costi",
-      ],
-    },
-    {
-      title: "Interior design & finiture premium",
-      description:
-        "Studio dei materiali, render fotorealistici e selezione di collezioni Made in Italy pensate per valorizzare gli ambienti.",
-      badge: "Design su misura",
-      cover: "/gallery2.jpg",
-      bullets: [
-        "Consulenza su palette colore e illuminazione",
-        "Partnership con fornitori certificati",
-        "Mockup 3D e moodboard interattive",
-      ],
-    },
-    {
-      title: "Riqualificazione energetica",
-      description:
-        "Efficienza, comfort e risparmio con interventi certificati Ecobonus e Superbonus, dagli impianti termici al cappotto.",
-      badge: "Cantieri sostenibili",
-      cover: "/gallery3.jpg",
-      bullets: [
-        "Analisi termografica e pratiche ENEA",
-        "Impianti domotici e smart monitoring",
-        "Assistenza nella gestione degli incentivi",
-      ],
-    },
-  ];
-
-  const safeTabIndex = Math.min(tabIndex, expertiseTabs.length - 1);
-  const selectedTab = expertiseTabs[safeTabIndex];
   const methodSteps = [
     {
       key: "analisi" as const,
@@ -167,29 +127,6 @@ export default function Home() {
     (step) => step.key === activeMethodStep.key
   );
 
-  const processSteps = [
-    {
-      title: "Briefing e sopralluogo",
-      description:
-        "Analizziamo esigenze, budget e tempistiche per proporre una visione concreta del progetto.",
-    },
-    {
-      title: "Progettazione tecnica",
-      description:
-        "Render, capitolati e cronoprogramma dettagliato condiviso su area riservata.",
-    },
-    {
-      title: "Realizzazione e controllo qualit��",
-      description:
-        "Coordinamento artigiani, verifiche periodiche e report fotografici.",
-    },
-    {
-      title: "Consegna e assistenza",
-      description:
-        "Collaudo finale, documentazione digitale e supporto post-intervento.",
-    },
-  ];
-
   const testimonials = [
     {
       quote:
@@ -242,10 +179,9 @@ export default function Home() {
             <motion.section
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.6 }}
               className="w-full p-0 m-0"
             >
-              <div className="relative w-full h-screen min-h-screen flex items-center justify-center overflow-hidden">
+              <div className="relative w-full flex items-center justify-center overflow-hidden pt-hero-landscape">
                 {/* Background image with subtle parallax */}
                 <motion.div
                   className="absolute inset-0 z-0"
@@ -278,26 +214,18 @@ export default function Home() {
                 />
 
                 {/* Content stack: logo, title, subtitle, cta */}
-                <div className="relative z-10 flex flex-col items-center justify-center gap-4 text-center px-4">
+                <div className="relative z-10 flex flex-col items-center justify-center gap-0 sm:gap-4 text-center px-4 ">
                   {/* Logo (la tua immagine rimane) */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 18 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.8,
-                      delay: 0.25,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                  >
+                  <div className="mt-10 sm:mt-0 hero-logo-landscape">
                     <Image
                       src="/logo.png"
                       alt="Logo"
                       width={240}
                       height={80}
                       priority
-                      className="mb-4 drop-shadow-md"
+                      className="mb-0 drop-shadow-md hero-logo-landscape"
                     />
-                  </motion.div>
+                  </div>
 
                   {/* Title: reveal letter-block style (simple translate+opacity) */}
                   <motion.h1
@@ -420,21 +348,39 @@ export default function Home() {
 
                 {valuesTab === "metodo" && (
                   <div className="space-y-10">
-                    <div className="flex flex-wrap items-center justify-center gap-4">
-                      {methodSteps.map((step) => (
-                        <button
-                          key={step.key}
-                          type="button"
-                          onClick={() => setMethodTab(step.key)}
-                          className={`px-8 py-3 rounded-2xl border text-sm font-semibold tracking-[0.35em] uppercase transition-all ${
-                            methodTab === step.key
-                              ? "border-[#1a2a4e] text-[#1a2a4e] bg-white shadow-lg shadow-[#1a2a4e]/20"
-                              : "border-[#d8dee7] text-[#94a3b8] hover:text-[#1a2a4e]"
-                          }`}
-                        >
-                          {step.title}
-                        </button>
-                      ))}
+                    <div className="flex flex-wrap items-center justify-center gap-4 relative">
+                      <div
+                        id="methodTabsScroll"
+                        className="flex flex-row overflow-x-auto flex-nowrap snap-x snap-mandatory gap-2 sm:justify-center sm:gap-8 sm:overflow-visible w-full pb-2 scroll-smooth"
+                      >
+                        {methodSteps.map((step) => (
+                          <button
+                            key={step.key}
+                            type="button"
+                            onClick={() => setMethodTab(step.key)}
+                            className={`snap-center w-[90vw] max-w-xs sm:w-auto px-8 py-3 rounded-2xl border text-sm font-semibold tracking-[0.35em] uppercase transition-all flex-shrink-0 ${
+                              methodTab === step.key
+                                ? "border-[#1a2a4e] text-[#1a2a4e] bg-white shadow-lg shadow-[#1a2a4e]/20"
+                                : "border-[#d8dee7] text-[#94a3b8] hover:text-[#1a2a4e]"
+                            }`}
+                          >
+                            {step.title}
+                          </button>
+                        ))}
+                      </div>
+                      {/* Dots indicator mobile */}
+                      <div className="flex justify-center gap-2 mt-2 sm:hidden w-full">
+                        {methodSteps.map((step, i) => (
+                          <span
+                            key={step.key}
+                            className={`block w-2 h-2 rounded-full transition-all duration-300 ${
+                              methodTab === step.key
+                                ? "bg-[#1a2a4e]"
+                                : "bg-[#cbd5e1] opacity-60"
+                            }`}
+                          />
+                        ))}
+                      </div>
                     </div>
 
                     <motion.div
@@ -450,7 +396,7 @@ export default function Home() {
                       }}
                       className="flex flex-col lg:flex-row items-center gap-10 bg-[#f8fafc] rounded-2xl p-8 shadow-[0_25px_60px_-35px_rgba(15,23,42,0.35)]"
                     >
-                      <div className="relative w-full lg:w-1/2 h-72 rounded-2xl overflow-hidden">
+                      <div className="relative w-full lg:w-1/2 h-40 sm:h-56 lg:h-72 rounded-2xl overflow-hidden transition-all duration-300">
                         <Image
                           src={activeMethodStep.image}
                           alt={activeMethodStep.alt}

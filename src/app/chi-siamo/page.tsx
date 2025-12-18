@@ -81,24 +81,26 @@ export default function ChiSiamo() {
             <p className="text-sm uppercase tracking-[0.35em] text-[#94a3b8]">
               Chi siamo
             </p>
+            {/* Immagine operai solo mobile */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              className="relative h-48 w-full rounded-2xl overflow-hidden shadow-[0_12px_40px_-20px_rgba(15,23,42,0.25)] mb-4 block sm:hidden"
+            >
+              <Image
+                src="/team.jpg"
+                alt="Team MarBel"
+                fill
+                className="object-cover"
+                priority
+              />
+            </motion.div>
             <p className="text-xl text-[#475569] leading-relaxed">
               {introText}
             </p>
           </div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="relative h-72 rounded-2xl overflow-hidden shadow-[0_25px_70px_-50px_rgba(15,23,42,0.6)]"
-          >
-            <Image
-              src="/team.jpg"
-              alt="Team MarBel"
-              fill
-              className="object-cover transition-transform duration-500 hover:scale-[1.01]"
-            />
-          </motion.div>
         </div>
       </motion.section>
 

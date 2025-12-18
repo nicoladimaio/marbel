@@ -118,7 +118,7 @@ export const servicesDetails: Record<string, ServiceDetails> = {
     subtitle:
       "Realizziamo e adeguiamo impianti idrici certificati con materiali ad alte prestazioni.",
     heroImage: "/cantiere.jpg",
-    portfolioCategory: "portfolio_idraulici",
+    portfolioCategory: "Impianti idraulici",
     descriptionBlocks: [
       {
         title: "Analisi e tracciamento",
@@ -146,7 +146,7 @@ export const servicesDetails: Record<string, ServiceDetails> = {
     subtitle:
       "Quadri, distribuzione, illuminazione e domotica nel rispetto delle normative CEI.",
     heroImage: "/hero-servizi-new.jpg",
-    portfolioCategory: "portfolio_elettrici",
+    portfolioCategory: "Impianti elettrici",
     descriptionBlocks: [
       {
         title: "Progettazione CEI",
@@ -174,7 +174,7 @@ export const servicesDetails: Record<string, ServiceDetails> = {
     subtitle:
       "Posa sartoriale di superfici tecniche e naturali per ambienti interni ed esterni.",
     heroImage: "/gallery4.jpg",
-    portfolioCategory: "portfolio_pavimenti",
+    portfolioCategory: "Pavimenti",
     descriptionBlocks: [
       {
         title: "Studio delle superfici",

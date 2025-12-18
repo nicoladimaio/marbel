@@ -47,7 +47,7 @@ const WORKS_UI_CONFIG: {
     key: "bagni",
     label: "Bagni",
     detailLabel: "Numero bagni",
-    placeholder: "Es. 2",
+    placeholder: "Quanti?",
     type: "number",
     min: 1,
   },
@@ -55,7 +55,7 @@ const WORKS_UI_CONFIG: {
     key: "controsoffitto",
     label: "Controsoffitto",
     detailLabel: "Metri quadri controsoffitto",
-    placeholder: "Es. 35",
+    placeholder: "Indica i metri quadri",
     type: "number",
     min: 5,
   },
@@ -63,7 +63,7 @@ const WORKS_UI_CONFIG: {
     key: "condizionatori",
     label: "Condizionatori",
     detailLabel: "Numero condizionatori",
-    placeholder: "Es. 3",
+    placeholder: "Indica il numero",
     type: "number",
     min: 1,
   },
@@ -199,7 +199,9 @@ export default function Preventivo() {
   };
 
   const handleWorkDetailChange =
-    (field: WorkDetailKey): ((
+    (
+      field: WorkDetailKey
+    ): ((
       event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => void) =>
     (event) => {
@@ -252,9 +254,7 @@ export default function Preventivo() {
     const worksSummary: string[] = [];
     if (formData.works.bagni) {
       worksSummary.push(
-        `- Bagni: ${
-          formData.works.numeroBagni.trim() || "numero non indicato"
-        }`
+        `- Bagni: ${formData.works.numeroBagni.trim() || "numero non indicato"}`
       );
     }
     if (formData.works.controsoffitto) {
@@ -267,8 +267,7 @@ export default function Preventivo() {
     if (formData.works.condizionatori) {
       worksSummary.push(
         `- Condizionatori: ${
-          formData.works.numeroCondizionatori.trim() ||
-          "quantitA  non indicata"
+          formData.works.numeroCondizionatori.trim() || "quantitA  non indicata"
         }`
       );
     }
@@ -297,9 +296,7 @@ export default function Preventivo() {
       "Dati dell'immobile:",
       `- Metri quadri totali: ${formData.squareMeters}`,
       `- Piano dell'immobile: ${formData.floor}`,
-      `- Anno di costruzione: ${
-        formData.constructionYear || "Non indicato"
-      }`,
+      `- Anno di costruzione: ${formData.constructionYear || "Non indicato"}`,
       "",
       "Opere richieste:",
       ...worksSummary,
@@ -370,525 +367,329 @@ export default function Preventivo() {
       />
 
       <motion.section
-
         initial={{ opacity: 0, y: 24 }}
-
         whileInView={{ opacity: 1, y: 0 }}
-
         viewport={{ once: true, amount: 0.2 }}
-
         transition={{ duration: 0.9, ease: cubicBezier(0.22, 1, 0.36, 1) }}
-
         className="w-full px-4 pb-16 mt-12"
-
       >
-
         <div className="max-w-3xl mx-auto bg-white rounded-3xl border border-[#e5e7eb] shadow-[0_20px_45px_rgba(11,21,46,0.08)] p-8">
-
           <span className="text-xs tracking-[0.3em] uppercase text-[#1a2a4e]/70">
-
             Preventivo su misura
-
           </span>
 
           <h2 className="text-3xl font-semibold text-[#1a2a4e] mt-2">
-
             Richiedi un preventivo professionale
-
           </h2>
 
           <p className="text-[#6b7280] mt-3">
-
-            Inserisci i dati tecnici dell'immobile e raccontaci gli interventi che vuoi realizzare. Ti ricontatteremo con una proposta cucita sul tuo progetto.
-
+            Inserisci i dati tecnici dell'immobile e raccontaci gli interventi
+            che vuoi realizzare. Ti ricontatteremo con una proposta cucita sul
+            tuo progetto.
           </p>
 
-
-
           <form onSubmit={handleSubmit} className="mt-8 space-y-8">
-
             <div className="space-y-4">
-
               <p className="text-xs tracking-[0.35em] uppercase text-[#1a2a4e]/60">
-
                 Dati dell'immobile
-
               </p>
 
               <div className="grid gap-4 md:grid-cols-3">
-
                 <div className="flex flex-col gap-2">
-
-                  <label htmlFor="squareMeters" className="text-sm font-medium text-[#1a2a4e]">
-
+                  <label
+                    htmlFor="squareMeters"
+                    className="text-sm font-medium text-[#1a2a4e]"
+                  >
                     Metri quadri totali *
-
                   </label>
 
                   <input
-
                     id="squareMeters"
-
                     type="number"
-
                     min={30}
-
                     required
-
                     placeholder="Es. 120"
-
                     className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
-
                     value={formData.squareMeters}
-
-                    onChange={handleFieldChange('squareMeters')}
-
+                    onChange={handleFieldChange("squareMeters")}
                   />
-
                 </div>
 
                 <div className="flex flex-col gap-2">
-
-                  <label htmlFor="floor" className="text-sm font-medium text-[#1a2a4e]">
-
+                  <label
+                    htmlFor="floor"
+                    className="text-sm font-medium text-[#1a2a4e]"
+                  >
                     Piano dell'immobile *
-
                   </label>
 
                   <input
-
                     id="floor"
-
                     type="number"
-
                     required
-
                     placeholder="Es. 2"
-
                     className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
-
                     value={formData.floor}
-
-                    onChange={handleFieldChange('floor')}
-
+                    onChange={handleFieldChange("floor")}
                   />
-
                 </div>
 
                 <div className="flex flex-col gap-2">
-
-                  <label htmlFor="constructionYear" className="text-sm font-medium text-[#1a2a4e]">
-
+                  <label
+                    htmlFor="constructionYear"
+                    className="text-sm font-medium text-[#1a2a4e]"
+                  >
                     Anno di costruzione
-
                   </label>
 
                   <input
-
                     id="constructionYear"
-
                     type="number"
-
                     placeholder="Es. 1998"
-
                     className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
-
                     value={formData.constructionYear}
-
-                    onChange={handleFieldChange('constructionYear')}
-
+                    onChange={handleFieldChange("constructionYear")}
                   />
-
                 </div>
-
               </div>
-
             </div>
 
-
-
             <div className="space-y-4">
-
               <p className="text-xs tracking-[0.35em] uppercase text-[#1a2a4e]/60">
-
                 Opere richieste
-
               </p>
 
               <div className="space-y-4">
-
                 {WORKS_UI_CONFIG.map((work) => {
-
                   const detailKey = WORK_DETAIL_BY_TOGGLE[work.key];
 
                   const detailValue = formData.works[detailKey];
 
                   return (
-
                     <div
-
                       key={work.key}
-
                       className="rounded-2xl border border-[#e5e7eb] p-4 shadow-sm bg-[#fdfdfd]"
-
                     >
-
                       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-
                         <label className="inline-flex items-center gap-3 text-[#1a2a4e] font-semibold">
-
                           <input
-
                             type="checkbox"
-
                             className="w-4 h-4 accent-[#1a2a4e]"
-
                             checked={formData.works[work.key]}
-
                             onChange={() => toggleWork(work.key)}
-
                           />
 
                           {work.label}
-
                         </label>
 
                         {formData.works[work.key] &&
-
-                          (work.type === 'textarea' ? (
-
+                          (work.type === "textarea" ? (
                             <textarea
-
                               rows={3}
-
                               placeholder={work.placeholder}
-
                               className="w-full md:max-w-[320px] border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
-
                               value={detailValue}
-
                               onChange={handleWorkDetailChange(detailKey)}
-
                               required
-
                             />
-
                           ) : (
-
                             <input
-
                               type="number"
-
                               min={work.min}
-
                               placeholder={work.placeholder}
-
-                              className="w-full md:max-w-[220px] border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
-
+                              className="w-full md:max-w-[200px] border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
                               value={detailValue}
-
                               onChange={handleWorkDetailChange(detailKey)}
-
                               required
-
                             />
-
                           ))}
-
                       </div>
-
                     </div>
-
                   );
-
                 })}
-
               </div>
-
             </div>
 
-
-
             <div className="space-y-4">
-
               <p className="text-xs tracking-[0.35em] uppercase text-[#1a2a4e]/60">
-
                 Impianti
-
               </p>
 
               <div className="grid gap-3 sm:grid-cols-2">
-
                 {PLANTS_OPTIONS.map(({ key, label }) => (
-
                   <label
-
                     key={key}
-
                     className="flex items-center gap-3 border border-[#e5e7eb] rounded-2xl px-4 py-3 bg-[#f8fafc] hover:border-[#1a2a4e]/40 transition"
-
                   >
-
                     <input
-
                       type="checkbox"
-
                       className="w-4 h-4 accent-[#1a2a4e]"
-
                       checked={formData.plants[key]}
-
                       onChange={() => togglePlant(key)}
-
                     />
 
-                    <span className="text-sm font-medium text-[#1a2a4e]">{label}</span>
-
+                    <span className="text-sm font-medium text-[#1a2a4e]">
+                      {label}
+                    </span>
                   </label>
-
                 ))}
-
               </div>
-
             </div>
 
-
-
             <div className="space-y-2">
-
               <p className="text-xs tracking-[0.35em] uppercase text-[#1a2a4e]/60">
-
-                Descrizione
-
+                Altre informazioni
               </p>
 
               <textarea
-
                 id="description"
-
                 name="description"
-
                 rows={6}
-
                 maxLength={2000}
-
                 required
-
-                placeholder="Descrivi cosa vuoi realizzare, materiali preferiti e tempistiche."
-
+                placeholder="Descrivi cosa vuoi realizzare, materiali preferiti, tempistiche o note aggiuntive."
                 className="w-full border border-[#e5e7eb] rounded-2xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
-
                 value={formData.description}
-
-                onChange={handleFieldChange('description')}
-
+                onChange={handleFieldChange("description")}
               />
 
-              <p className="text-xs text-[#6b7280] text-right">{descriptionChars}/2000</p>
-
+              <p className="text-xs text-[#6b7280] text-right">
+                {descriptionChars}/2000
+              </p>
             </div>
 
-
-
             <div className="space-y-4">
-
               <p className="text-xs tracking-[0.35em] uppercase text-[#1a2a4e]/60">
-
                 Dati anagrafici
-
               </p>
 
               {showAnagrafica ? (
-
                 <div className="grid gap-4 md:grid-cols-2">
-
                   <div className="flex flex-col gap-2">
-
-                    <label htmlFor="fullName" className="text-sm font-medium text-[#1a2a4e]">
-
+                    <label
+                      htmlFor="fullName"
+                      className="text-sm font-medium text-[#1a2a4e]"
+                    >
                       Nome e cognome *
-
                     </label>
 
                     <input
-
                       id="fullName"
-
                       type="text"
-
                       required
-
                       placeholder="Mario Rossi"
-
                       className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
-
                       value={formData.fullName}
-
-                      onChange={handleFieldChange('fullName')}
-
+                      onChange={handleFieldChange("fullName")}
                     />
-
                   </div>
 
                   <div className="flex flex-col gap-2">
-
-                    <label htmlFor="email" className="text-sm font-medium text-[#1a2a4e]">
-
+                    <label
+                      htmlFor="email"
+                      className="text-sm font-medium text-[#1a2a4e]"
+                    >
                       Email *
-
                     </label>
 
                     <input
-
                       id="email"
-
                       type="email"
-
                       required
-
                       placeholder="nome@email.com"
-
                       className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
-
                       value={formData.email}
-
-                      onChange={handleFieldChange('email')}
-
+                      onChange={handleFieldChange("email")}
                     />
-
                   </div>
 
                   <div className="flex flex-col gap-2">
-
-                    <label htmlFor="phone" className="text-sm font-medium text-[#1a2a4e]">
-
+                    <label
+                      htmlFor="phone"
+                      className="text-sm font-medium text-[#1a2a4e]"
+                    >
                       Telefono
-
                     </label>
 
                     <input
-
                       id="phone"
-
                       type="tel"
-
                       inputMode="tel"
-
                       pattern="^[0-9+\s-]*$"
-
                       title="Sono ammessi solo numeri, spazi e i simboli + e -"
-
                       placeholder="+39 333 1234567"
-
                       className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
-
                       value={formData.phone}
-
-                      onChange={handleFieldChange('phone')}
-
+                      onChange={handleFieldChange("phone")}
                     />
-
                   </div>
 
                   <div className="flex flex-col gap-2">
-
-                    <label htmlFor="city" className="text-sm font-medium text-[#1a2a4e]">
-
+                    <label
+                      htmlFor="city"
+                      className="text-sm font-medium text-[#1a2a4e]"
+                    >
                       Comune immobile *
-
                     </label>
 
                     <input
-
                       id="city"
-
                       type="text"
-
                       required
-
                       placeholder="Es. Milano"
-
                       className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
-
                       value={formData.city}
-
-                      onChange={handleFieldChange('city')}
-
+                      onChange={handleFieldChange("city")}
                     />
-
                   </div>
-
                 </div>
-
               ) : (
-
                 <div className="rounded-2xl border border-dashed border-[#cfd3dc] bg-[#f9fbff] p-4 text-sm text-[#1a2a4e]">
-
-                  Compila i dati dell'immobile e seleziona almeno un'opera per inserire i tuoi riferimenti di contatto.
-
+                  Compila i dati dell'immobile e seleziona almeno un'opera per
+                  inserire i tuoi riferimenti di contatto.
                 </div>
-
               )}
-
             </div>
 
-
-
-            {requestStatus === 'error' && (
-
-              <p className="text-sm text-red-600" role="alert" aria-live="assertive">
-
+            {requestStatus === "error" && (
+              <p
+                className="text-sm text-red-600"
+                role="alert"
+                aria-live="assertive"
+              >
                 {errorMessage}
-
               </p>
-
             )}
 
-
-
-            {requestStatus === 'success' && (
-
-              <p className="text-sm text-emerald-600" role="status" aria-live="polite">
-
-                Richiesta inviata correttamente. Ti ricontatteremo al piu presto.
-
+            {requestStatus === "success" && (
+              <p
+                className="text-sm text-emerald-600"
+                role="status"
+                aria-live="polite"
+              >
+                Richiesta inviata correttamente. Ti ricontatteremo al piu
+                presto.
               </p>
-
             )}
-
-
 
             <div className="space-y-2">
-
               <button
-
                 type="submit"
-
                 disabled={!showAnagrafica || isSubmitting}
-
                 className="w-full bg-[#1a2a4e] text-white font-semibold rounded-xl py-3 hover:bg-[#102046] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-
               >
-
-                {isSubmitting ? 'Invio in corso...' : 'Richiedi preventivo'}
-
+                {isSubmitting ? "Invio in corso..." : "Richiedi preventivo"}
               </button>
 
               {!showAnagrafica && (
-
                 <p className="text-xs text-[#6b7280] text-center">
-
-                  Per inviare la richiesta indica metri quadri, piano e almeno un'opera richiesta.
-
+                  Per inviare la richiesta indica metri quadri, piano e almeno
+                  un'opera richiesta.
                 </p>
-
               )}
-
             </div>
-
           </form>
-
         </div>
-
       </motion.section>
 
       <PreventivoFooter

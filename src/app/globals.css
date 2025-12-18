@@ -1,3 +1,18 @@
+/* Hero generica: solo padding-top su mobile landscape, nessun vincolo di altezza */
+@media (max-width: 767px) and (orientation: landscape) {
+  .hero-generic-mobile-landscape {
+    min-height: unset !important;
+    height: auto !important;
+    padding-top: 80px !important;
+  }
+}
+/* Schede ServiceCarousel più larghe su mobile landscape */
+@media (max-width: 767px) and (orientation: landscape) {
+  .service-card-landscape {
+    width: 98vw !important;
+    min-width: 98vw !important;
+  }
+}
 @import "tailwindcss";
 
 :root {
@@ -20,7 +35,18 @@
 }
 
 body {
+  /* Altezza hero corretta solo su mobile landscape (navbar 80px) */
+  @media (max-width: 767px) and (orientation: landscape) {
+    .hero-h-landscape {
+      height: calc(100dvh - 80px) !important;
+      min-height: calc(100dvh - 80px) !important;
+    }
+    .pt-hero-landscape {
+      padding-top: 80px !important;
+    }
+  }
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden !important;
 }

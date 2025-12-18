@@ -22,6 +22,7 @@ export default function Portfolio() {
   const [items, setItems] = useState<PortfolioItem[]>([]);
   const [categoriaFiltro, setCategoriaFiltro] = useState("Tutti");
   const [zoomIndex, setZoomIndex] = useState<number | null>(null);
+  const [immaginiMostrate, setImmaginiMostrate] = useState(12);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -108,6 +109,11 @@ export default function Portfolio() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [zoomIndex, lavoriFiltrati.length]);
 
+  // Reset paginazione quando cambia filtro
+  useEffect(() => {
+    setImmaginiMostrate(12);
+  }, [categoriaFiltro]);
+
   return (
     <main className="min-h-screen bg-[#f5f6fa] text-[#1a2a4e]">
       <SocialBar />
@@ -135,28 +141,43 @@ export default function Portfolio() {
         viewport={{ once: true, amount: 0.2 }}
         className="py-16 px-6 bg-[#f5f6fa]"
       >
-        <div className="max-w-4xl mx-auto flex flex-wrap justify-center gap-3">
-          {categorieUI.map((cat) => {
-            const isActive = categoriaFiltro === cat;
-            return (
-              <button
+        <div className="max-w-4xl mx-auto">
+          <div className="flex flex-row overflow-x-auto flex-nowrap snap-x snap-mandatory gap-2 w-full px-4 pb-2 scroll-smooth">
+            {categorieUI.map((cat) => {
+              const isActive = categoriaFiltro === cat;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setCategoriaFiltro(cat)}
+                  className={`snap-center max-w-xs w-auto px-5 py-2 rounded-full text-sm font-semibold tracking-[0.2em] transition-all duration-300 border flex-shrink-0 ${
+                    isActive
+                      ? "bg-[#1a2a4e] text-white border-[#1a2a4e] shadow-lg shadow-[#1a2a4e]/30"
+                      : "bg-white text-[#1a2a4e] border-[#e5e7eb]"
+                  }`}
+                >
+                  <span className="inline-flex items-center gap-2 transition-transform duration-300 hover:scale-[1.02]">
+                    {cat}
+                    {isActive && (
+                      <span className="block h-[2px] w-full bg-white" />
+                    )}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          {/* Dots indicator mobile */}
+          <div className="flex justify-center gap-2 mt-2 sm:hidden w-full">
+            {categorieUI.map((cat, i) => (
+              <span
                 key={cat}
-                onClick={() => setCategoriaFiltro(cat)}
-                className={`px-5 py-2 rounded-full text-sm font-semibold tracking-[0.2em] transition-all duration-300 border ${
-                  isActive
-                    ? "bg-[#1a2a4e] text-white border-[#1a2a4e] shadow-lg shadow-[#1a2a4e]/30"
-                    : "bg-white text-[#1a2a4e] border-[#e5e7eb]"
+                className={`block w-2 h-2 rounded-full transition-all duration-300 ${
+                  categoriaFiltro === cat
+                    ? "bg-[#1a2a4e]"
+                    : "bg-[#cbd5e1] opacity-60"
                 }`}
-              >
-                <span className="inline-flex items-center gap-2 transition-transform duration-300 hover:scale-[1.02]">
-                  {cat}
-                  {isActive && (
-                    <span className="block h-[2px] w-full bg-white" />
-                  )}
-                </span>
-              </button>
-            );
-          })}
+              />
+            ))}
+          </div>
         </div>
       </motion.section>
 
@@ -228,6 +249,21 @@ export default function Portfolio() {
               onClick={(e) => {
                 e.stopPropagation();
                 closeZoom();
+                {
+                  /* Bottone Carica altri */
+                }
+                {
+                  lavoriFiltrati.length > immaginiMostrate && (
+                    <div className="flex justify-center mt-8">
+                      <button
+                        onClick={() => setImmaginiMostrate((n) => n + 12)}
+                        className="px-6 py-3 rounded-full bg-[#1a2a4e] text-white font-semibold shadow-lg hover:bg-[#223867] transition-all duration-250"
+                      >
+                        Carica altri progetti
+                      </button>
+                    </div>
+                  );
+                }
               }}
               aria-label="Chiudi"
             >

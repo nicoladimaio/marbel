@@ -135,7 +135,7 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-0 left-0 w-full bg-white rounded-b-2xl shadow-2xl p-6 pt-16"
+              className="absolute top-0 left-0 w-full bg-white rounded-b-2xl shadow-2xl p-6 pt-16 overflow-y-auto max-h-[100dvh]"
               onClick={(e) => e.stopPropagation()}
             >
               <ul className="flex flex-col gap-3" role="menu">

@@ -26,7 +26,7 @@ export default function Hero({
 
   return (
     <section
-      className={`relative w-full ${height}  flex items-center justify-center`}
+      className={`relative w-full ${height} flex items-center justify-center pt-[80px] sm:pt-0 hero-generic-mobile-landscape`}
     >
       <motion.div className="absolute inset-0">
         <Image
@@ -59,7 +59,11 @@ export default function Hero({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="text-4xl sm:text-5xl font-extrabold uppercase tracking-[0.35em] translate-y-6"
+            className={`text-4xl sm:text-5xl font-extrabold uppercase translate-y-6${
+              title === "CONTATTACI"
+                ? " tracking-[0.25em]"
+                : " tracking-[0.35em]"
+            }`}
           >
             {title}
           </motion.h1>

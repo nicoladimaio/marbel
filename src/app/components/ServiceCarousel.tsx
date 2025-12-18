@@ -5,6 +5,7 @@ import { motion, cubicBezier } from "framer-motion";
 import { servicesList } from "../../data/services";
 
 export default function ServiceCarousel() {
+  const [activeIndex, setActiveIndex] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
@@ -20,6 +21,12 @@ export default function ServiceCarousel() {
 
     setIsAtStart(atStart);
     setIsAtEnd(atEnd);
+
+    // Aggiorna activeIndex su mobile
+    const cardWidth =
+      track.querySelector("[data-service-card]")?.clientWidth || clientWidth;
+    const idx = Math.round(scrollLeft / (cardWidth + 24)); // 24 = gap-6
+    setActiveIndex(idx);
   };
 
   const scrollBy = (direction: "prev" | "next") => {
@@ -56,50 +63,64 @@ export default function ServiceCarousel() {
 
   return (
     <div className="space-y-5">
-      <div
-        ref={trackRef}
-        className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {servicesList.map(
-          ({ key, title, description, icon: Icon, href }, i) => (
-            <motion.div
-              key={key}
-              data-service-card
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{
-                duration: 0.6,
-                delay: i * 0.05,
-                ease: cubicBezier(0.22, 1, 0.36, 1),
-              }}
-              whileHover={{ y: -8 }}
-              className="snap-start flex-[0_0_calc(25%-18px)] min-w-[calc(25%-18px)] sm:min-w-[260px] rounded-2xl border border-[#e5e7eb] bg-white/90 p-7 shadow-lg shadow-[#0b152e]/10 flex flex-col justify-between"
-            >
-              <div className="flex flex-col gap-5">
-                <div className="w-14 h-14 rounded-full bg-white text-[#1a2a4e] flex items-center justify-center shadow-md">
-                  <Icon size={26} />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-lg font-bold uppercase tracking-[0.35em] text-[#1a2a4e]">
-                    {title}
-                  </h3>
-                  <p className="text-sm text-[#475569] leading-relaxed">
-                    {description}
-                  </p>
-                </div>
-              </div>
-              <Link
-                href={href}
-                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.3em] text-[#1a2a4e] hover:text-[#102046] transition-colors"
+      <div className="relative">
+        {/* Gradienti laterali mobile */}
+        <div
+          ref={trackRef}
+          className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {servicesList.map(
+            ({ key, title, description, icon: Icon, href }, i) => (
+              <motion.div
+                key={key}
+                data-service-card
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{
+                  duration: 0.6,
+                  delay: i * 0.05,
+                  ease: cubicBezier(0.22, 1, 0.36, 1),
+                }}
+                whileHover={{ y: -8 }}
+                className="snap-center w-[90vw] min-w-[90vw] sm:snap-start sm:w-[calc(25%-18px)] sm:min-w-[260px] rounded-2xl border border-[#e5e7eb] bg-white/90 p-7 shadow-lg shadow-[#0b152e]/10 flex flex-col justify-between transition-all service-card-landscape"
               >
-                Scopri di più
-              </Link>
-            </motion.div>
-          )
-        )}
+                <div className="flex flex-col gap-5">
+                  <div className="w-14 h-14 rounded-full bg-white text-[#1a2a4e] flex items-center justify-center shadow-md">
+                    <Icon size={26} />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-lg font-bold uppercase tracking-[0.35em] text-[#1a2a4e]">
+                      {title}
+                    </h3>
+                    <p className="text-sm text-[#475569] leading-relaxed">
+                      {description}
+                    </p>
+                  </div>
+                </div>
+                <Link
+                  href={href}
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.3em] text-[#1a2a4e] hover:text-[#102046] transition-colors"
+                >
+                  Scopri di più
+                </Link>
+              </motion.div>
+            )
+          )}
+        </div>
+        {/* Dots indicator mobile */}
+        <div className="flex justify-center gap-2 mt-2 sm:hidden">
+          {servicesList.map((_, i) => (
+            <span
+              key={i}
+              className={`block w-2 h-2 rounded-full transition-all duration-300 ${
+                i === activeIndex ? "bg-[#1a2a4e]" : "bg-[#cbd5e1] opacity-60"
+              }`}
+            />
+          ))}
+        </div>
       </div>
-      <div className="flex justify-center gap-3">
+      <div className="hidden sm:flex justify-center gap-3">
         <button
           type="button"
           onClick={() => scrollBy("prev")}
