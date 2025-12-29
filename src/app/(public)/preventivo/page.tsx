@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { motion, cubicBezier } from "framer-motion";
-import { db } from "../../firebaseConfig";
-import SocialBar from "../components/SocialBar";
-import PreventivoFooter from "../components/PreventivoFooter";
-import Hero from "../components/Hero";
+import { db } from "../../../firebaseConfig";
+import SocialBar from "../../components/SocialBar";
+import PreventivoFooter from "../../components/PreventivoFooter";
+import Hero from "../../components/Hero";
 
 const CONTACT_ENDPOINT =
   process.env.NEXT_PUBLIC_CONTACT_ENDPOINT ?? "/api/contact";

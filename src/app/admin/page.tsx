@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
+import AdminMenu from "../components/AdminMenu";
 import { MdEdit } from "react-icons/md";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
@@ -20,6 +21,7 @@ import {
   deleteObject,
 } from "firebase/storage";
 import Image from "next/image";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const tabs = [
   { key: "offerte", label: "Offerte" },
@@ -69,41 +71,28 @@ export default function Admin() {
   }
 
   return (
-    <main className="min-h-screen bg-white flex flex-col items-center py-16 px-4 sm:px-8 font-sans">
-      <h1
-        className="text-4xl sm:text-5xl font-extrabold mb-8"
-        style={{ color: bluScuro, textShadow: "0 1px 4px #e3e8f0" }}
-      >
-        Area amministrazione
-      </h1>
-      <div className="w-full max-w-4xl mb-8">
-        <div className="flex gap-4 justify-center mb-6">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`px-4 py-2 rounded font-semibold shadow transition text-white`}
-              style={{ backgroundColor: bluScuro }}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-        <div className="bg-white rounded-2xl shadow p-6">
-          {activeTab === "offerte" && <OfferteAdmin />}
-          {activeTab === "portfolio" && <PortfolioAdmin />}
-          {activeTab === "preventivo" && (
-            <div>Gestione preventivi (aggiungi, modifica, elimina)</div>
-          )}
-        </div>
+    <div className="bg-white font-sans">
+      {/* Sidebar fissa */}
+      <div className="fixed left-0 top-0 h-screen w-64 z-20">
+        <AdminMenu
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          onLogout={handleLogout}
+        />
       </div>
-      <button
-        onClick={handleLogout}
-        className="mt-8 px-4 py-2 rounded bg-red-600 text-white font-semibold shadow hover:bg-red-700 transition"
-      >
-        Logout
-      </button>
-    </main>
+      {/* Main content scrollabile a destra */}
+      <main className="ml-64 min-h-screen flex flex-col items-center py-12 px-4 sm:px-8">
+        <div className="w-full max-w-4xl">
+          <div className="bg-white rounded-2xl shadow p-6">
+            {activeTab === "offerte" && <OfferteAdmin />}
+            {activeTab === "portfolio" && <PortfolioAdmin />}
+            {activeTab === "preventivo" && (
+              <div>Gestione preventivi (aggiungi, modifica, elimina)</div>
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
   );
 }
 
@@ -115,6 +104,7 @@ function OfferteAdmin() {
       descrizione: string;
       immagine: string;
       storagePath?: string;
+      visibile: boolean;
     }[]
   >([]);
   const [titolo, setTitolo] = useState("");
@@ -142,6 +132,7 @@ function OfferteAdmin() {
             descrizione: string;
             immagine: string;
             storagePath?: string;
+            visibile?: boolean;
           };
           return {
             id: doc.id,
@@ -149,6 +140,7 @@ function OfferteAdmin() {
             descrizione: data.descrizione,
             immagine: data.immagine,
             storagePath: data.storagePath || "",
+            visibile: data.visibile !== false,
           };
         })
       );
@@ -173,6 +165,17 @@ function OfferteAdmin() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editId, offerte]);
 
+  const toggleVisibilita = async (id: string, visibile: boolean) => {
+    await setDoc(
+      doc(db, "offerte", id),
+      { visibile: !visibile },
+      { merge: true }
+    );
+    setOfferte((prev) =>
+      prev.map((o) => (o.id === id ? { ...o, visibile: !visibile } : o))
+    );
+  };
+
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -194,6 +197,7 @@ function OfferteAdmin() {
       descrizione,
       immagine: imageUrl,
       storagePath,
+      visibile: true,
     });
     setTitolo("");
     setDescrizione("");
@@ -406,6 +410,15 @@ function OfferteAdmin() {
             </div>
             <div className="flex flex-col gap-2 items-end">
               <button
+                onClick={() => toggleVisibilita(o.id, o.visibile)}
+                className={`rounded-full p-2 text-xl ${
+                  o.visibile ? "text-green-600" : "text-gray-400"
+                } hover:text-green-700`}
+                title={o.visibile ? "Nascondi dal sito" : "Mostra sul sito"}
+              >
+                {o.visibile ? <FaEye /> : <FaEyeSlash />}
+              </button>
+              <button
                 onClick={() => setEditId(o.id)}
                 className="px-4 py-2 rounded-lg font-semibold shadow text-white"
                 style={{ backgroundColor: bluScuro }}
@@ -552,6 +565,7 @@ function PortfolioAdmin() {
       immagine: string;
       categoria: string;
       storagePath?: string;
+      visibile: boolean;
     }[]
   >([]);
   const [titolo, setTitolo] = useState("");
@@ -562,6 +576,7 @@ function PortfolioAdmin() {
   const [categorie, setCategorie] = useState<string[]>([]);
   const [newCategoria, setNewCategoria] = useState("");
   const [loading, setLoading] = useState(false);
+  const [addError, setAddError] = useState<string>("");
   const [editId, setEditId] = useState<string | null>(null);
   const [editTitolo, setEditTitolo] = useState("");
   const [editFile, setEditFile] = useState<File | null>(null);
@@ -589,6 +604,7 @@ function PortfolioAdmin() {
             immagine: string;
             categoria: string;
             storagePath?: string;
+            visibile?: boolean;
           };
           return {
             id: doc.id,
@@ -596,6 +612,7 @@ function PortfolioAdmin() {
             immagine: data.immagine,
             categoria: data.categoria,
             storagePath: data.storagePath || "",
+            visibile: data.visibile !== false,
           };
         })
       );
@@ -634,27 +651,53 @@ function PortfolioAdmin() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editId]);
 
+  const toggleVisibilita = async (id: string, visibile: boolean) => {
+    await setDoc(
+      doc(db, "portfolio", id),
+      { visibile: !visibile },
+      { merge: true }
+    );
+    setItems((prev) =>
+      prev.map((i) => (i.id === id ? { ...i, visibile: !visibile } : i))
+    );
+  };
+
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
+    setAddError("");
+    if (!file) {
+      setAddError("Seleziona un'immagine per il portfolio.");
+      return;
+    }
     setLoading(true);
     let imageUrl = "";
     let storagePath = "";
-    if (file) {
-      try {
-        const storageRef = ref(storage, `portfolio/${Date.now()}_${file.name}`);
-        await uploadBytes(storageRef, file);
-        imageUrl = await getDownloadURL(storageRef);
-        storagePath = storageRef.fullPath;
-      } catch (err) {
-        imageUrl = "";
-        storagePath = "";
-      }
+    try {
+      const storageRef = ref(storage, `portfolio/${Date.now()}_${file.name}`);
+      await uploadBytes(storageRef, file);
+      imageUrl = await getDownloadURL(storageRef);
+      storagePath = storageRef.fullPath;
+    } catch (err) {
+      console.error("Errore upload immagine portfolio:", err);
+      setAddError(
+        err instanceof Error && err.message
+          ? `Errore durante il caricamento: ${err.message}`
+          : "Errore durante il caricamento dell'immagine. Riprova."
+      );
+      setLoading(false);
+      return;
+    }
+    if (!imageUrl) {
+      setAddError("Impossibile ottenere l'URL dell'immagine. Riprova.");
+      setLoading(false);
+      return;
     }
     await addDoc(collection(db, "portfolio"), {
       titolo,
       immagine: imageUrl,
       categoria,
       storagePath,
+      visibile: true,
     });
     setTitolo("");
     setCategoria("");
@@ -668,6 +711,7 @@ function PortfolioAdmin() {
           immagine: string;
           categoria: string;
           storagePath?: string;
+          visibile?: boolean;
         };
         return {
           id: doc.id,
@@ -675,6 +719,7 @@ function PortfolioAdmin() {
           immagine: data.immagine,
           categoria: data.categoria,
           storagePath: data.storagePath || "",
+          visibile: data.visibile !== false,
         };
       })
     );
@@ -964,6 +1009,15 @@ function PortfolioAdmin() {
               </div>
               <div className="flex flex-col gap-2 items-end">
                 <button
+                  onClick={() => toggleVisibilita(i.id, i.visibile)}
+                  className={`rounded-full p-2 text-xl ${
+                    i.visibile ? "text-green-600" : "text-gray-400"
+                  } hover:text-green-700`}
+                  title={i.visibile ? "Nascondi dal sito" : "Mostra sul sito"}
+                >
+                  {i.visibile ? <FaEye /> : <FaEyeSlash />}
+                </button>
+                <button
                   onClick={() => setEditId(i.id)}
                   className="px-4 py-2 rounded-lg font-semibold shadow text-white"
                   style={{ backgroundColor: bluScuro }}
@@ -1009,8 +1063,8 @@ function PortfolioAdmin() {
               required
             />
             <select
-              value={categoria}
-              onChange={(e) => setCategoria(e.target.value)}
+              value={editCategoria}
+              onChange={(e) => setEditCategoria(e.target.value)}
               className="border rounded px-3 py-2 text-black"
               required
             >
@@ -1093,6 +1147,11 @@ function PortfolioAdmin() {
             <h3 className="text-xl font-bold" style={{ color: bluScuro }}>
               Aggiungi lavoro
             </h3>
+            {addError && (
+              <div className="bg-red-100 text-red-700 rounded p-2 text-sm font-semibold border border-red-200">
+                {addError}
+              </div>
+            )}
             <input
               type="text"
               placeholder="Titolo"

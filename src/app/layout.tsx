@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+// Navbar and Footer moved to (public)/layout.tsx
+// import AdminMenu from "./components/AdminMenu";
+// import { usePathname } from "next/navigation";
 import CookieBanner from "./components/CookieBanner";
 
 const geistSans = Geist({
@@ -65,9 +66,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <CookieBanner />
-        <Navbar />
         {children}
-        <Footer />
       </body>
     </html>
   );

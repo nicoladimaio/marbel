@@ -63,11 +63,11 @@ export default function ServiceCarousel() {
 
   return (
     <div className="space-y-5">
-      <div className="relative">
+      <div className="relative overflow-visible pt-8">
         {/* Gradienti laterali mobile */}
         <div
           ref={trackRef}
-          className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex gap-6 overflow-x-auto pb-4 pt-8 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {servicesList.map(
             ({ key, title, description, icon: Icon, href }, i) => (
@@ -82,8 +82,8 @@ export default function ServiceCarousel() {
                   delay: i * 0.05,
                   ease: cubicBezier(0.22, 1, 0.36, 1),
                 }}
-                whileHover={{ y: -8 }}
-                className="snap-center w-[90vw] min-w-[90vw] sm:snap-start sm:w-[calc(25%-18px)] sm:min-w-[260px] rounded-2xl border border-[#e5e7eb] bg-white/90 p-7 shadow-lg shadow-[#0b152e]/10 flex flex-col justify-between transition-all service-card-landscape"
+                whileHover={{ y: -8, zIndex: 20 }}
+                className="snap-center w-[90vw] min-w-[90vw] sm:snap-start sm:w-[340px] sm:min-w-[320px] rounded-2xl border border-[#e5e7eb] bg-white/90 p-7 shadow-lg shadow-[#0b152e]/10 flex flex-col justify-between transition-all service-card-landscape"
               >
                 <div className="flex flex-col gap-5">
                   <div className="w-14 h-14 rounded-full bg-white text-[#1a2a4e] flex items-center justify-center shadow-md">

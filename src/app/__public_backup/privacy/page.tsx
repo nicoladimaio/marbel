@@ -1,6 +1,5 @@
-"use client";
-
 import { motion } from "framer-motion";
+import PreventivoFooter from "../components/PreventivoFooter";
 
 const sections = [
   {
@@ -120,33 +119,33 @@ export default function PrivacyPage() {
   return (
     <main className="min-h-screen bg-[#f5f6fa] text-[#1a2a4e] font-sans">
       <div className="max-w-5xl mx-auto px-6 py-16 space-y-12">
-        <header className="text-center space-y-3">
-          <h1 className="text-4xl sm:text-5xl font-extrabold">Privacy Policy</h1>
+        <header className="text-center space-y-3 pt-hero-landscape pt-24">
+          <h1 className="text-4xl sm:text-5xl font-extrabold">
+            Privacy Policy
+          </h1>
           <p className="text-lg text-[#475569] max-w-2xl mx-auto">
-            Informazioni sul trattamento dei dati personali per gli utenti del sito MarBel.
+            Informazioni sul trattamento dei dati personali per gli utenti del
+            sito MarBel.
           </p>
         </header>
 
-        <div className="space-y-10">
+        <section className="bg-white rounded-2xl shadow-sm border border-[#e2e8f0] p-6 sm:p-8 space-y-6">
           {sections.map((section, index) => (
-            <motion.section
-              key={section.title}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={titleVariants}
-              className="bg-white rounded-2xl shadow-sm border border-[#e2e8f0] p-6 sm:p-8 space-y-4"
-            >
-              <h2 className="text-2xl font-bold tracking-tight">{section.title}</h2>
-              <div className="space-y-2 text-[#475569] leading-relaxed">
+            <div key={section.title} className="space-y-2">
+              <h2 className="text-2xl font-bold tracking-tight mt-8 first:mt-0">
+                {section.title}
+              </h2>
+              <div className="space-y-1 text-[#475569] leading-relaxed">
                 {section.content.map((paragraph, idx) => (
                   <p key={idx}>{paragraph}</p>
                 ))}
               </div>
-            </motion.section>
+            </div>
           ))}
-        </div>
+        </section>
+        <div className="mt-16">{/* Footer con contatti e link utili */}</div>
       </div>
+      <PreventivoFooter />
     </main>
   );
 }

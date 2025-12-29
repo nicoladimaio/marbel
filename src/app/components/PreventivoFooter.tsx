@@ -1,5 +1,4 @@
 import Link from "next/link";
-
 type PreventivoFooterProps = {
   eyebrow?: string;
   title?: string;
@@ -16,6 +15,7 @@ export default function PreventivoFooter({
   return (
     <>
       {/* CTA FINALE con effetto parallax */}
+
       <section
         className="w-full flex flex-col items-center justify-center py-16 px-4 bg-[url('/sfondo.jpg')] bg-cover bg-center bg-fixed relative"
         style={{ minHeight: "300px" }}
@@ -43,11 +43,10 @@ export default function PreventivoFooter({
             </Link>
           )}
         </div>
-        <div className="absolute inset-0 bg-black/35 z-0" />
       </section>
       {/* CONTATTI E INFO */}
-      <section className="w-full flex flex-col items-center py-12 px-4 bg-white border-t border-gray-200">
-        <div className="max-w-4xl w-full mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+      <section className="w-full flex flex-col items-center py-12 bg-white border-t border-gray-200">
+        <div className="max-w-4xl w-full mx-auto flex flex-col md:flex-row justify-between gap-8">
           <div>
             <h3 className="text-2xl font-bold text-[#1a2a4e] mb-4">
               Contattaci

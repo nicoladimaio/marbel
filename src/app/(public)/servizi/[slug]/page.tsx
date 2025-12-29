@@ -4,11 +4,11 @@ import { notFound, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, cubicBezier, AnimatePresence } from "framer-motion";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import SocialBar from "../../components/SocialBar";
-import PreventivoFooter from "../../components/PreventivoFooter";
-import Hero from "../../components/Hero";
-import { db } from "../../../firebaseConfig";
-import { servicesDetails } from "../../../data/servicesDetails";
+import SocialBar from "../../../components/SocialBar";
+import PreventivoFooter from "../../../components/PreventivoFooter";
+import Hero from "../../../components/Hero";
+import { db } from "../../../../firebaseConfig";
+import { servicesDetails } from "../../../../data/servicesDetails";
 
 type GalleryItem = {
   id: string;

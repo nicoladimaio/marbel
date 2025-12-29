@@ -47,7 +47,7 @@ export default function Login() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="border rounded px-3 py-2"
+          className="border rounded px-3 py-2 text-black"
           required
         />
         <input
@@ -55,7 +55,7 @@ export default function Login() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="border rounded px-3 py-2"
+          className="border rounded px-3 py-2 text-black"
           required
         />
         <button

@@ -90,7 +90,9 @@ export default function CookiePage() {
               variants={blockVariants}
               className="bg-white rounded-2xl shadow-sm border border-[#e2e8f0] p-6 sm:p-8 space-y-4"
             >
-              <h2 className="text-2xl font-bold tracking-tight">{section.title}</h2>
+              <h2 className="text-2xl font-bold tracking-tight">
+                {section.title}
+              </h2>
               <div className="space-y-2 text-[#475569] leading-relaxed">
                 {section.content.map((paragraph, idx) => (
                   <p key={idx}>{paragraph}</p>

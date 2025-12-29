@@ -1,12 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../firebaseConfig";
+import { db } from "../../../firebaseConfig";
 import Image from "next/image";
-import SocialBar from "../components/SocialBar";
+import SocialBar from "../../components/SocialBar";
 import { AnimatePresence, motion, cubicBezier } from "framer-motion";
-import Hero from "../components/Hero";
-import PreventivoFooter from "../components/PreventivoFooter";
+import Hero from "../../components/Hero";
+import PreventivoFooter from "../../components/PreventivoFooter";
 import { FaWhatsapp } from "react-icons/fa";
 import { FiMail } from "react-icons/fi";
 
@@ -302,7 +302,13 @@ const faqs = [
 
 export default function Offerte() {
   const [offerte, setOfferte] = useState<
-    { id: string; titolo: string; descrizione: string; immagine: string }[]
+    {
+      id: string;
+      titolo: string;
+      descrizione: string;
+      immagine: string;
+      visibile?: boolean;
+    }[]
   >([]);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -312,19 +318,23 @@ export default function Offerte() {
     const fetchOfferte = async () => {
       const querySnapshot = await getDocs(collection(db, "offerte"));
       setOfferte(
-        querySnapshot.docs.map((doc) => {
-          const data = doc.data() as {
-            titolo: string;
-            descrizione: string;
-            immagine: string;
-          };
-          return {
-            id: doc.id,
-            titolo: data.titolo,
-            descrizione: data.descrizione,
-            immagine: data.immagine,
-          };
-        })
+        querySnapshot.docs
+          .map((doc) => {
+            const data = doc.data() as {
+              titolo: string;
+              descrizione: string;
+              immagine: string;
+              visibile?: boolean;
+            };
+            return {
+              id: doc.id,
+              titolo: data.titolo,
+              descrizione: data.descrizione,
+              immagine: data.immagine,
+              visibile: data.visibile !== false,
+            };
+          })
+          .filter((item) => item.visibile)
       );
     };
     fetchOfferte();

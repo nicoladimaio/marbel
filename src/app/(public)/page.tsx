@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import SocialBar from "./components/SocialBar";
+import SocialBar from "../components/SocialBar";
 import { useEffect, useState } from "react";
 import {
   useScroll,
@@ -9,11 +9,11 @@ import {
   AnimatePresence,
   cubicBezier,
 } from "framer-motion";
-import ServiceCarousel from "./components/ServiceCarousel";
+import ServiceCarousel from "../components/ServiceCarousel";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebaseConfig";
+import { db } from "../../firebaseConfig";
 import { FaHardHat, FaRedo, FaTools } from "react-icons/fa";
-import PreventivoFooter from "./components/PreventivoFooter";
+import PreventivoFooter from "../components/PreventivoFooter";
 import { FiCheck } from "react-icons/fi";
 import analisiImg from "@/../public/analisi-home.webp";
 import realizzazioneImg from "@/../public/realizzazione-home.webp";
@@ -40,19 +40,23 @@ export default function Home() {
     const fetchOffers = async () => {
       const querySnapshot = await getDocs(collection(db, "offerte"));
       setOffers(
-        querySnapshot.docs.map((doc) => {
-          const data = doc.data() as {
-            titolo: string;
-            descrizione: string;
-            immagine?: string;
-          };
-          return {
-            id: doc.id,
-            titolo: data.titolo,
-            descrizione: data.descrizione,
-            immagine: data.immagine,
-          };
-        })
+        querySnapshot.docs
+          .map((doc) => {
+            const data = doc.data() as {
+              titolo: string;
+              descrizione: string;
+              immagine?: string;
+              visibile?: boolean;
+            };
+            return {
+              id: doc.id,
+              titolo: data.titolo,
+              descrizione: data.descrizione,
+              immagine: data.immagine,
+              visibile: data.visibile,
+            };
+          })
+          .filter((offer) => offer.visibile !== false)
       );
     };
     fetchOffers();
@@ -181,7 +185,7 @@ export default function Home() {
               animate={{ opacity: 1 }}
               className="w-full p-0 m-0"
             >
-              <div className="relative w-full flex items-center justify-center overflow-hidden pt-hero-landscape">
+              <div className="relative w-full flex items-center justify-center overflow-hidden pt-hero-landscape md:h-screen md:min-h-screen">
                 {/* Background image with subtle parallax */}
                 <motion.div
                   className="absolute inset-0 z-0"
@@ -470,9 +474,12 @@ export default function Home() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={scrollReveal}
-              className="py-24 bg-[#0f172a]"
+              className="py-24 bg-[#0f172a] overflow-visible"
             >
-              <div className="max-w-7xl mx-auto px-6 space-y-12">
+              <div
+                className="max-w-7xl mx-auto px-6 space-y-12 overflow-visible"
+                style={{ overflow: "visible" }}
+              >
                 <div className="text-center space-y-4 text-left">
                   <p className="text-sm uppercase tracking-[0.4em] text-white/60">
                     Servizi
