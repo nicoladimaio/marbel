@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import PreventivoFooter from "../components/PreventivoFooter";
+import PreventivoFooter from "../../components/PreventivoFooter";
 
 const sections = [
   {
