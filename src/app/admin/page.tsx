@@ -211,6 +211,7 @@ function OfferteAdmin() {
           descrizione: string;
           immagine: string;
           storagePath?: string;
+          visibile?: boolean;
         };
         return {
           id: doc.id,
@@ -218,6 +219,7 @@ function OfferteAdmin() {
           descrizione: data.descrizione,
           immagine: data.immagine,
           storagePath: data.storagePath || "",
+          visibile: data.visibile !== false,
         };
       })
     );
