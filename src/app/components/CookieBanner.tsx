@@ -279,11 +279,10 @@ export default function CookieBanner() {
           setVisible(true);
           setShowPreferences(false);
         }}
-        className="fixed right-4 bottom-4 z-[99999] px-4 py-2 rounded-lg border border-[#e2e8f0] bg-white text-[#1a2a4e] font-semibold shadow hover:bg-[#f1f5f9] transition-colors text-sm"
+        className="fixed left-4 bottom-4 z-[99999] px-4 py-2 rounded-lg border border-[#e2e8f0] bg-white text-[#1a2a4e] font-semibold shadow hover:bg-[#f1f5f9] transition-colors text-sm cursor-pointer"
         style={{ display: "block" }}
         aria-label="Gestisci preferenze cookie"
         title="Gestisci preferenze cookie"
-        className="fixed left-4 bottom-4 z-[99999] px-4 py-2 rounded-lg border border-[#e2e8f0] bg-white text-[#1a2a4e] font-semibold shadow hover:bg-[#f1f5f9] transition-colors text-sm cursor-pointer"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
