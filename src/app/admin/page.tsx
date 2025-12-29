@@ -776,6 +776,7 @@ function PortfolioAdmin() {
           immagine: string;
           categoria: string;
           storagePath?: string;
+          visibile?: boolean;
         };
         return {
           id: doc.id,
@@ -783,6 +784,7 @@ function PortfolioAdmin() {
           immagine: data.immagine,
           categoria: data.categoria,
           storagePath: data.storagePath || "",
+          visibile: data.visibile !== false,
         };
       })
     );

@@ -16,7 +16,15 @@ const defaultPreferences: CookiePreferences = {
 import { useEffect, useState } from "react";
 
 // Helper to add/remove scripts by id
-function manageScript({ id, src, shouldAdd }: { id: string; src: string; shouldAdd: boolean }) {
+function manageScript({
+  id,
+  src,
+  shouldAdd,
+}: {
+  id: string;
+  src: string;
+  shouldAdd: boolean;
+}) {
   if (typeof window === "undefined") return;
   const existing = document.getElementById(id);
   if (shouldAdd) {
@@ -39,7 +47,8 @@ function manageScript({ id, src, shouldAdd }: { id: string; src: string; shouldA
 function blockScriptsByPreference(prefs: CookiePreferences) {
   // Example: Google Analytics (gtag.js)
   // Replace with your real analytics/marketing scripts as needed
-  const analyticsSrc = "https://www.googletagmanager.com/gtag/js?id=G-9XVFDV1CDN";
+  const analyticsSrc =
+    "https://www.googletagmanager.com/gtag/js?id=G-9XVFDV1CDN";
   const analyticsInitId = "gtag-init";
 
   // Analytics
