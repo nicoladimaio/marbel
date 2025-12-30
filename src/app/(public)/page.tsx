@@ -610,9 +610,12 @@ export default function Home() {
                 <div className="flex justify-center">
                   <a
                     href="/offerte"
-                    className="px-10 py-3 rounded-2xl bg-[#1a2a4e] text-white font-semibold uppercase tracking-[0.25em] shadow-xl hover:bg-[#223867] transition-all duration-300"
+                    className="w-full max-w-xs sm:max-w-none px-6 sm:px-10 py-3 rounded-2xl bg-[#1a2a4e] text-white font-semibold uppercase tracking-[0.18em] shadow-xl hover:bg-[#223867] transition-all duration-300 text-center text-sm sm:text-base"
                   >
-                    Scopri tutte le offerte
+                    <span className="sm:hidden">Tutte le offerte</span>
+                    <span className="hidden sm:inline">
+                      Scopri tutte le offerte
+                    </span>
                   </a>
                 </div>
               </div>

@@ -88,7 +88,7 @@ export default function Navbar() {
         </ul>
 
         <button
-          className="md:hidden ml-auto p-2 rounded focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]"
+          className="md:hidden ml-auto p-2 rounded focus:outline-none focus:ring-2 focus:ring-[#1a2a4e] z-[60]"
           aria-label={menuOpen ? "Chiudi menu" : "Apri menu"}
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((v) => !v)}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { MdHome } from "react-icons/md";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
 import { useRouter } from "next/navigation";
@@ -34,7 +35,16 @@ export default function Login() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f5f6fa] flex flex-col items-center py-16 px-4 sm:px-8 font-sans">
+    <main className="min-h-screen bg-[#f5f6fa] flex flex-col items-center py-16 px-4 sm:px-8 font-sans relative">
+      <button
+        onClick={() => router.push("/")}
+        className="absolute top-6 left-6 p-2 rounded-full bg-white hover:bg-gray-200 shadow text-[#1a2a4e] text-3xl z-10"
+        type="button"
+        title="Torna alla homepage"
+        aria-label="Torna alla homepage"
+      >
+        <MdHome />
+      </button>
       <h1 className="text-4xl sm:text-5xl font-extrabold text-[#1a2a4e] mb-8 mt-24">
         Login
       </h1>
@@ -66,9 +76,6 @@ export default function Login() {
           {loading ? "Accesso..." : "Accedi"}
         </button>
         {error && <p className="text-red-600">{error}</p>}
-        <a href="#" className="text-blue-600 text-sm mt-2 hover:underline">
-          Recupera password
-        </a>
       </form>
     </main>
   );

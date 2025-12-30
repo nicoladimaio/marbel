@@ -23,6 +23,31 @@ export default function Portfolio() {
   const [categoriaFiltro, setCategoriaFiltro] = useState("Tutti");
   const [zoomIndex, setZoomIndex] = useState<number | null>(null);
   const [immaginiMostrate, setImmaginiMostrate] = useState(12);
+  // --- DRAG TO SCROLL CATEGORIE ---
+  const categorieRef = React.useRef<HTMLDivElement>(null);
+  const [dragging, setDragging] = useState(false);
+  const dragState = React.useRef({ startX: 0, scrollLeft: 0 });
+  // Migliorata: click e drag non si bloccano a vicenda
+  function handleDragStart(e: React.MouseEvent<HTMLDivElement>) {
+    setDragging(true);
+    dragState.current.startX =
+      e.pageX - (categorieRef.current?.getBoundingClientRect().left || 0);
+    dragState.current.scrollLeft = categorieRef.current?.scrollLeft || 0;
+    dragState.current.hasDragged = false;
+  }
+  function handleDragMove(e: React.MouseEvent<HTMLDivElement>) {
+    if (!dragging) return;
+    const x =
+      e.pageX - (categorieRef.current?.getBoundingClientRect().left || 0);
+    const walk = x - dragState.current.startX;
+    if (Math.abs(walk) > 5) dragState.current.hasDragged = true;
+    if (categorieRef.current) {
+      categorieRef.current.scrollLeft = dragState.current.scrollLeft - walk;
+    }
+  }
+  function handleDragEnd() {
+    setDragging(false);
+  }
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -52,15 +77,15 @@ export default function Portfolio() {
     fetchItems();
   }, []);
 
-  const categorie = Array.from(
-    new Set(
-      items.map((i) => (i.categoria || "").trim()).filter((c) => c.length > 0)
-    )
-  );
-  const categorieUI = [
-    "Tutti",
-    ...categorie.filter((cat) => cat.toLowerCase() !== "tutti"),
-  ];
+  // Calcolo le categorie uniche presenti negli items
+  const categorieUI = React.useMemo(() => {
+    const set = new Set<string>();
+    items.forEach((item) => {
+      if (item.categoria && item.categoria.trim() !== "")
+        set.add(item.categoria.trim());
+    });
+    return ["Tutti", ...Array.from(set)];
+  }, [items]);
   const lavoriFiltrati =
     categoriaFiltro === "Tutti"
       ? items
@@ -79,21 +104,21 @@ export default function Portfolio() {
     setZoomIndex(null);
   };
 
-  const nextZoom = () => {
+  const nextZoom = React.useCallback(() => {
     setZoomIndex((current) => {
       if (current === null) return current;
       if (current >= lavoriFiltrati.length - 1) return current;
       return current + 1;
     });
-  };
+  }, [lavoriFiltrati.length]);
 
-  const prevZoom = () => {
+  const prevZoom = React.useCallback(() => {
     setZoomIndex((current) => {
       if (current === null) return current;
       if (current <= 0) return current;
       return current - 1;
     });
-  };
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -111,11 +136,12 @@ export default function Portfolio() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [zoomIndex, lavoriFiltrati.length]);
+  }, [zoomIndex, lavoriFiltrati.length, nextZoom, prevZoom]);
 
   // Reset paginazione quando cambia filtro
   useEffect(() => {
     setImmaginiMostrate(12);
+    setZoomIndex(null);
   }, [categoriaFiltro]);
 
   return (
@@ -145,15 +171,40 @@ export default function Portfolio() {
         viewport={{ once: true, amount: 0.2 }}
         className="py-16 px-6 bg-[#f5f6fa]"
       >
-        <div className="max-w-4xl mx-auto">
-          <div className="flex flex-row overflow-x-auto flex-nowrap snap-x snap-mandatory gap-2 w-full px-4 pb-2 scroll-smooth">
+        <div className="w-full">
+          <div
+            className="flex flex-row flex-nowrap snap-x snap-mandatory gap-2 w-full pb-2 scroll-smooth select-none px-4"
+            style={{
+              cursor: dragging ? "grabbing" : "grab",
+              userSelect: "none",
+              overflowX: "auto",
+              msOverflowStyle: "none",
+              scrollbarWidth: "none",
+            }}
+            ref={categorieRef}
+            onMouseDown={handleDragStart}
+            onMouseMove={handleDragMove}
+            onMouseUp={handleDragEnd}
+            onMouseLeave={handleDragEnd}
+            // Nasconde la scrollbar
+            onScroll={() => {
+              if (categorieRef.current) {
+                categorieRef.current.style.scrollbarWidth = "none";
+              }
+            }}
+          >
             {categorieUI.map((cat) => {
               const isActive = categoriaFiltro === cat;
               return (
                 <button
                   key={cat}
-                  onClick={() => setCategoriaFiltro(cat)}
-                  className={`snap-center max-w-xs w-auto px-5 py-2 rounded-full text-sm font-semibold tracking-[0.2em] transition-all duration-300 border flex-shrink-0 ${
+                  onClick={(e) => {
+                    // Se non c'è stato vero drag, consenti il click
+                    if (!dragState.current.hasDragged) {
+                      setCategoriaFiltro(cat);
+                    }
+                  }}
+                  className={`snap-center min-w-[140px] px-5 py-2 rounded-full text-sm font-semibold tracking-[0.2em] transition-all duration-300 border flex-shrink-0 ${
                     isActive
                       ? "bg-[#1a2a4e] text-white border-[#1a2a4e] shadow-lg shadow-[#1a2a4e]/30"
                       : "bg-white text-[#1a2a4e] border-[#e5e7eb]"
@@ -161,9 +212,6 @@ export default function Portfolio() {
                 >
                   <span className="inline-flex items-center gap-2 transition-transform duration-300 hover:scale-[1.02]">
                     {cat}
-                    {isActive && (
-                      <span className="block h-[2px] w-full bg-white" />
-                    )}
                   </span>
                 </button>
               );
@@ -171,7 +219,7 @@ export default function Portfolio() {
           </div>
           {/* Dots indicator mobile */}
           <div className="flex justify-center gap-2 mt-2 sm:hidden w-full">
-            {categorieUI.map((cat, i) => (
+            {categorieUI.map((cat) => (
               <span
                 key={cat}
                 className={`block w-2 h-2 rounded-full transition-all duration-300 ${
@@ -199,42 +247,52 @@ export default function Portfolio() {
         viewport={{ once: true, amount: 0.2 }}
         className="py-24 px-6 bg-white"
       >
-        <div className="max-w-6xl mx-auto columns-1 sm:columns-2 lg:columns-3 [column-gap:1.5rem] [column-fill:_balance]">
-          {lavoriFiltrati.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-[#cbd5f5] bg-[#f5f6fa] p-10 text-center text-[#94a3b8] [break-inside:avoid]">
-              Nessun progetto disponibile per questa categoria al momento.
-            </div>
-          ) : (
-            lavoriFiltrati.map((project, index) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{
-                  duration: 0.7,
-                  delay: index * 0.07,
-                  ease: cubicBezier(0.22, 1, 0.36, 1),
-                }}
-                whileHover={{ scale: 1.05 }}
-                onClick={() => openZoom(index)}
-                className="relative mb-6 overflow-hidden rounded-3xl shadow-xl cursor-pointer transition-transform duration-500 [break-inside:avoid]"
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {lavoriFiltrati.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-[#cbd5f5] bg-[#f5f6fa] p-10 text-center text-[#94a3b8]">
+                Nessun progetto disponibile per questa categoria al momento.
+              </div>
+            ) : (
+              lavoriFiltrati
+                .slice(0, immaginiMostrate)
+                .map((project, index) => (
+                  <motion.div
+                    key={project.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{
+                      duration: 0.7,
+                      delay: index * 0.07,
+                      ease: cubicBezier(0.22, 1, 0.36, 1),
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    onClick={() => openZoom(index)}
+                    className="relative overflow-hidden rounded-3xl shadow-xl cursor-pointer transition-transform duration-500 bg-white"
+                  >
+                    <div className="relative w-full aspect-[4/5] overflow-hidden">
+                      <Image
+                        src={project.immagine || "/placeholder.jpg"}
+                        alt={project.titolo}
+                        fill
+                        className="object-cover transition-transform duration-700 hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/20 opacity-0 hover:opacity-40 transition-opacity duration-500" />
+                    </div>
+                  </motion.div>
+                ))
+            )}
+          </div>
+          {lavoriFiltrati.length > immaginiMostrate && (
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={() => setImmaginiMostrate((n) => n + 12)}
+                className="px-6 py-3 rounded-full bg-[#1a2a4e] text-white font-semibold shadow-lg hover:bg-[#223867] transition-all duration-250"
               >
-                <div
-                  className={`relative w-full ${
-                    cardHeights[index % cardHeights.length]
-                  } overflow-hidden`}
-                >
-                  <Image
-                    src={project.immagine || "/placeholder.jpg"}
-                    alt={project.titolo}
-                    fill
-                    className="object-cover transition-transform duration-700 hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/20 opacity-0 hover:opacity-40 transition-opacity duration-500" />
-                </div>
-              </motion.div>
-            ))
+                Carica altri progetti
+              </button>
+            </div>
           )}
         </div>
       </motion.section>
@@ -253,21 +311,6 @@ export default function Portfolio() {
               onClick={(e) => {
                 e.stopPropagation();
                 closeZoom();
-                {
-                  /* Bottone Carica altri */
-                }
-                {
-                  lavoriFiltrati.length > immaginiMostrate && (
-                    <div className="flex justify-center mt-8">
-                      <button
-                        onClick={() => setImmaginiMostrate((n) => n + 12)}
-                        className="px-6 py-3 rounded-full bg-[#1a2a4e] text-white font-semibold shadow-lg hover:bg-[#223867] transition-all duration-250"
-                      >
-                        Carica altri progetti
-                      </button>
-                    </div>
-                  );
-                }
               }}
               aria-label="Chiudi"
             >

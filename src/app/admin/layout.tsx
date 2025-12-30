@@ -1,5 +1,4 @@
 "use client";
-import CookieBanner from "../components/CookieBanner";
 
 export default function AdminLayout({
   children,
@@ -8,7 +7,7 @@ export default function AdminLayout({
 }) {
   return (
     <>
-      <CookieBanner />
+      {/* CookieBanner rimosso: ora solo in layout.tsx globale */}
       {children}
     </>
   );

@@ -1,8 +1,16 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+
+import React, { useEffect, useState } from "react";
 import AdminMenu from "../components/AdminMenu";
 import { MdEdit } from "react-icons/md";
-import { onAuthStateChanged, signOut, User } from "firebase/auth";
+import {
+  onAuthStateChanged,
+  signOut,
+  User,
+  updatePassword,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+} from "firebase/auth";
 import { auth } from "../../firebaseConfig";
 import { useRouter } from "next/navigation";
 import {
@@ -21,13 +29,13 @@ import {
   deleteObject,
 } from "firebase/storage";
 import Image from "next/image";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-
-const tabs = [
-  { key: "offerte", label: "Offerte" },
-  { key: "portfolio", label: "Portfolio Lavori" },
-  { key: "preventivo", label: "Preventivi" },
-];
+import {
+  FaEye,
+  FaEyeSlash,
+  FaTrash,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
 
 // Colore blu scuro usato nella homepage
 const bluScuro = "#1a2a4e";
@@ -37,7 +45,29 @@ export default function Admin() {
   const [user, setUser] = useState<User | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [activeTab, setActiveTab] = useState("offerte");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
+
+  // Logout automatico dopo 15 minuti di inattività
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    const logout = async () => {
+      await signOut(auth);
+      router.push("/login");
+    };
+    const resetTimer = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(logout, 15 * 60 * 1000); // 15 minuti
+    };
+    // Eventi che consideriamo "attività"
+    const events = ["click", "keydown", "scroll", "mousemove", "touchstart"];
+    events.forEach((event) => window.addEventListener(event, resetTimer));
+    resetTimer();
+    return () => {
+      clearTimeout(timeoutId);
+      events.forEach((event) => window.removeEventListener(event, resetTimer));
+    };
+  }, [router]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -71,32 +101,223 @@ export default function Admin() {
   }
 
   return (
-    <div className="bg-white font-sans">
-      {/* Sidebar fissa */}
-      <div className="fixed left-0 top-0 h-screen w-64 z-20">
+    <div className="bg-white font-sans min-h-screen">
+      {/* Mobile hamburger */}
+      <button
+        className="fixed top-4 left-4 z-30 flex items-center justify-center w-10 h-10 rounded-lg bg-[#1a2a4e] text-white shadow-lg sm:hidden"
+        onClick={() => setSidebarOpen(true)}
+        aria-label="Apri menu"
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
+
+      {/* Sidebar mobile overlay */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-40 bg-black/40 flex">
+          <aside className="w-64 bg-[#1a2a4e] text-white min-h-screen p-6 flex flex-col gap-6 animate-slide-in-left relative">
+            <button
+              className="absolute top-4 right-4 text-white text-2xl"
+              onClick={() => setSidebarOpen(false)}
+              aria-label="Chiudi menu"
+            >
+              &times;
+            </button>
+            <AdminMenu
+              activeTab={activeTab}
+              setActiveTab={(tab) => {
+                setActiveTab(tab);
+                setSidebarOpen(false);
+              }}
+              onLogout={handleLogout}
+            />
+          </aside>
+          {/* Click outside to close */}
+          <div className="flex-1" onClick={() => setSidebarOpen(false)} />
+        </div>
+      )}
+
+      {/* Sidebar desktop */}
+      <div className="hidden sm:block fixed left-0 top-0 h-screen w-64 z-20">
         <AdminMenu
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           onLogout={handleLogout}
         />
       </div>
-      {/* Main content scrollabile a destra */}
-      <main className="ml-64 min-h-screen flex flex-col items-center py-12 px-4 sm:px-8">
+
+      {/* Main content */}
+      <main className="sm:ml-64 min-h-screen flex flex-col items-center py-12 px-2 sm:px-8">
         <div className="w-full max-w-4xl">
-          <div className="bg-white rounded-2xl shadow p-6">
+          <div className="bg-white rounded-2xl shadow p-2 sm:p-6">
             {activeTab === "offerte" && <OfferteAdmin />}
             {activeTab === "portfolio" && <PortfolioAdmin />}
-            {activeTab === "preventivo" && (
-              <div>Gestione preventivi (aggiungi, modifica, elimina)</div>
-            )}
+            {activeTab === "cambia-password" && <CambiaPassword />}
           </div>
         </div>
       </main>
     </div>
   );
+  // Cambia Password Section (UI only, logic to be implemented)
+
+  function CambiaPassword() {
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+
+    // Get current user from Firebase Auth
+    const user = auth.currentUser;
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      setError("");
+      setSuccess("");
+      if (!user || !user.email) {
+        setError("Utente non autenticato.");
+        return;
+      }
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        setError("Compila tutti i campi.");
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        setError("Le nuove password non coincidono.");
+        return;
+      }
+      if (newPassword.length < 6) {
+        setError("La nuova password deve essere di almeno 6 caratteri.");
+        return;
+      }
+      setLoading(true);
+      try {
+        // Reautentica l'utente
+        const credential = EmailAuthProvider.credential(
+          user.email,
+          currentPassword
+        );
+        await reauthenticateWithCredential(user, credential);
+        // Cambia la password
+        await updatePassword(user, newPassword);
+        setSuccess("Password cambiata con successo!");
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      } catch (err) {
+        const errorObj = err as { code?: string; message?: string };
+        if (
+          errorObj.code === "auth/wrong-password" ||
+          errorObj.code === "auth/invalid-credential"
+        ) {
+          setError("La password attuale non è corretta.");
+        } else if (errorObj.code === "auth/weak-password") {
+          setError("La nuova password è troppo debole.");
+        } else {
+          setError(errorObj.message || "Errore durante il cambio password.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    return (
+      <section className="mb-8">
+        <h2
+          className="text-2xl font-extrabold mb-6"
+          style={{ color: "#1a2a4e", textShadow: "0 1px 4px #e3e8f0" }}
+        >
+          Cambia Password
+        </h2>
+        <form
+          onSubmit={handleSubmit}
+          className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-blue-900 max-w-md mx-auto flex flex-col gap-4"
+        >
+          {error && (
+            <div className="bg-red-100 text-red-700 rounded p-2 text-sm font-semibold border border-red-200">
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="bg-green-100 text-green-700 rounded p-2 text-sm font-semibold border border-green-200">
+              {success}
+            </div>
+          )}
+          <div>
+            <label className="block font-semibold mb-1">Password attuale</label>
+            <input
+              type={showPassword ? "text" : "password"}
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              className="border rounded px-3 py-2 w-full"
+              autoComplete="current-password"
+              required
+            />
+          </div>
+          <div>
+            <label className="block font-semibold mb-1">Nuova password</label>
+            <input
+              type={showPassword ? "text" : "password"}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="border rounded px-3 py-2 w-full"
+              autoComplete="new-password"
+              required
+            />
+          </div>
+          <div>
+            <label className="block font-semibold mb-1">
+              Conferma nuova password
+            </label>
+            <input
+              type={showPassword ? "text" : "password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="border rounded px-3 py-2 w-full"
+              autoComplete="new-password"
+              required
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="showPassword"
+              checked={showPassword}
+              onChange={() => setShowPassword((v) => !v)}
+            />
+            <label htmlFor="showPassword" className="text-sm cursor-pointer">
+              Mostra password
+            </label>
+          </div>
+          <button
+            type="submit"
+            className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 font-semibold mt-2"
+            style={{ backgroundColor: "#1a2a4e" }}
+            disabled={loading}
+          >
+            {loading ? "Salvataggio..." : "Cambia Password"}
+          </button>
+        </form>
+      </section>
+    );
+  }
 }
 
 function OfferteAdmin() {
+  const [addError, setAddError] = useState("");
   const [offerte, setOfferte] = useState<
     {
       id: string;
@@ -178,19 +399,23 @@ function OfferteAdmin() {
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
+    setAddError("");
+    if (!file) {
+      setAddError("Seleziona un'immagine per l'offerta.");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     let imageUrl = "";
     let storagePath = "";
-    if (file) {
-      try {
-        const storageRef = ref(storage, `offerte/${Date.now()}_${file.name}`);
-        await uploadBytes(storageRef, file);
-        imageUrl = await getDownloadURL(storageRef);
-        storagePath = storageRef.fullPath;
-      } catch (err) {
-        imageUrl = "";
-        storagePath = "";
-      }
+    try {
+      const storageRef = ref(storage, `offerte/${Date.now()}_${file.name}`);
+      await uploadBytes(storageRef, file);
+      imageUrl = await getDownloadURL(storageRef);
+      storagePath = storageRef.fullPath;
+    } catch (err) {
+      imageUrl = "";
+      storagePath = "";
     }
     await addDoc(collection(db, "offerte"), {
       titolo,
@@ -317,6 +542,11 @@ function OfferteAdmin() {
             onSubmit={handleAdd}
             className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md flex flex-col gap-4 relative"
           >
+            {addError && (
+              <div className="bg-red-100 text-red-700 rounded p-2 text-sm font-semibold border border-red-200 mb-2">
+                {addError}
+              </div>
+            )}
             <button
               type="button"
               onClick={() => setShowForm(false)}
@@ -365,7 +595,10 @@ function OfferteAdmin() {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => setFile(e.target.files?.[0] || null)}
+                  onChange={(e) => {
+                    setFile(e.target.files?.[0] || null);
+                    if (e.target.files?.[0]) setAddError("");
+                  }}
                   className="hidden"
                 />
               </label>
@@ -389,57 +622,104 @@ function OfferteAdmin() {
           </form>
         </div>
       )}
-      <ul className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {offerte.map((o) => (
-          <li
+          <div
             key={o.id}
-            className="bg-gradient-to-r from-[#f5f6fa] via-white to-[#e3e8f0] border border-[#d1d5db] rounded-2xl shadow-lg flex items-center p-4 gap-6 hover:shadow-xl transition-shadow"
+            className="relative group rounded-2xl overflow-hidden shadow-lg border border-[#d1d5db] bg-white flex flex-col h-full"
           >
-            <div className="flex-shrink-0">
+            {/* Badge visibile se nascosta */}
+            {!o.visibile && (
+              <div className="absolute top-2 left-2 bg-red-600/90 text-white text-xs font-bold px-3 py-1 rounded-full shadow z-10 flex items-center gap-1">
+                <FaEyeSlash className="inline-block text-white text-base" />
+                Nascosta
+              </div>
+            )}
+            <div className="relative">
               <Image
                 src={o.immagine || "/placeholder.jpg"}
                 alt={o.titolo}
-                width={120}
-                height={80}
-                className="object-cover rounded-xl w-[120px] h-[80px] bg-gray-200 border border-[#b0b7c3]"
+                width={600}
+                height={300}
+                className={`object-cover w-full h-48 transition-transform duration-300 group-hover:scale-105 ${
+                  !o.visibile ? "grayscale-[0.7] brightness-75" : ""
+                }`}
+                style={
+                  o.visibile ? {} : { filter: "grayscale(0.7) brightness(0.7)" }
+                }
               />
+              {/* Azioni sempre visibili su mobile, overlay su desktop */}
+              {/* Mobile: titolo e azioni sempre visibili sotto immagine */}
+              <div className="sm:hidden text-center pb-2">
+                <div className="font-bold text-base truncate max-w-[90%] mx-auto text-[#1a2a4e]">
+                  {o.titolo}
+                </div>
+              </div>
+              <div className="flex sm:hidden justify-center gap-3 py-2 bg-white/90">
+                <button
+                  onClick={() => toggleVisibilita(o.id, o.visibile)}
+                  className={`rounded-full bg-green-100 hover:bg-green-200 p-2 shadow text-xl transition ${
+                    o.visibile ? "text-green-600" : "text-gray-400"
+                  }`}
+                  title={o.visibile ? "Nascondi dal sito" : "Mostra sul sito"}
+                >
+                  {o.visibile ? <FaEye /> : <FaEyeSlash />}
+                </button>
+                <button
+                  onClick={() => setEditId(o.id)}
+                  className="rounded-full bg-blue-100 hover:bg-blue-200 p-2 shadow text-[#1a2a4e] text-xl transition"
+                  title="Modifica"
+                >
+                  <MdEdit />
+                </button>
+                <button
+                  onClick={() => setDeleteId(o.id)}
+                  className="rounded-full bg-red-100 hover:bg-red-200 p-2 shadow text-red-600 text-xl transition"
+                  title="Elimina"
+                >
+                  <FaTrash />
+                </button>
+              </div>
+              {/* Desktop: overlay su hover */}
+              <div className="hidden sm:flex absolute inset-0 bg-black/60 flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="text-white text-center px-4">
+                  <div className="font-bold text-lg truncate max-w-[90%] mx-auto">
+                    {o.titolo}
+                  </div>
+                  <div className="text-base mt-2 whitespace-pre-line break-words">
+                    {o.descrizione}
+                  </div>
+                </div>
+                <div className="flex gap-4 mt-4">
+                  <button
+                    onClick={() => toggleVisibilita(o.id, o.visibile)}
+                    className={`rounded-full bg-white/90 hover:bg-green-100 p-2 shadow text-xl transition ${
+                      o.visibile ? "text-green-600" : "text-gray-400"
+                    }`}
+                    title={o.visibile ? "Nascondi dal sito" : "Mostra sul sito"}
+                  >
+                    {o.visibile ? <FaEye /> : <FaEyeSlash />}
+                  </button>
+                  <button
+                    onClick={() => setEditId(o.id)}
+                    className="rounded-full bg-white/90 hover:bg-blue-100 p-2 shadow text-[#1a2a4e] text-xl transition"
+                    title="Modifica"
+                  >
+                    <MdEdit />
+                  </button>
+                  <button
+                    onClick={() => setDeleteId(o.id)}
+                    className="rounded-full bg-white/90 hover:bg-red-100 p-2 shadow text-red-600 text-xl transition"
+                    title="Elimina"
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-xl font-bold text-[#1a2a4e] truncate mb-1">
-                {o.titolo}
-              </h3>
-              <p className="text-base text-[#3a4a5a] mt-1 mb-0 leading-snug">
-                {o.descrizione}
-              </p>
-            </div>
-            <div className="flex flex-col gap-2 items-end">
-              <button
-                onClick={() => toggleVisibilita(o.id, o.visibile)}
-                className={`rounded-full p-2 text-xl ${
-                  o.visibile ? "text-green-600" : "text-gray-400"
-                } hover:text-green-700`}
-                title={o.visibile ? "Nascondi dal sito" : "Mostra sul sito"}
-              >
-                {o.visibile ? <FaEye /> : <FaEyeSlash />}
-              </button>
-              <button
-                onClick={() => setEditId(o.id)}
-                className="px-4 py-2 rounded-lg font-semibold shadow text-white"
-                style={{ backgroundColor: bluScuro }}
-                title="Modifica"
-              >
-                Modifica
-              </button>
-              <button
-                onClick={() => setDeleteId(o.id)}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold shadow"
-              >
-                Elimina
-              </button>
-            </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
       {/* POPUP CONFERMA ELIMINAZIONE */}
       {deleteId && (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
@@ -562,6 +842,7 @@ function OfferteAdmin() {
 }
 
 function PortfolioAdmin() {
+  const [addError, setAddError] = useState("");
   const [items, setItems] = useState<
     {
       id: string;
@@ -580,7 +861,7 @@ function PortfolioAdmin() {
   const [categorie, setCategorie] = useState<string[]>([]);
   const [newCategoria, setNewCategoria] = useState("");
   const [loading, setLoading] = useState(false);
-  const [addError, setAddError] = useState<string>("");
+  // rimosso duplicato addError
   const [editId, setEditId] = useState<string | null>(null);
   const [editTitolo, setEditTitolo] = useState("");
   const [editFile, setEditFile] = useState<File | null>(null);
@@ -596,29 +877,35 @@ function PortfolioAdmin() {
   // AGGIUNTA: Stato per popup conferma eliminazione portfolio
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  // PAGINAZIONE MOBILE
+  const [pageMobile, setPageMobile] = useState(1);
 
   useEffect(() => {
     // Carica portfolio
     const fetchItems = async () => {
       const querySnapshot = await getDocs(collection(db, "portfolio"));
       setItems(
-        querySnapshot.docs.map((doc) => {
-          const data = doc.data() as {
-            titolo: string;
-            immagine: string;
-            categoria: string;
-            storagePath?: string;
-            visibile?: boolean;
-          };
-          return {
-            id: doc.id,
-            titolo: data.titolo,
-            immagine: data.immagine,
-            categoria: data.categoria,
-            storagePath: data.storagePath || "",
-            visibile: data.visibile !== false,
-          };
-        })
+        querySnapshot.docs
+          .map((doc) => {
+            const data = doc.data() as {
+              titolo: string;
+              immagine: string;
+              categoria: string;
+              storagePath?: string;
+              visibile?: boolean;
+              createdAt?: number;
+            };
+            return {
+              id: doc.id,
+              titolo: data.titolo,
+              immagine: data.immagine,
+              categoria: data.categoria,
+              storagePath: data.storagePath || "",
+              visibile: data.visibile !== false,
+              createdAt: data.createdAt || 0,
+            };
+          })
+          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
       );
     };
     // Carica categorie
@@ -671,6 +958,7 @@ function PortfolioAdmin() {
     setAddError("");
     if (!file) {
       setAddError("Seleziona un'immagine per il portfolio.");
+      setLoading(false);
       return;
     }
     setLoading(true);
@@ -702,6 +990,7 @@ function PortfolioAdmin() {
       categoria,
       storagePath,
       visibile: true,
+      createdAt: Date.now(),
     });
     setTitolo("");
     setCategoria("");
@@ -709,23 +998,27 @@ function PortfolioAdmin() {
     setShowForm(false);
     const querySnapshot = await getDocs(collection(db, "portfolio"));
     setItems(
-      querySnapshot.docs.map((doc) => {
-        const data = doc.data() as {
-          titolo: string;
-          immagine: string;
-          categoria: string;
-          storagePath?: string;
-          visibile?: boolean;
-        };
-        return {
-          id: doc.id,
-          titolo: data.titolo,
-          immagine: data.immagine,
-          categoria: data.categoria,
-          storagePath: data.storagePath || "",
-          visibile: data.visibile !== false,
-        };
-      })
+      querySnapshot.docs
+        .map((doc) => {
+          const data = doc.data() as {
+            titolo: string;
+            immagine: string;
+            categoria: string;
+            storagePath?: string;
+            visibile?: boolean;
+            createdAt?: number;
+          };
+          return {
+            id: doc.id,
+            titolo: data.titolo,
+            immagine: data.immagine,
+            categoria: data.categoria,
+            storagePath: data.storagePath || "",
+            visibile: data.visibile !== false,
+            createdAt: data.createdAt || 0,
+          };
+        })
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
     );
     setLoading(false);
   };
@@ -932,33 +1225,46 @@ function PortfolioAdmin() {
     (i) => categoriaFiltro === "TUTTE" || i.categoria === categoriaFiltro
   );
 
+  // Calcola pagine solo su mobile
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+  const perPageMobile = 6;
+  const totalPagesMobile = isMobile
+    ? Math.ceil(lavoriFiltrati.length / perPageMobile)
+    : 1;
+  const lavoriToShow = isMobile
+    ? lavoriFiltrati.slice(
+        (pageMobile - 1) * perPageMobile,
+        pageMobile * perPageMobile
+      )
+    : lavoriFiltrati;
+
   return (
     <section className="mb-8">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-2">
         <h2
           className="text-2xl font-extrabold"
           style={{ color: bluScuro, textShadow: "0 1px 4px #e3e8f0" }}
         >
           Portfolio lavori
         </h2>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setShowForm(true)}
-            className="bg-green-600 hover:bg-green-700 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg text-3xl"
-            title="Aggiungi lavoro"
-          >
-            <span className="font-bold">+</span>
-          </button>
-          <button
-            onClick={() => setShowCategorie(true)}
-            className="bg-[#1a2a4e] hover:bg-[#274472] text-white rounded-lg px-6 py-2 font-semibold shadow text-base flex items-center gap-2"
-            style={{ backgroundColor: bluScuro }}
-            title="Modifica categorie"
-          >
-            <MdEdit size={20} />
-            Modifica categorie
-          </button>
-        </div>
+        <button
+          onClick={() => setShowForm(true)}
+          className="bg-green-600 hover:bg-green-700 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg text-3xl"
+          title="Aggiungi lavoro"
+        >
+          <span className="font-bold">+</span>
+        </button>
+      </div>
+      <div className="flex justify-center mb-4">
+        <button
+          onClick={() => setShowCategorie(true)}
+          className="bg-[#1a2a4e] hover:bg-[#274472] text-white rounded-lg px-6 py-2 font-semibold shadow text-base flex items-center gap-2"
+          style={{ backgroundColor: bluScuro }}
+          title="Modifica categorie"
+        >
+          <MdEdit size={20} />
+          Modifica categorie
+        </button>
       </div>
       {/* Menù categorie orizzontale */}
       <div className="w-full overflow-x-auto mb-6">
@@ -988,64 +1294,183 @@ function PortfolioAdmin() {
           ))}
         </div>
       </div>
-      {/* LISTA LAVORI filtrata */}
-      <ul className="space-y-4">
-        {lavoriFiltrati.length === 0 ? (
-          <li className="text-center text-gray-500 py-8">
-            Non ci sono elementi per questa categoria
-          </li>
-        ) : (
-          lavoriFiltrati.map((i) => (
-            <li
+      {/* LISTA LAVORI filtrata - nuova griglia con overlay e bottoni */}
+      {lavoriFiltrati.length === 0 ? (
+        <div className="text-center text-gray-500 py-8">
+          Non ci sono elementi per questa categoria
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+          {lavoriToShow.map((i) => (
+            <div
               key={i.id}
-              className="bg-gradient-to-r from-[#f5f6fa] via-white to-[#e3e8f0] border border-[#d1d5db] rounded-2xl shadow-lg flex items-center p-4 gap-6 hover:shadow-xl transition-shadow"
+              className="relative group rounded-2xl overflow-hidden shadow-lg border border-[#d1d5db] bg-white"
             >
-              <div className="flex-shrink-0">
-                <Image
-                  src={i.immagine || "/placeholder.jpg"}
-                  alt={i.titolo}
-                  width={120}
-                  height={80}
-                  className="object-cover rounded-xl w-[120px] h-[80px] bg-gray-200 border border-[#b0b7c3]"
-                />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-xl font-bold text-[#1a2a4e] truncate mb-1">
-                  {i.titolo}
-                </h3>
-                <span className="inline-block mt-2 px-3 py-1 rounded-full bg-[#1a2a4e] text-white text-xs font-semibold">
-                  {i.categoria}
-                </span>
-              </div>
-              <div className="flex flex-col gap-2 items-end">
+              {/* Badge visibile se nascosta */}
+              {!i.visibile && (
+                <div className="absolute top-2 left-2 bg-red-600/90 text-white text-xs font-bold px-3 py-1 rounded-full shadow z-10 flex items-center gap-1">
+                  <FaEyeSlash className="inline-block text-white text-base" />
+                  Nascosta
+                </div>
+              )}
+              <Image
+                src={i.immagine || "/placeholder.jpg"}
+                alt={i.titolo}
+                width={400}
+                height={300}
+                className={`object-cover w-full h-48 sm:h-56 md:h-60 transition-transform duration-300 group-hover:scale-105 ${
+                  !i.visibile ? "grayscale-[0.7] brightness-75" : ""
+                }`}
+                style={
+                  i.visibile ? {} : { filter: "grayscale(0.7) brightness(0.7)" }
+                }
+              />
+              {/* Azioni sempre visibili su mobile, overlay su hover su desktop */}
+              {/* Mobile: azioni sempre visibili sotto immagine */}
+              <div className="flex sm:hidden justify-center gap-3 py-2 bg-white/90">
+                <button
+                  onClick={() => setEditId(i.id)}
+                  className="rounded-full bg-blue-100 hover:bg-blue-200 p-2 shadow text-[#1a2a4e] text-xl transition"
+                  title="Modifica"
+                >
+                  <MdEdit />
+                </button>
+                <button
+                  onClick={() => setDeleteId(i.id)}
+                  className="rounded-full bg-red-100 hover:bg-red-200 p-2 shadow text-red-600 text-xl transition"
+                  title="Elimina"
+                >
+                  <FaTrash />
+                </button>
                 <button
                   onClick={() => toggleVisibilita(i.id, i.visibile)}
-                  className={`rounded-full p-2 text-xl ${
+                  className={`rounded-full bg-green-100 hover:bg-green-200 p-2 shadow text-xl transition ${
                     i.visibile ? "text-green-600" : "text-gray-400"
-                  } hover:text-green-700`}
+                  }`}
                   title={i.visibile ? "Nascondi dal sito" : "Mostra sul sito"}
                 >
                   {i.visibile ? <FaEye /> : <FaEyeSlash />}
                 </button>
-                <button
-                  onClick={() => setEditId(i.id)}
-                  className="px-4 py-2 rounded-lg font-semibold shadow text-white"
-                  style={{ backgroundColor: bluScuro }}
-                  title="Modifica"
-                >
-                  Modifica
-                </button>
-                <button
-                  onClick={() => setDeleteId(i.id)}
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold shadow"
-                >
-                  Elimina
-                </button>
               </div>
-            </li>
-          ))
-        )}
-      </ul>
+              {/* Desktop: overlay su hover */}
+              <div className="hidden sm:flex absolute inset-0 bg-black/60 flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="mt-2 text-white text-center">
+                  <div className="font-bold text-lg truncate max-w-[90%] mx-auto">
+                    {i.titolo}
+                  </div>
+                  <div className="text-xs bg-[#1a2a4e]/80 rounded px-2 py-1 inline-block mt-1">
+                    {i.categoria}
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setEditId(i.id)}
+                    className="rounded-full bg-white/90 hover:bg-blue-100 p-2 shadow text-[#1a2a4e] text-xl transition"
+                    title="Modifica"
+                  >
+                    <MdEdit />
+                  </button>
+                  <button
+                    onClick={() => setDeleteId(i.id)}
+                    className="rounded-full bg-white/90 hover:bg-red-100 p-2 shadow text-red-600 text-xl transition"
+                    title="Elimina"
+                  >
+                    <FaTrash />
+                  </button>
+                  <button
+                    onClick={() => toggleVisibilita(i.id, i.visibile)}
+                    className={`rounded-full bg-white/90 hover:bg-green-100 p-2 shadow text-xl transition ${
+                      i.visibile ? "text-green-600" : "text-gray-400"
+                    }`}
+                    title={i.visibile ? "Nascondi dal sito" : "Mostra sul sito"}
+                  >
+                    {i.visibile ? <FaEye /> : <FaEyeSlash />}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      {/* PAGINAZIONE MOBILE COMPATTA */}
+      {isMobile && totalPagesMobile > 1 && (
+        <div className="flex justify-center items-center gap-2 mt-4">
+          <button
+            onClick={() => setPageMobile((p) => Math.max(1, p - 1))}
+            disabled={pageMobile === 1}
+            className={`rounded-full w-9 h-9 flex items-center justify-center border-2 ${
+              pageMobile === 1
+                ? "border-gray-300 text-gray-400"
+                : "border-blue-600 text-blue-600 hover:bg-blue-50"
+            } transition`}
+            aria-label="Pagina precedente"
+          >
+            <FaChevronLeft />
+          </button>
+          {/* Pagine compatte */}
+          {(() => {
+            const pages = [];
+            if (totalPagesMobile <= 5) {
+              for (let i = 1; i <= totalPagesMobile; i++) {
+                pages.push(i);
+              }
+            } else {
+              // Sempre la prima
+              pages.push(1);
+              // Puntini se serve
+              if (pageMobile > 3) pages.push("...");
+              // Pagine vicine
+              for (
+                let i = Math.max(2, pageMobile - 1);
+                i <= Math.min(totalPagesMobile - 1, pageMobile + 1);
+                i++
+              ) {
+                pages.push(i);
+              }
+              // Puntini se serve
+              if (pageMobile < totalPagesMobile - 2) pages.push("...");
+              // Sempre l'ultima
+              pages.push(totalPagesMobile);
+            }
+            return pages.map((num, idx) =>
+              num === "..." ? (
+                [
+                  <span key={"dots-" + idx} className="px-1 text-gray-400">
+                    ...
+                  </span>,
+                ]
+              ) : (
+                <button
+                  key={num}
+                  onClick={() => setPageMobile(num as number)}
+                  className={`rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold border-2 ${
+                    pageMobile === num
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "border-gray-300 text-blue-600 hover:bg-blue-50"
+                  } transition`}
+                  aria-label={`Pagina ${num}`}
+                >
+                  {num}
+                </button>
+              )
+            );
+          })()}
+          <button
+            onClick={() =>
+              setPageMobile((p) => Math.min(totalPagesMobile, p + 1))
+            }
+            disabled={pageMobile === totalPagesMobile}
+            className={`rounded-full w-9 h-9 flex items-center justify-center border-2 ${
+              pageMobile === totalPagesMobile
+                ? "border-gray-300 text-gray-400"
+                : "border-blue-600 text-blue-600 hover:bg-blue-50"
+            } transition`}
+            aria-label="Pagina successiva"
+          >
+            <FaChevronRight />
+          </button>
+        </div>
+      )}
       {/* MODAL MODIFICA LAVORO */}
       {editId && (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
@@ -1146,6 +1571,11 @@ function PortfolioAdmin() {
             onSubmit={handleAdd}
             className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md flex flex-col gap-4 relative"
           >
+            {addError && (
+              <div className="bg-red-100 text-red-700 rounded p-2 text-base font-bold border border-red-300 mb-4 text-center animate-pulse shadow">
+                {addError}
+              </div>
+            )}
             <button
               type="button"
               onClick={() => setShowForm(false)}
@@ -1154,14 +1584,12 @@ function PortfolioAdmin() {
             >
               &times;
             </button>
-            <h3 className="text-xl font-bold" style={{ color: bluScuro }}>
+            <h3
+              className="text-xl font-bold mb-2 text-center"
+              style={{ color: bluScuro }}
+            >
               Aggiungi lavoro
             </h3>
-            {addError && (
-              <div className="bg-red-100 text-red-700 rounded p-2 text-sm font-semibold border border-red-200">
-                {addError}
-              </div>
-            )}
             <input
               type="text"
               placeholder="Titolo"
@@ -1205,9 +1633,11 @@ function PortfolioAdmin() {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => setFile(e.target.files?.[0] || null)}
+                  onChange={(e) => {
+                    setFile(e.target.files?.[0] || null);
+                    if (e.target.files?.[0]) setAddError("");
+                  }}
                   className="hidden"
-                  required
                 />
               </label>
             </div>
@@ -1252,26 +1682,28 @@ function PortfolioAdmin() {
               Modifica categorie
             </h3>
             <div className="flex flex-col gap-2">
-              {editCategorie.map((cat, idx) => (
-                <div key={idx} className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={cat}
-                    onChange={(e) =>
-                      handleChangeCategoriaPopup(idx, e.target.value)
-                    }
-                    className="border rounded px-3 py-2 placeholder-gray-500 text-black flex-1"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveCategoria(idx)}
-                    className="bg-red-600 hover:bg-red-700 text-white rounded-full w-8 h-8 flex items-center justify-center text-xl"
-                    title="Elimina categoria"
-                  >
-                    &times;
-                  </button>
-                </div>
-              ))}
+              <div className="max-h-64 overflow-y-auto flex flex-col gap-2 pr-1">
+                {editCategorie.map((cat, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={cat}
+                      onChange={(e) =>
+                        handleChangeCategoriaPopup(idx, e.target.value)
+                      }
+                      className="border rounded px-3 py-2 placeholder-gray-500 text-black flex-1"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveCategoria(idx)}
+                      className="bg-red-600 hover:bg-red-700 text-white rounded-full w-8 h-8 flex items-center justify-center text-xl"
+                      title="Elimina categoria"
+                    >
+                      &times;
+                    </button>
+                  </div>
+                ))}
+              </div>
               <button
                 type="button"
                 onClick={handleAddCategoriaPopup}

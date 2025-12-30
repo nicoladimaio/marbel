@@ -19,6 +19,8 @@ type GalleryItem = {
 };
 
 export default function ServizioDettaglio({}: { params: { slug: string } }) {
+  // Per tornare indietro
+  const router = require("next/navigation").useRouter();
   const { slug } = useParams<{ slug: string }>();
   const service = slug ? servicesDetails[slug] : undefined;
   if (!service) {
@@ -32,11 +34,18 @@ export default function ServizioDettaglio({}: { params: { slug: string } }) {
 
     const fetchGallery = async () => {
       try {
-        const portfolioQuery = query(
-          collection(db, "portfolio"),
-          where("categoria", "==", service.portfolioCategory)
-        );
-        const snapshot = await getDocs(portfolioQuery);
+        let snapshot;
+        if (service.portfolioCategory === "Tutti") {
+          // Prendi tutte le immagini
+          snapshot = await getDocs(collection(db, "portfolio"));
+        } else {
+          // Filtra per categoria
+          const portfolioQuery = query(
+            collection(db, "portfolio"),
+            where("categoria", "==", service.portfolioCategory)
+          );
+          snapshot = await getDocs(portfolioQuery);
+        }
         const data = snapshot.docs
           .map((doc) => {
             const docData = doc.data() as {
@@ -101,8 +110,28 @@ export default function ServizioDettaglio({}: { params: { slug: string } }) {
         darkness={35}
       />
 
-      <section className="py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto space-y-5">
+      {/* Bottone torna indietro */}
+      <div className="mx-auto px-4 sm:px-6 pt-6 bg-white">
+        <button
+          onClick={() => router.push("/servizi")}
+          className="flex items-center gap-2 text-[#1a2a4e] hover:text-white text-sm font-semibold px-3 py-2 rounded-full border border-[#e5e7eb] shadow transition-colors duration-200 cursor-pointer bg-transparent hover:bg-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+          aria-label="Torna alla lista servizi"
+        >
+          <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12.5 16.25 6.25 10l6.25-6.25"
+            />
+          </svg>
+          Torna ai servizi
+        </button>
+      </div>
+
+      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-white">
+        <div className="max-w-6xl mx-auto space-y-4 sm:space-y-5">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -113,13 +142,13 @@ export default function ServizioDettaglio({}: { params: { slug: string } }) {
             <p className="text-sm uppercase tracking-[0.35em] text-[#94a3b8]">
               Metodo dedicato
             </p>
-            <h2 className="text-3xl font-extrabold uppercase tracking-[0.3em]">
+            <h2 className="text-2xl sm:text-3xl font-extrabold uppercase tracking-[0.12em] sm:tracking-[0.3em] break-words">
               {service.title}
             </h2>
-            <p className="text-lg text-[#475569] leading-relaxed">
+            <p className="text-base sm:text-lg text-[#475569] leading-relaxed">
               {service.subtitle}
             </p>
-            <p className="text-[#475569] leading-relaxed">
+            <p className="text-[#475569] leading-relaxed text-sm sm:text-base">
               Coordiniamo progettazione, forniture e posa con un project manager
               unico, mantenendo tempi e standard qualitativi allineati al tuo
               progetto.
@@ -128,8 +157,8 @@ export default function ServizioDettaglio({}: { params: { slug: string } }) {
         </div>
       </section>
 
-      <section className="pt-24 pb-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto space-y-8">
+      <section className="pt-12 sm:pt-24 pb-12 sm:pb-20 px-4 sm:px-6 bg-white">
+        <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -140,7 +169,7 @@ export default function ServizioDettaglio({}: { params: { slug: string } }) {
             <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
               Soluzioni su misura
             </p>
-            <h3 className="text-2xl font-bold uppercase tracking-[0.28em]">
+            <h3 className="text-xl sm:text-2xl font-bold uppercase tracking-[0.12em] sm:tracking-[0.28em] break-words">
               Cosa curiamo per te
             </h3>
           </motion.div>
@@ -149,7 +178,7 @@ export default function ServizioDettaglio({}: { params: { slug: string } }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           >
             {service.descriptionBlocks.map(({ title, text, icon: Icon }) => (
               <motion.div
@@ -160,18 +189,20 @@ export default function ServizioDettaglio({}: { params: { slug: string } }) {
                 <div className="w-12 h-12 rounded-xl bg-[#1a2a4e]/10 text-[#1a2a4e] flex items-center justify-center">
                   <Icon size={22} />
                 </div>
-                <h3 className="text-lg font-bold uppercase tracking-[0.25em]">
+                <h3 className="text-base sm:text-lg font-bold uppercase tracking-[0.08em] sm:tracking-[0.25em] break-words">
                   {title}
                 </h3>
-                <p className="text-[#475569] leading-relaxed text-sm">{text}</p>
+                <p className="text-[#475569] leading-relaxed text-xs sm:text-sm">
+                  {text}
+                </p>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      <section className="py-20 px-6 bg-[#f5f6fa]">
-        <div className="max-w-6xl mx-auto space-y-10">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-[#f5f6fa]">
+        <div className="max-w-6xl mx-auto space-y-8 sm:space-y-10">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -182,10 +213,10 @@ export default function ServizioDettaglio({}: { params: { slug: string } }) {
             <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
               Portfolio selezionato
             </p>
-            <h3 className="text-3xl font-extrabold uppercase tracking-[0.3em]">
+            <h3 className="text-2xl sm:text-3xl font-extrabold uppercase tracking-[0.12em] sm:tracking-[0.3em] break-words">
               Progetti {service.title.toLowerCase()}
             </h3>
-            <p className="text-[#475569] max-w-3xl mx-auto">
+            <p className="text-[#475569] max-w-3xl mx-auto text-sm sm:text-base">
               Una selezione di realizzazioni legate a questo servizio,
               aggiornata tramite il portfolio Firebase.
             </p>
@@ -196,7 +227,7 @@ export default function ServizioDettaglio({}: { params: { slug: string } }) {
               Nessun progetto disponibile in questa categoria.
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {galleryItems.map((item, index) => (
                 <motion.div
                   key={item.id}

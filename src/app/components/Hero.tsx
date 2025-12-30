@@ -51,7 +51,7 @@ export default function Hero({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.4 }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 text-center px-6 space-y-3 text-white"
+        className="relative z-10 text-center px-4 sm:px-6 space-y-3 text-white"
       >
         <div className="text-center space-y-3 text-white">
           <motion.h1
@@ -59,11 +59,11 @@ export default function Hero({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className={`text-4xl sm:text-5xl font-extrabold uppercase translate-y-6${
+            className={`break-words whitespace-pre-line text-2xl xs:text-3xl sm:text-5xl font-extrabold uppercase translate-y-6${
               title === "CONTATTACI"
-                ? " tracking-[0.25em]"
-                : " tracking-[0.35em]"
-            }`}
+                ? " tracking-[0.12em] sm:tracking-[0.25em]"
+                : " tracking-[0.18em] sm:tracking-[0.35em]"
+            } max-w-full w-full mx-auto`}
           >
             {title}
           </motion.h1>
@@ -78,7 +78,7 @@ export default function Hero({
                 delay: 0.15,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="text-lg sm:text-xl text-white/85 translate-y-6"
+              className="break-words whitespace-pre-line text-base xs:text-lg sm:text-xl text-white/85 translate-y-6 max-w-full w-full mx-auto"
             >
               {subtitle}
             </motion.p>

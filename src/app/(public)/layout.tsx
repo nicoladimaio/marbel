@@ -1,6 +1,5 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import CookieBanner from "../components/CookieBanner";
 
 export default function PublicLayout({
   children,
@@ -9,7 +8,7 @@ export default function PublicLayout({
 }) {
   return (
     <>
-      <CookieBanner />
+      {/* CookieBanner rimosso: ora solo in layout.tsx globale */}
       <Navbar />
       {children}
       <Footer />

@@ -48,10 +48,10 @@ export default function PreventivoFooter({
       <section className="w-full flex flex-col items-center py-12 bg-white border-t border-gray-200">
         <div className="max-w-4xl w-full mx-auto flex flex-col md:flex-row justify-between gap-8">
           <div>
-            <h3 className="text-2xl font-bold text-[#1a2a4e] mb-4">
+            <h3 className="text-2xl font-bold text-[#1a2a4e] mb-4 ml-4 md:ml-0">
               Contattaci
             </h3>
-            <ul className="text-[#475569] text-lg space-y-2">
+            <ul className="text-[#475569] text-lg space-y-2 ml-4 md:ml-0">
               <li>
                 <strong>Indirizzo:</strong> Via Nazario Sauro 36, 81025
                 Marcianise (CE)
@@ -81,10 +81,10 @@ export default function PreventivoFooter({
           </div>
           <div className="flex flex-col gap-4 justify-between">
             <div>
-              <h4 className="text-lg font-semibold text-[#1a2a4e] mb-2">
+              <h4 className="text-lg font-semibold text-[#1a2a4e] mb-2 ml-4 md:ml-0">
                 Link utili
               </h4>
-              <ul className="text-[#475569] space-y-1">
+              <ul className="text-[#475569] space-y-1 ml-4 md:ml-0">
                 <li>
                   <a href="/privacy" className="hover:underline">
                     Privacy Policy

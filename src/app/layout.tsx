@@ -4,7 +4,7 @@ import "./globals.css";
 // Navbar and Footer moved to (public)/layout.tsx
 // import AdminMenu from "./components/AdminMenu";
 // import { usePathname } from "next/navigation";
-import CookieBanner from "./components/CookieBanner";
+import CookieBannerConditional from "./components/CookieBannerConditional";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -65,7 +65,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <CookieBanner />
+        {/* Mostra CookieBanner solo se non siamo in /admin */}
+        <CookieBannerConditional />
         {children}
       </body>
     </html>

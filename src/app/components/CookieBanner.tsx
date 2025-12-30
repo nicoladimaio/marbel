@@ -113,20 +113,24 @@ export default function CookieBanner() {
     }
   }, []);
 
-  const acceptAll = () => {
-    const prefs: CookiePreferences = { analytics: true, marketing: true };
-    setPreferences(prefs);
-    localStorage.setItem(CONSENT_KEY, "accepted");
-    localStorage.setItem(PREF_KEY, JSON.stringify(prefs));
-    setVisible(false);
-  };
+  // Effettua il blocco/caricamento script ogni volta che le preferenze cambiano e il banner non è visibile
+  useEffect(() => {
+    if (!visible) {
+      const storedPrefs = localStorage.getItem(PREF_KEY);
+      if (storedPrefs) {
+        try {
+          const parsed = JSON.parse(storedPrefs) as CookiePreferences;
+          blockScriptsByPreference(parsed);
+        } catch {}
+      }
+    }
+  }, [preferences, visible]);
 
   const rejectAll = () => {
     const prefs: CookiePreferences = { analytics: false, marketing: false };
     setPreferences(prefs);
     localStorage.setItem(CONSENT_KEY, "rejected");
     localStorage.setItem(PREF_KEY, JSON.stringify(prefs));
-    blockScriptsByPreference(prefs);
     setVisible(false);
   };
 
@@ -161,11 +165,14 @@ export default function CookieBanner() {
                     Rispettiamo la tua privacy
                   </h3>
                   <p className="text-sm text-[#475569] leading-relaxed">
-                    Utilizziamo cookie tecnici per garantire il corretto
-                    funzionamento del sito e, previo tuo consenso, cookie
-                    analitici e di marketing per migliorare la tua esperienza.
-                    Puoi accettare, rifiutare o personalizzare le tue
-                    preferenze.
+                    Utilizziamo cookie tecnici necessari al funzionamento del
+                    sito e, solo previo tuo consenso, cookie analitici (Google
+                    Analytics con IP anonimizzato) per raccogliere statistiche
+                    aggregate e migliorare i nostri servizi. Nessun dato
+                    personale viene tracciato senza il tuo consenso. Puoi
+                    accettare, rifiutare o modificare le tue preferenze in
+                    qualsiasi momento tramite il pulsante "Gestisci preferenze
+                    cookie" sempre visibile in basso a sinistra.
                   </p>
                 </div>
 
@@ -177,13 +184,17 @@ export default function CookieBanner() {
                     Rifiuta tutto
                   </button>
                   <button
-                    onClick={() => setShowPreferences((prev) => !prev)}
-                    className="w-full px-4 py-2 rounded-lg border border-[#e2e8f0] text-[#1a2a4e] font-semibold hover:bg-[#eef2ff] transition-colors"
-                  >
-                    Preferenze
-                  </button>
-                  <button
-                    onClick={acceptAll}
+                    onClick={() => {
+                      const prefs: CookiePreferences = {
+                        analytics: true,
+                        marketing: true,
+                      };
+                      setPreferences(prefs);
+                      localStorage.setItem(CONSENT_KEY, "accepted");
+                      localStorage.setItem(PREF_KEY, JSON.stringify(prefs));
+                      blockScriptsByPreference(prefs);
+                      setVisible(false);
+                    }}
                     className="w-full px-4 py-2 rounded-lg border border-[#1a2a4e] text-[#1a2a4e] font-semibold hover:bg-[#f1f5f9] transition-colors"
                   >
                     Accetta tutto
@@ -191,85 +202,7 @@ export default function CookieBanner() {
                 </div>
               </div>
 
-              <AnimatePresence>
-                {showPreferences && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 6 }}
-                    transition={{ duration: 0.2 }}
-                    className="mt-4 border-t border-[#e2e8f0] pt-4 space-y-3"
-                  >
-                    <p className="text-sm text-[#475569]">
-                      Cookie tecnici: sempre attivi
-                    </p>
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-semibold text-[#1a2a4e]">
-                          Cookie analitici
-                        </p>
-                        <p className="text-xs text-[#64748b]">
-                          Utilizzati per statistiche aggregate.
-                        </p>
-                      </div>
-                      <label className="inline-flex items-center gap-2 text-sm text-[#1a2a4e]">
-                        <input
-                          type="checkbox"
-                          checked={preferences.analytics}
-                          onChange={(e) =>
-                            setPreferences((prev) => ({
-                              ...prev,
-                              analytics: e.target.checked,
-                            }))
-                          }
-                          className="h-4 w-4 accent-[#1a2a4e]"
-                        />
-                        Attiva
-                      </label>
-                    </div>
-
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-semibold text-[#1a2a4e]">
-                          Cookie marketing
-                        </p>
-                        <p className="text-xs text-[#64748b]">
-                          Per contenuti e offerte personalizzate.
-                        </p>
-                      </div>
-                      <label className="inline-flex items-center gap-2 text-sm text-[#1a2a4e]">
-                        <input
-                          type="checkbox"
-                          checked={preferences.marketing}
-                          onChange={(e) =>
-                            setPreferences((prev) => ({
-                              ...prev,
-                              marketing: e.target.checked,
-                            }))
-                          }
-                          className="h-4 w-4 accent-[#1a2a4e]"
-                        />
-                        Attiva
-                      </label>
-                    </div>
-
-                    <div className="flex justify-end gap-3 pt-2">
-                      <button
-                        onClick={() => setShowPreferences(false)}
-                        className="px-4 py-2 rounded-lg border border-[#cbd5e1] text-[#1a2a4e] font-semibold hover:bg-[#f1f5f9] transition-colors"
-                      >
-                        Annulla
-                      </button>
-                      <button
-                        onClick={savePreferences}
-                        className="px-4 py-2 rounded-lg bg-[#1a2a4e] text-white font-semibold shadow hover:bg-[#223867] transition-colors"
-                      >
-                        Salva preferenze
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Preferenze rimosso: solo Rifiuta e Accetta */}
             </motion.div>
           </motion.div>
         )}

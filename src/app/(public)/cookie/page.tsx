@@ -1,108 +1,91 @@
 "use client";
 
-import { motion } from "framer-motion";
 import SocialBar from "../../components/SocialBar";
 import PreventivoFooter from "../../components/PreventivoFooter";
 
-const sections = [
-  {
-    title: "Cookie Policy di MarBel",
-    content: [
-      "Ultimo aggiornamento: [inserisci data]",
-      "Il presente documento descrive l’uso dei cookie sul sito dittamarbel.netlify.app.",
-    ],
-  },
-  {
-    title: "1. Cosa sono i cookie",
-    content: [
-      "I cookie sono piccoli file che il browser memorizza per migliorare la navigazione e alcune funzionalità del sito.",
-      "Esistono:",
-      "cookie tecnici",
-      "cookie statistici",
-      "cookie di profilazione",
-      "cookie di terze parti",
-    ],
-  },
-  {
-    title: "2. Cookie utilizzati da questo sito",
-    content: [
-      "a) Cookie tecnici",
-      "Necessari per il corretto funzionamento del sito.",
-      "Non richiedono consenso.",
-      "",
-      "b) Cookie analitici anonimizzati",
-      "Utilizzati solo per statistiche aggregate (es. traffico).",
-      "Non identificano l’utente.",
-      "",
-      "c) Cookie di terze parti",
-      "Servizi come Google Fonts, strumenti di hosting o CDN possono generare cookie tecnici.",
-      "Non utilizziamo cookie di profilazione.",
-    ],
-  },
-  {
-    title: "3. Come gestire i cookie",
-    content: [
-      "Puoi:",
-      "accettarli",
-      "rifiutarli",
-      "cancellarli dal browser",
-      "",
-      "Guida ufficiale:",
-      "Chrome: https://support.google.com/chrome/answer/95647",
-      "Safari: https://support.apple.com/guide/safari/manage-cookies",
-      "Firefox: https://support.mozilla.org/kb/cookies-information-websites-store-on-your-computer",
-    ],
-  },
-  {
-    title: "4. Modifiche alla cookie policy",
-    content: [
-      "Potremmo aggiornare periodicamente questa pagina.",
-      "Si consiglia di consultarla regolarmente.",
-    ],
-  },
-  {
-    title: "5. Contatti",
-    content: ["Per dubbi o richieste sui cookie:", "📩 info@marbel.it"],
-  },
-];
-
-const blockVariants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-};
-
 export default function CookiePage() {
+  // Unico blocco testo, padding top per separazione dalla navbar
   return (
     <main className="min-h-screen bg-[#f5f6fa] text-[#1a2a4e] font-sans">
       <SocialBar />
-      <div className="max-w-5xl mx-auto px-6 py-16 space-y-12">
-        <header className="text-center space-y-3">
-          <h1 className="text-4xl sm:text-5xl font-extrabold">Cookie Policy</h1>
+      <div className="max-w-5xl mx-auto px-6 pt-24 pb-16">
+        <header className="text-center mb-8">
+          <h1 className="text-4xl sm:text-5xl font-extrabold mb-2">
+            Cookie Policy
+          </h1>
           <p className="text-lg text-[#475569] max-w-2xl mx-auto">
             Informazioni sull’uso dei cookie per gli utenti del sito MarBel.
           </p>
         </header>
-
-        <div className="space-y-10">
-          {sections.map((section) => (
-            <motion.section
-              key={section.title}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={blockVariants}
-              className="bg-white rounded-2xl shadow-sm border border-[#e2e8f0] p-6 sm:p-8 space-y-4"
+        <div className="bg-white rounded-2xl shadow-sm border border-[#e2e8f0] p-6 sm:p-8 text-[#475569] leading-relaxed space-y-4">
+          <p>
+            <b>Ultimo aggiornamento:</b> [inserisci data]
+          </p>
+          <p>
+            Il presente documento descrive l’uso dei cookie sul sito
+            dittamarbel.netlify.app. Utilizziamo Google Analytics esclusivamente
+            in modalità anonimizzata (IP anonimizzato) per raccogliere
+            statistiche aggregate sulle visite. Nessun dato personale viene
+            tracciato senza consenso.
+          </p>
+          <p>
+            <b>Tipologie di cookie utilizzati:</b>
+            <br />
+            <b>a) Cookie tecnici:</b> necessari per il corretto funzionamento
+            del sito. Non richiedono consenso.
+            <br />
+            <b>b) Cookie analitici anonimizzati (Google Analytics):</b>{" "}
+            utilizzati solo per statistiche aggregate (es. traffico).
+            L’indirizzo IP viene anonimizzato e i dati non consentono
+            l’identificazione dell’utente. Questi cookie vengono attivati solo
+            previo consenso esplicito tramite il banner.
+            <br />
+            <b>c) Cookie di terze parti:</b> servizi come Google Fonts,
+            strumenti di hosting o CDN possono generare cookie tecnici. Non
+            utilizziamo cookie di profilazione.
+          </p>
+          <p>
+            <b>Gestione e revoca del consenso:</b> puoi accettare o rifiutare i
+            cookie analitici tramite il banner che compare al primo accesso o
+            cliccando su &quot;Gestisci preferenze cookie&quot; in basso a
+            sinistra. Puoi revocare o modificare il consenso in qualsiasi
+            momento tramite lo stesso pulsante. Puoi inoltre cancellare i cookie
+            dal browser.
+            <br />
+            <b>Guida ufficiale:</b>{" "}
+            <a
+              href="https://support.google.com/chrome/answer/95647"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <h2 className="text-2xl font-bold tracking-tight">
-                {section.title}
-              </h2>
-              <div className="space-y-2 text-[#475569] leading-relaxed">
-                {section.content.map((paragraph, idx) => (
-                  <p key={idx}>{paragraph}</p>
-                ))}
-              </div>
-            </motion.section>
-          ))}
+              Chrome
+            </a>
+            ,{" "}
+            <a
+              href="https://support.apple.com/guide/safari/manage-cookies"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Safari
+            </a>
+            ,{" "}
+            <a
+              href="https://support.mozilla.org/kb/cookies-information-websites-store-on-your-computer"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Firefox
+            </a>
+            .
+          </p>
+          <p>
+            <b>Modifiche alla cookie policy:</b> potremmo aggiornare
+            periodicamente questa pagina. Si consiglia di consultarla
+            regolarmente.
+          </p>
+          <p>
+            <b>Contatti:</b> per dubbi o richieste sui cookie: 📩 info@marbel.it
+          </p>
         </div>
       </div>
       <PreventivoFooter />

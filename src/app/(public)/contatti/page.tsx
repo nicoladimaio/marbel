@@ -22,7 +22,11 @@ export default function Contatti() {
       {/* info cards */}
       <section className="py-16">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto mt-16">
-          <div className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-center text-center sm:items-start sm:text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+          <a
+            href="tel:+390212345678"
+            className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-center text-center sm:items-start sm:text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+            title="Chiama il numero"
+          >
             <div className="w-14 h-14 bg-white rounded-xl shadow flex items-center justify-center mb-5">
               <PhoneIcon className="w-6 h-6 text-[#1a2a4e]" />
             </div>
@@ -35,9 +39,13 @@ export default function Contatti() {
             <div className="text-sm text-[#6b7280] mt-1">
               {"Dal luned\u00ec al venerd\u00ec"}
             </div>
-          </div>
+          </a>
 
-          <div className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-center text-center sm:items-start sm:text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+          <a
+            href="mailto:info@marbel.it"
+            className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-center text-center sm:items-start sm:text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+            title="Invia una mail"
+          >
             <div className="w-14 h-14 bg-white rounded-xl shadow flex items-center justify-center mb-5">
               <EnvelopeIcon className="w-6 h-6 text-[#1a2a4e]" />
             </div>
@@ -50,9 +58,15 @@ export default function Contatti() {
             <div className="text-sm text-[#6b7280] mt-1">
               Ti rispondiamo entro 24 ore
             </div>
-          </div>
+          </a>
 
-          <div className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-center text-center sm:items-start sm:text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=Via+Nazario+Sauro+36,+Marcianise+(CE)"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-center text-center sm:items-start sm:text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+            title="Apri in Google Maps"
+          >
             <div className="w-14 h-14 bg-white rounded-xl shadow flex items-center justify-center mb-5">
               <MapPinIcon className="w-6 h-6 text-[#1a2a4e]" />
             </div>
@@ -65,7 +79,7 @@ export default function Contatti() {
             <div className="text-sm text-[#6b7280] mt-1">
               Riceviamo su appuntamento
             </div>
-          </div>
+          </a>
         </div>
       </section>
 
