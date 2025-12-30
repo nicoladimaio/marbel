@@ -484,7 +484,7 @@ export default function Home() {
                   <p className="text-sm uppercase tracking-[0.4em] text-white/60">
                     Servizi
                   </p>
-                  <h2 className="text-3xl md:text-4xl font-extrabold leading-tight">
+                  <h2 className="text-3xl md:text-4xl font-extrabold leading-tight text-white">
                     Dalla progettazione al collaudo, ogni fase ha una squadra
                     dedicata.
                   </h2>
