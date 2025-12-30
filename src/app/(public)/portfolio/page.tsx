@@ -26,7 +26,11 @@ export default function Portfolio() {
   // --- DRAG TO SCROLL CATEGORIE ---
   const categorieRef = React.useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
-  const dragState = React.useRef({ startX: 0, scrollLeft: 0 });
+  const dragState = React.useRef({
+    startX: 0,
+    scrollLeft: 0,
+    hasDragged: false,
+  });
   // Migliorata: click e drag non si bloccano a vicenda
   function handleDragStart(e: React.MouseEvent<HTMLDivElement>) {
     setDragging(true);
