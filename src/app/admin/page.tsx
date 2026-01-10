@@ -1287,7 +1287,10 @@ function PortfolioAdmin() {
                   ? "bg-[#1a2a4e] text-white"
                   : "bg-gray-200 text-[#1a2a4e]"
               }`}
-              onClick={() => setCategoriaFiltro(cat)}
+              onClick={() => {
+                setCategoriaFiltro(cat);
+                setPageMobile(1);
+              }}
             >
               {cat}
             </button>
