@@ -38,7 +38,7 @@ import {
 } from "react-icons/fa";
 
 // Colore blu scuro usato nella homepage
-const bluScuro = "#1a2a4e";
+const bluScuro = "#1E2A22";
 // UID autorizzato da Firebase Console (sostituisci con quello reale)
 
 export default function Admin() {
@@ -91,7 +91,7 @@ export default function Admin() {
   if (checkingAuth) {
     return (
       <main className="min-h-screen bg-white flex flex-col items-center justify-center py-16 px-4 sm:px-8 font-sans">
-        <p className="text-[#1a2a4e] text-lg font-semibold">Caricamento…</p>
+        <p className="text-[#1E2A22] text-lg font-semibold">Caricamento…</p>
       </main>
     );
   }
@@ -104,7 +104,7 @@ export default function Admin() {
     <div className="bg-white font-sans min-h-screen">
       {/* Mobile hamburger */}
       <button
-        className="fixed top-4 left-4 z-30 flex items-center justify-center w-10 h-10 rounded-lg bg-[#1a2a4e] text-white shadow-lg sm:hidden"
+        className="fixed top-4 left-4 z-30 flex items-center justify-center w-10 h-10 rounded-lg bg-[#1E2A22] text-white shadow-lg sm:hidden"
         onClick={() => setSidebarOpen(true)}
         aria-label="Apri menu"
       >
@@ -126,7 +126,7 @@ export default function Admin() {
       {/* Sidebar mobile overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 bg-black/40 flex">
-          <aside className="w-64 bg-[#1a2a4e] text-white min-h-screen p-6 flex flex-col gap-6 animate-slide-in-left relative">
+          <aside className="w-64 bg-[#1E2A22] text-white min-h-screen p-6 flex flex-col gap-6 animate-slide-in-left relative">
             <button
               className="absolute top-4 right-4 text-white text-2xl"
               onClick={() => setSidebarOpen(false)}
@@ -208,7 +208,7 @@ export default function Admin() {
         // Reautentica l'utente
         const credential = EmailAuthProvider.credential(
           user.email,
-          currentPassword
+          currentPassword,
         );
         await reauthenticateWithCredential(user, credential);
         // Cambia la password
@@ -238,7 +238,7 @@ export default function Admin() {
       <section className="mb-8">
         <h2
           className="text-2xl font-extrabold mb-6"
-          style={{ color: "#1a2a4e", textShadow: "0 1px 4px #e3e8f0" }}
+          style={{ color: "#1E2A22", textShadow: "0 1px 4px #e3e8f0" }}
         >
           Cambia Password
         </h2>
@@ -257,7 +257,9 @@ export default function Admin() {
             </div>
           )}
           <div>
-            <label className="block font-semibold mb-1">Password attuale</label>
+            <label className="block font-semibold mb-1 text-[#1E2A22]">
+              Password attuale
+            </label>
             <input
               type={showPassword ? "text" : "password"}
               value={currentPassword}
@@ -268,18 +270,20 @@ export default function Admin() {
             />
           </div>
           <div>
-            <label className="block font-semibold mb-1">Nuova password</label>
+            <label className="block font-semibold mb-1 text-[#1E2A22]">
+              Nuova password
+            </label>
             <input
               type={showPassword ? "text" : "password"}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="border rounded px-3 py-2 w-full"
+              className="border rounded px-3 py-2 w-full text-[#1E2A22]"
               autoComplete="new-password"
               required
             />
           </div>
           <div>
-            <label className="block font-semibold mb-1">
+            <label className="block font-semibold mb-1 text-[#1E2A22]">
               Conferma nuova password
             </label>
             <input
@@ -298,14 +302,17 @@ export default function Admin() {
               checked={showPassword}
               onChange={() => setShowPassword((v) => !v)}
             />
-            <label htmlFor="showPassword" className="text-sm cursor-pointer">
+            <label
+              htmlFor="showPassword"
+              className="text-sm cursor-pointer text-[#1E2A22]"
+            >
               Mostra password
             </label>
           </div>
           <button
             type="submit"
             className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 font-semibold mt-2"
-            style={{ backgroundColor: "#1a2a4e" }}
+            style={{ backgroundColor: "#1E2A22" }}
             disabled={loading}
           >
             {loading ? "Salvataggio..." : "Cambia Password"}
@@ -363,7 +370,7 @@ function OfferteAdmin() {
             storagePath: data.storagePath || "",
             visibile: data.visibile !== false,
           };
-        })
+        }),
       );
     };
     fetchOfferte();
@@ -390,10 +397,10 @@ function OfferteAdmin() {
     await setDoc(
       doc(db, "offerte", id),
       { visibile: !visibile },
-      { merge: true }
+      { merge: true },
     );
     setOfferte((prev) =>
-      prev.map((o) => (o.id === id ? { ...o, visibile: !visibile } : o))
+      prev.map((o) => (o.id === id ? { ...o, visibile: !visibile } : o)),
     );
   };
 
@@ -446,7 +453,7 @@ function OfferteAdmin() {
           storagePath: data.storagePath || "",
           visibile: data.visibile !== false,
         };
-      })
+      }),
     );
     setLoading(false);
   };
@@ -477,7 +484,7 @@ function OfferteAdmin() {
       try {
         const storageRef = ref(
           storage,
-          `offerte/${Date.now()}_${editFile.name}`
+          `offerte/${Date.now()}_${editFile.name}`,
         );
         await uploadBytes(storageRef, editFile);
         imageUrl = await getDownloadURL(storageRef);
@@ -492,7 +499,7 @@ function OfferteAdmin() {
         descrizione: editDescrizione,
         immagine: imageUrl,
       },
-      { merge: true }
+      { merge: true },
     );
     setEditId(null);
     // Aggiorna la lista offerte
@@ -514,7 +521,7 @@ function OfferteAdmin() {
           storagePath: data.storagePath || "",
           visibile: data.visibile !== false,
         };
-      })
+      }),
     );
   };
 
@@ -651,7 +658,7 @@ function OfferteAdmin() {
               {/* Azioni sempre visibili su mobile, overlay su desktop */}
               {/* Mobile: titolo e azioni sempre visibili sotto immagine */}
               <div className="sm:hidden text-center pb-2">
-                <div className="font-bold text-base truncate max-w-[90%] mx-auto text-[#1a2a4e]">
+                <div className="font-bold text-base truncate max-w-[90%] mx-auto text-[#1E2A22]">
                   {o.titolo}
                 </div>
               </div>
@@ -667,7 +674,7 @@ function OfferteAdmin() {
                 </button>
                 <button
                   onClick={() => setEditId(o.id)}
-                  className="rounded-full bg-blue-100 hover:bg-blue-200 p-2 shadow text-[#1a2a4e] text-xl transition"
+                  className="rounded-full bg-blue-100 hover:bg-blue-200 p-2 shadow text-[#1E2A22] text-xl transition"
                   title="Modifica"
                 >
                   <MdEdit />
@@ -702,7 +709,7 @@ function OfferteAdmin() {
                   </button>
                   <button
                     onClick={() => setEditId(o.id)}
-                    className="rounded-full bg-white/90 hover:bg-blue-100 p-2 shadow text-[#1a2a4e] text-xl transition"
+                    className="rounded-full bg-white/90 hover:bg-blue-100 p-2 shadow text-[#1E2A22] text-xl transition"
                     title="Modifica"
                   >
                     <MdEdit />
@@ -724,7 +731,7 @@ function OfferteAdmin() {
       {deleteId && (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
           <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm flex flex-col gap-4 relative">
-            <h3 className="text-xl font-bold text-[#1a2a4e] mb-2">
+            <h3 className="text-xl font-bold text-[#1E2A22] mb-2">
               Conferma eliminazione
             </h3>
             <p className="text-[#3a4a5a]">
@@ -905,7 +912,7 @@ function PortfolioAdmin() {
               createdAt: data.createdAt || 0,
             };
           })
-          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
       );
     };
     // Carica categorie
@@ -946,10 +953,10 @@ function PortfolioAdmin() {
     await setDoc(
       doc(db, "portfolio", id),
       { visibile: !visibile },
-      { merge: true }
+      { merge: true },
     );
     setItems((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, visibile: !visibile } : i))
+      prev.map((i) => (i.id === id ? { ...i, visibile: !visibile } : i)),
     );
   };
 
@@ -974,7 +981,7 @@ function PortfolioAdmin() {
       setAddError(
         err instanceof Error && err.message
           ? `Errore durante il caricamento: ${err.message}`
-          : "Errore durante il caricamento dell'immagine. Riprova."
+          : "Errore durante il caricamento dell'immagine. Riprova.",
       );
       setLoading(false);
       return;
@@ -1018,7 +1025,7 @@ function PortfolioAdmin() {
             createdAt: data.createdAt || 0,
           };
         })
-        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
     );
     setLoading(false);
   };
@@ -1040,7 +1047,7 @@ function PortfolioAdmin() {
       try {
         const storageRef = ref(
           storage,
-          `portfolio/${Date.now()}_${editFile.name}`
+          `portfolio/${Date.now()}_${editFile.name}`,
         );
         await uploadBytes(storageRef, editFile);
         imageUrl = await getDownloadURL(storageRef);
@@ -1057,7 +1064,7 @@ function PortfolioAdmin() {
         categoria: editCategoria,
         ...(storagePath ? { storagePath } : {}),
       },
-      { merge: true }
+      { merge: true },
     );
     setEditId(null);
     // Aggiorna lista
@@ -1079,7 +1086,7 @@ function PortfolioAdmin() {
           storagePath: data.storagePath || "",
           visibile: data.visibile !== false,
         };
-      })
+      }),
     );
   };
 
@@ -1107,7 +1114,7 @@ function PortfolioAdmin() {
     }
     // Prendi solo categorie uniche e non vuote
     const uniqueCategorie = Array.from(
-      new Set(editCategorie.map((c) => c.trim()).filter((c) => c))
+      new Set(editCategorie.map((c) => c.trim()).filter((c) => c)),
     );
     for (const nome of uniqueCategorie) {
       await addDoc(collection(db, "categorie"), { nome });
@@ -1133,7 +1140,7 @@ function PortfolioAdmin() {
           storagePath: data.storagePath || "",
           visibile: data.visibile !== false,
         };
-      })
+      }),
     );
   };
 
@@ -1142,7 +1149,7 @@ function PortfolioAdmin() {
     // Conta lavori associati
     const querySnapshot = await getDocs(collection(db, "portfolio"));
     const lavori = querySnapshot.docs.filter(
-      (doc) => doc.data().categoria === nomeCat
+      (doc) => doc.data().categoria === nomeCat,
     );
     if (lavori.length > 0) {
       setCategoriaDaEliminare(nomeCat);
@@ -1164,7 +1171,7 @@ function PortfolioAdmin() {
     }
     // Elimina la categoria dalla lista
     setEditCategorie(
-      editCategorie.filter((cat) => cat !== categoriaDaEliminare)
+      editCategorie.filter((cat) => cat !== categoriaDaEliminare),
     );
     setShowConfermaEliminaCat(false);
     setCategoriaDaEliminare(null);
@@ -1188,7 +1195,7 @@ function PortfolioAdmin() {
           storagePath: data.storagePath || "",
           visibile: data.visibile !== false,
         };
-      })
+      }),
     );
   };
 
@@ -1205,7 +1212,7 @@ function PortfolioAdmin() {
   // FIX: Rimuovo categorie duplicate e vuote ovunque servano chiavi uniche
   // Utility per categorie uniche e non vuote
   const categorieUniche = Array.from(
-    new Set(categorie.filter((c) => c.trim()))
+    new Set(categorie.filter((c) => c.trim())),
   );
 
   // FIX: Il tasto + aggiungi lavoro deve resettare la categoria e aggiornare le categorie prima di aprire il form
@@ -1222,7 +1229,7 @@ function PortfolioAdmin() {
 
   // FIX: lavoriFiltrati deve essere definito prima del render della lista
   const lavoriFiltrati = items.filter(
-    (i) => categoriaFiltro === "TUTTE" || i.categoria === categoriaFiltro
+    (i) => categoriaFiltro === "TUTTE" || i.categoria === categoriaFiltro,
   );
 
   // Calcola pagine solo su mobile
@@ -1234,7 +1241,7 @@ function PortfolioAdmin() {
   const lavoriToShow = isMobile
     ? lavoriFiltrati.slice(
         (pageMobile - 1) * perPageMobile,
-        pageMobile * perPageMobile
+        pageMobile * perPageMobile,
       )
     : lavoriFiltrati;
 
@@ -1258,7 +1265,7 @@ function PortfolioAdmin() {
       <div className="flex justify-center mb-4">
         <button
           onClick={() => setShowCategorie(true)}
-          className="bg-[#1a2a4e] hover:bg-[#274472] text-white rounded-lg px-6 py-2 font-semibold shadow text-base flex items-center gap-2"
+          className="bg-[#1E2A22] hover:bg-[#274472] text-white rounded-lg px-6 py-2 font-semibold shadow text-base flex items-center gap-2"
           style={{ backgroundColor: bluScuro }}
           title="Modifica categorie"
         >
@@ -1272,8 +1279,8 @@ function PortfolioAdmin() {
           <button
             className={`px-4 py-2 rounded-full font-semibold shadow text-sm transition whitespace-nowrap ${
               categoriaFiltro === "TUTTE"
-                ? "bg-[#1a2a4e] text-white"
-                : "bg-gray-200 text-[#1a2a4e]"
+                ? "bg-[#1E2A22] text-white"
+                : "bg-gray-200 text-[#1E2A22]"
             }`}
             onClick={() => setCategoriaFiltro("TUTTE")}
           >
@@ -1284,8 +1291,8 @@ function PortfolioAdmin() {
               key={cat}
               className={`px-4 py-2 rounded-full font-semibold shadow text-sm transition whitespace-nowrap ${
                 categoriaFiltro === cat
-                  ? "bg-[#1a2a4e] text-white"
-                  : "bg-gray-200 text-[#1a2a4e]"
+                  ? "bg-[#1E2A22] text-white"
+                  : "bg-gray-200 text-[#1E2A22]"
               }`}
               onClick={() => {
                 setCategoriaFiltro(cat);
@@ -1333,7 +1340,7 @@ function PortfolioAdmin() {
               <div className="flex sm:hidden justify-center gap-3 py-2 bg-white/90">
                 <button
                   onClick={() => setEditId(i.id)}
-                  className="rounded-full bg-blue-100 hover:bg-blue-200 p-2 shadow text-[#1a2a4e] text-xl transition"
+                  className="rounded-full bg-blue-100 hover:bg-blue-200 p-2 shadow text-[#1E2A22] text-xl transition"
                   title="Modifica"
                 >
                   <MdEdit />
@@ -1361,14 +1368,14 @@ function PortfolioAdmin() {
                   <div className="font-bold text-lg truncate max-w-[90%] mx-auto">
                     {i.titolo}
                   </div>
-                  <div className="text-xs bg-[#1a2a4e]/80 rounded px-2 py-1 inline-block mt-1">
+                  <div className="text-xs bg-[#1E2A22]/80 rounded px-2 py-1 inline-block mt-1">
                     {i.categoria}
                   </div>
                 </div>
                 <div className="flex gap-4">
                   <button
                     onClick={() => setEditId(i.id)}
-                    className="rounded-full bg-white/90 hover:bg-blue-100 p-2 shadow text-[#1a2a4e] text-xl transition"
+                    className="rounded-full bg-white/90 hover:bg-blue-100 p-2 shadow text-[#1E2A22] text-xl transition"
                     title="Modifica"
                   >
                     <MdEdit />
@@ -1455,7 +1462,7 @@ function PortfolioAdmin() {
                 >
                   {num}
                 </button>
-              )
+              ),
             );
           })()}
           <button
@@ -1739,7 +1746,7 @@ function PortfolioAdmin() {
       {showConfermaEliminaCat && (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
           <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm flex flex-col gap-4 relative">
-            <h3 className="text-xl font-bold text-[#1a2a4e] mb-2">
+            <h3 className="text-xl font-bold text-[#1E2A22] mb-2">
               Conferma eliminazione categoria
             </h3>
             <p className="text-[#3a4a5a]">
@@ -1773,7 +1780,7 @@ function PortfolioAdmin() {
       {deleteId && (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
           <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm flex flex-col gap-4 relative">
-            <h3 className="text-xl font-bold text-[#1a2a4e] mb-2">
+            <h3 className="text-xl font-bold text-[#1E2A22] mb-2">
               Conferma eliminazione
             </h3>
             <p className="text-[#3a4a5a]">
@@ -1818,7 +1825,7 @@ function PreventivoAdmin() {
         querySnapshot.docs.map((doc) => {
           const data = doc.data() as { voce: string; prezzo: string };
           return { id: doc.id, voce: data.voce, prezzo: data.prezzo };
-        })
+        }),
       );
     };
     fetchVoci();
@@ -1835,7 +1842,7 @@ function PreventivoAdmin() {
       querySnapshot.docs.map((doc) => {
         const data = doc.data() as { voce: string; prezzo: string };
         return { id: doc.id, voce: data.voce, prezzo: data.prezzo };
-      })
+      }),
     );
     setLoading(false);
   };

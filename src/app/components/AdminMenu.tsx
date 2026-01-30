@@ -17,7 +17,7 @@ export default function AdminMenu({
     { key: "cambia-password", label: "Cambia Password" },
   ];
   return (
-    <aside className="w-full sm:w-64 bg-[#1a2a4e] text-white min-h-screen p-3 sm:p-6 flex flex-col gap-4 sm:gap-6">
+    <aside className="w-full sm:w-64 bg-[#317614] text-white min-h-screen p-3 sm:p-6 flex flex-col gap-4 sm:gap-6">
       <div className="text-xl sm:text-2xl font-bold mb-4 sm:mb-8">
         Area Admin
       </div>

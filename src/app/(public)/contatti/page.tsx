@@ -8,7 +8,7 @@ import { PhoneIcon, EnvelopeIcon, MapPinIcon } from "@heroicons/react/24/solid";
 
 export default function Contatti() {
   return (
-    <main className="min-h-screen bg-[#f5f6fa] text-[#1a2a4e]">
+    <main className="min-h-screen bg-[#f5f6fa] text-[#1E2A22]">
       <SocialBar />
 
       <Hero
@@ -24,16 +24,16 @@ export default function Contatti() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto mt-16">
           <a
             href="tel:+390212345678"
-            className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-center text-center sm:items-start sm:text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+            className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-center text-center sm:items-start sm:text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
             title="Chiama il numero"
           >
             <div className="w-14 h-14 bg-white rounded-xl shadow flex items-center justify-center mb-5">
-              <PhoneIcon className="w-6 h-6 text-[#1a2a4e]" />
+              <PhoneIcon className="w-6 h-6 text-[#1E2A22]" />
             </div>
-            <div className="text-xl font-bold uppercase text-[#1a2a4e] mt-3">
+            <div className="text-xl font-bold uppercase text-[#1E2A22] mt-3">
               TELEFONO
             </div>
-            <div className="text-lg font-semibold text-[#1a2a4e] mt-1.5">
+            <div className="text-lg font-semibold text-[#1E2A22] mt-1.5">
               02 12345678
             </div>
             <div className="text-sm text-[#6b7280] mt-1">
@@ -43,16 +43,16 @@ export default function Contatti() {
 
           <a
             href="mailto:info@marbel.it"
-            className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-center text-center sm:items-start sm:text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+            className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-center text-center sm:items-start sm:text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
             title="Invia una mail"
           >
             <div className="w-14 h-14 bg-white rounded-xl shadow flex items-center justify-center mb-5">
-              <EnvelopeIcon className="w-6 h-6 text-[#1a2a4e]" />
+              <EnvelopeIcon className="w-6 h-6 text-[#1E2A22]" />
             </div>
-            <div className="text-xl font-bold uppercase text-[#1a2a4e] mt-3">
+            <div className="text-xl font-bold uppercase text-[#1E2A22] mt-3">
               EMAIL
             </div>
-            <div className="text-lg font-semibold text-[#1a2a4e] mt-1.5">
+            <div className="text-lg font-semibold text-[#1E2A22] mt-1.5">
               info@marbel.it
             </div>
             <div className="text-sm text-[#6b7280] mt-1">
@@ -64,16 +64,16 @@ export default function Contatti() {
             href="https://www.google.com/maps/search/?api=1&query=Via+Nazario+Sauro+36,+Marcianise+(CE)"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-center text-center sm:items-start sm:text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+            className="bg-[#eef2f7] rounded-3xl shadow-md p-6 flex flex-col items-center text-center sm:items-start sm:text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
             title="Apri in Google Maps"
           >
             <div className="w-14 h-14 bg-white rounded-xl shadow flex items-center justify-center mb-5">
-              <MapPinIcon className="w-6 h-6 text-[#1a2a4e]" />
+              <MapPinIcon className="w-6 h-6 text-[#1E2A22]" />
             </div>
-            <div className="text-xl font-bold uppercase text-[#1a2a4e] mt-3">
+            <div className="text-xl font-bold uppercase text-[#1E2A22] mt-3">
               INDIRIZZO
             </div>
-            <div className="text-lg font-semibold text-[#1a2a4e] mt-1.5">
+            <div className="text-lg font-semibold text-[#1E2A22] mt-1.5">
               Via Nazario Sauro 36, Marcianise (CE)
             </div>
             <div className="text-sm text-[#6b7280] mt-1">
@@ -93,39 +93,39 @@ export default function Contatti() {
             transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
             className="bg-white rounded-2xl border border-[#e5e7eb] shadow-[0_20px_45px_rgba(11,21,46,0.08)] p-8 flex flex-col h-full"
           >
-            <span className="text-xs tracking-[0.3em] uppercase text-[#1a2a4e]/70">
+            <span className="text-xs tracking-[0.3em] uppercase text-[#1E2A22]/70">
               Scrivici
             </span>
-            <h3 className="text-3xl font-semibold text-[#1a2a4e] mt-2">
+            <h3 className="text-3xl font-semibold text-[#1E2A22] mt-2">
               Richiedi informazioni
             </h3>
             <form className="mt-6 space-y-4 flex-1">
               <input
                 type="text"
                 placeholder="Nome"
-                className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+                className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                 required
               />
               <input
                 type="email"
                 placeholder="Email"
-                className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+                className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                 required
               />
               <input
                 type="tel"
                 placeholder="Telefono"
-                className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+                className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
               />
               <textarea
                 placeholder="Messaggio"
                 rows={5}
-                className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+                className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                 required
               />
               <button
                 type="submit"
-                className="w-full bg-[#1a2a4e] text-white font-semibold rounded-xl py-3 hover:bg-[#102046] transition-colors"
+                className="w-full bg-[#1E2A22] text-white font-semibold rounded-xl py-3 hover:bg-[#102046] transition-colors"
               >
                 Invia richiesta
               </button>

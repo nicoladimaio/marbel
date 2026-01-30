@@ -8,8 +8,8 @@ export default function Footer() {
         <Image
           src="/logo.png"
           alt="Logo Mar.Bel."
-          width={40}
-          height={40}
+          width={90}
+          height={90}
           className="drop-shadow"
         />
       </div>

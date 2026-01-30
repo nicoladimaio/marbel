@@ -83,7 +83,7 @@ export default function SocialBar() {
           type="button"
           onClick={() => setOpen((prev) => !prev)}
           aria-label="Apri menu social"
-          className="w-12 h-12 rounded-full bg-white shadow-xl border border-white/60 flex items-center justify-center text-[#1a2a4e] hover:text-[#223867] transition-colors"
+          className="w-12 h-12 rounded-full bg-white shadow-xl border border-white/60 flex items-center justify-center text-[#317614] hover:text-[#223867] transition-colors"
         >
           <FiShare2 size={24} />
         </button>

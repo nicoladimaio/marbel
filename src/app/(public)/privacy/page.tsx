@@ -2,7 +2,7 @@ import PreventivoFooter from "../../components/PreventivoFooter";
 
 export default function Privacy() {
   return (
-    <main className="min-h-screen bg-[#f5f6fa] text-[#1a2a4e] font-sans">
+    <main className="min-h-screen bg-[#f5f6fa] text-[#317614] font-sans">
       <div className="max-w-5xl mx-auto px-6 pt-24 pb-16">
         <header className="text-center mb-8">
           <h1 className="text-4xl sm:text-5xl font-extrabold mb-2">

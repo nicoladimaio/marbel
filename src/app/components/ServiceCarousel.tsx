@@ -34,7 +34,7 @@ export default function ServiceCarousel() {
     if (!track) return;
 
     const firstCard = track.querySelector(
-      "[data-service-card]"
+      "[data-service-card]",
     ) as HTMLElement | null;
 
     const styles = getComputedStyle(track);
@@ -86,11 +86,11 @@ export default function ServiceCarousel() {
                 className="snap-center w-[90vw] min-w-[90vw] sm:snap-start sm:w-[340px] sm:min-w-[320px] rounded-2xl border border-[#e5e7eb] bg-white/90 p-7 shadow-lg shadow-[#0b152e]/10 flex flex-col justify-between transition-all service-card-landscape"
               >
                 <div className="flex flex-col gap-5">
-                  <div className="w-14 h-14 rounded-full bg-white text-[#1a2a4e] flex items-center justify-center shadow-md">
+                  <div className="w-14 h-14 rounded-full bg-white text-[#1E2A22] flex items-center justify-center shadow-md">
                     <Icon size={26} />
                   </div>
                   <div className="space-y-2">
-                    <h3 className="text-lg font-bold uppercase tracking-[0.35em] text-[#1a2a4e]">
+                    <h3 className="text-lg font-bold uppercase tracking-[0.35em] text-[#1E2A22]">
                       {title}
                     </h3>
                     <p className="text-sm text-[#475569] leading-relaxed">
@@ -100,12 +100,12 @@ export default function ServiceCarousel() {
                 </div>
                 <Link
                   href={href}
-                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.3em] text-[#1a2a4e] hover:text-[#102046] transition-colors"
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.3em] text-[#1E2A22] hover:text-[#317614] transition-colors"
                 >
                   Scopri di più
                 </Link>
               </motion.div>
-            )
+            ),
           )}
         </div>
         {/* Dots indicator mobile */}
@@ -114,7 +114,7 @@ export default function ServiceCarousel() {
             <span
               key={i}
               className={`block w-2 h-2 rounded-full transition-all duration-300 ${
-                i === activeIndex ? "bg-[#1a2a4e]" : "bg-[#cbd5e1] opacity-60"
+                i === activeIndex ? "bg-[#1E2A22]" : "bg-[#cbd5e1] opacity-60"
               }`}
             />
           ))}
@@ -125,7 +125,7 @@ export default function ServiceCarousel() {
           type="button"
           onClick={() => scrollBy("prev")}
           disabled={isAtStart}
-          className={`w-10 h-10 rounded-full bg-white shadow-md border border-[#e2e8f0] text-[#1a2a4e] font-bold transition ${
+          className={`w-10 h-10 rounded-full bg-white shadow-md border border-[#e2e8f0] text-[#1E2A22] font-bold transition ${
             !isAtStart ? "hover:bg-[#f5f6fa]" : "opacity-40 cursor-not-allowed"
           }`}
           aria-label="Servizi precedenti"
@@ -136,7 +136,7 @@ export default function ServiceCarousel() {
           type="button"
           onClick={() => scrollBy("next")}
           disabled={isAtEnd}
-          className={`w-10 h-10 rounded-full bg-white shadow-md border border-[#e2e8f0] text-[#1a2a4e] font-bold transition ${
+          className={`w-10 h-10 rounded-full bg-white shadow-md border border-[#e2e8f0] text-[#1E2A22] font-bold transition ${
             !isAtEnd ? "hover:bg-[#f5f6fa]" : "opacity-40 cursor-not-allowed"
           }`}
           aria-label="Servizi successivi"

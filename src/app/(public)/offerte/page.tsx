@@ -36,12 +36,12 @@ function OfferModal({
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState(
-    `Vorrei informazioni sull'offerta: ${title}`
+    `Vorrei informazioni sull'offerta: ${title}`,
   );
   const [status, setStatus] = useState<ModalStatus>("idle");
   const [error, setError] = useState("");
   const [contactMode, setContactMode] = useState<"none" | "whatsapp" | "form">(
-    "none"
+    "none",
   );
 
   useEffect(() => {
@@ -97,7 +97,7 @@ function OfferModal({
   const isSubmitting = status === "loading";
   const whatsappMessage = `Vorrei informazioni sull'offerta: ${title}`;
   const whatsappLink = `https://wa.me/?text=${encodeURIComponent(
-    whatsappMessage
+    whatsappMessage,
   )}`;
   const handleWhatsappClick = () => {
     window.open(whatsappLink, "_blank", "noopener,noreferrer");
@@ -125,12 +125,12 @@ function OfferModal({
             <button
               type="button"
               onClick={onClose}
-              className="absolute top-4 right-4 text-[#1a2a4e] hover:text-[#223867] text-xl font-bold"
+              className="absolute top-4 right-4 text-[#317614] hover:text-[#223867] text-xl font-bold"
               aria-label="Chiudi"
             >
               &times;
             </button>
-            <h3 className="text-2xl font-bold text-[#1a2a4e] mb-1">
+            <h3 className="text-2xl font-bold text-[#317614] mb-1">
               Come vuoi essere contattato?
             </h3>
             <p className="text-sm text-[#475569] mb-5">
@@ -148,7 +148,7 @@ function OfferModal({
                     <FaWhatsapp size={24} />
                   </span>
                   <span className="flex flex-col">
-                    <span className="text-base font-semibold text-[#1a2a4e]">
+                    <span className="text-base font-semibold text-[#317614]">
                       WhatsApp
                     </span>
                     <span className="text-sm text-[#475569]">
@@ -159,13 +159,13 @@ function OfferModal({
                 <button
                   type="button"
                   onClick={() => setContactMode("form")}
-                  className="flex items-center gap-3 p-4 border border-[#e2e8f0] rounded-2xl shadow-sm hover:shadow-md hover:border-[#1a2a4e]/40 transition duration-200 text-left"
+                  className="flex items-center gap-3 p-4 border border-[#e2e8f0] rounded-2xl shadow-sm hover:shadow-md hover:border-[#317614]/40 transition duration-200 text-left"
                 >
-                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1a2a4e]/10 text-[#1a2a4e]">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#317614]/10 text-[#317614]">
                     <FiMail size={22} />
                   </span>
                   <span className="flex flex-col">
-                    <span className="text-base font-semibold text-[#1a2a4e]">
+                    <span className="text-base font-semibold text-[#317614]">
                       Modulo online
                     </span>
                     <span className="text-sm text-[#475569]">
@@ -190,13 +190,13 @@ function OfferModal({
                   <button
                     type="button"
                     onClick={() => setContactMode("none")}
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#1a2a4e] hover:text-[#223867] transition-colors"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#317614] hover:text-[#223867] transition-colors"
                   >
                     <span className="text-lg">←</span>
                     <span>Indietro</span>
                   </button>
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#1a2a4e]">
+                    <label className="text-sm font-semibold text-[#317614]">
                       Nome*
                     </label>
                     <input
@@ -204,11 +204,11 @@ function OfferModal({
                       required
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className="w-full rounded-xl border border-[#e2e8f0] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]"
+                      className="w-full rounded-xl border border-[#e2e8f0] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#317614]"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#1a2a4e]">
+                    <label className="text-sm font-semibold text-[#317614]">
                       Telefono*
                     </label>
                     <input
@@ -216,29 +216,29 @@ function OfferModal({
                       required
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="w-full rounded-xl border border-[#e2e8f0] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]"
+                      className="w-full rounded-xl border border-[#e2e8f0] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#317614]"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#1a2a4e]">
+                    <label className="text-sm font-semibold text-[#317614]">
                       Email
                     </label>
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full rounded-xl border border-[#e2e8f0] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]"
+                      className="w-full rounded-xl border border-[#e2e8f0] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#317614]"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#1a2a4e]">
+                    <label className="text-sm font-semibold text-[#317614]">
                       Messaggio
                     </label>
                     <textarea
                       rows={4}
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      className="w-full rounded-xl border border-[#e2e8f0] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]"
+                      className="w-full rounded-xl border border-[#e2e8f0] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#317614]"
                     />
                   </div>
                   {error && (
@@ -255,14 +255,14 @@ function OfferModal({
                     <button
                       type="button"
                       onClick={onClose}
-                      className="px-5 py-3 rounded-xl border border-[#e2e8f0] text-[#1a2a4e] font-semibold hover:bg-[#f5f6fa] transition-colors"
+                      className="px-5 py-3 rounded-xl border border-[#e2e8f0] text-[#317614] font-semibold hover:bg-[#f5f6fa] transition-colors"
                     >
                       Annulla
                     </button>
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="px-6 py-3 rounded-xl bg-[#1a2a4e] text-white font-semibold shadow-lg shadow-[#1a2a4e]/30 hover:bg-[#223867] transition-colors disabled:opacity-60"
+                      className="px-6 py-3 rounded-xl bg-[#317614] text-white font-semibold shadow-lg shadow-[#317614]/30 hover:bg-[#223867] transition-colors disabled:opacity-60"
                     >
                       {isSubmitting ? "Invio..." : "Invia richiesta"}
                     </button>
@@ -334,7 +334,7 @@ export default function Offerte() {
               visibile: data.visibile !== false,
             };
           })
-          .filter((item) => item.visibile)
+          .filter((item) => item.visibile),
       );
     };
     fetchOfferte();
@@ -404,10 +404,10 @@ export default function Offerte() {
         </div>
         <div className="flex-1 p-10 space-y-5">
           <div className="flex items-center gap-3 text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
-            <span className="h-2 w-2 rounded-full bg-[#1a2a4e]" />
+            <span className="h-2 w-2 rounded-full bg-[#317614]" />
             Pacchetto {String(index + 1).padStart(2, "0")}
           </div>
-          <h3 className="text-3xl font-extrabold uppercase tracking-wide text-[#1a2a4e]">
+          <h3 className="text-3xl font-extrabold uppercase tracking-wide text-[#317614]">
             {offerta.titolo}
           </h3>
           <p className="text-lg text-[#475569] leading-[1.65]">
@@ -416,7 +416,7 @@ export default function Offerte() {
           <button
             type="button"
             onClick={() => onOpenModal(offerta.titolo)}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#1a2a4e] text-white font-semibold uppercase tracking-[0.15em] shadow-lg shadow-[#1a2a4e]/40 hover:bg-[#223867] transition-colors duration-300"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#317614] text-white font-semibold uppercase tracking-[0.15em] shadow-lg shadow-[#317614]/40 hover:bg-[#1E2A22] transition-colors duration-300"
           >
             RICHIEDI INFORMAZIONI
           </button>
@@ -426,7 +426,7 @@ export default function Offerte() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f5f6fa] text-[#1a2a4e] font-sans">
+    <main className="min-h-screen bg-[#f5f6fa] text-[#317614] font-sans">
       <SocialBar />
 
       {/* HERO */}
@@ -505,7 +505,7 @@ export default function Offerte() {
             </p>
             <a
               href="/preventivo"
-              className="inline-flex items-center justify-center px-8 py-3 rounded-xl bg-[#1a2a4e] text-white font-semibold shadow-lg shadow-[#1a2a4e]/30 hover:bg-[#223867] transition-colors duration-300"
+              className="inline-flex items-center justify-center px-8 py-3 rounded-xl bg-[#317614] text-white font-semibold shadow-lg shadow-[#317614]/30 hover:bg-[#1E2A22] transition-colors duration-300"
             >
               Richiedi un preventivo
             </a>

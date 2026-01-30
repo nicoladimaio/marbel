@@ -38,14 +38,14 @@ export default function Login() {
     <main className="min-h-screen bg-[#f5f6fa] flex flex-col items-center py-16 px-4 sm:px-8 font-sans relative">
       <button
         onClick={() => router.push("/")}
-        className="absolute top-6 left-6 p-2 rounded-full bg-white hover:bg-gray-200 shadow text-[#1a2a4e] text-3xl z-10"
+        className="absolute top-6 left-6 p-2 rounded-full bg-white hover:bg-gray-200 shadow text-[#317614] text-3xl z-10"
         type="button"
         title="Torna alla homepage"
         aria-label="Torna alla homepage"
       >
         <MdHome />
       </button>
-      <h1 className="text-4xl sm:text-5xl font-extrabold text-[#1a2a4e] mb-8 mt-24">
+      <h1 className="text-4xl sm:text-5xl font-extrabold text-[#1E2A22] mb-8 mt-24">
         Login
       </h1>
       <form
@@ -70,7 +70,7 @@ export default function Login() {
         />
         <button
           type="submit"
-          className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors"
+          className="bg-[#317614] text-white py-2 rounded hover:bg-[#1E2A22] transition-colors"
           disabled={loading}
         >
           {loading ? "Accesso..." : "Accedi"}

@@ -6,7 +6,7 @@ import PreventivoFooter from "../../components/PreventivoFooter";
 export default function CookiePage() {
   // Unico blocco testo, padding top per separazione dalla navbar
   return (
-    <main className="min-h-screen bg-[#f5f6fa] text-[#1a2a4e] font-sans">
+    <main className="min-h-screen bg-[#f5f6fa] text-[#317614] font-sans">
       <SocialBar />
       <div className="max-w-5xl mx-auto px-6 pt-24 pb-16">
         <header className="text-center mb-8">

@@ -141,7 +141,7 @@ export default function Preventivo() {
     { id: string; voce: string; prezzo: string }[]
   >([]);
   const [formData, setFormData] = useState<PreventivoFormState>(
-    createInitialFormState
+    createInitialFormState,
   );
   const [requestStatus, setRequestStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -153,7 +153,7 @@ export default function Preventivo() {
         querySnapshot.docs.map((doc) => {
           const data = doc.data() as { voce: string; prezzo: string };
           return { id: doc.id, voce: data.voce, prezzo: data.prezzo };
-        })
+        }),
       );
     };
     fetchVoci();
@@ -168,9 +168,9 @@ export default function Preventivo() {
 
   const handleFieldChange =
     (
-      field: SimpleFieldKey
+      field: SimpleFieldKey,
     ): ((
-      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => void) =>
     (event) => {
       setFormData((prev) => ({
@@ -200,9 +200,9 @@ export default function Preventivo() {
 
   const handleWorkDetailChange =
     (
-      field: WorkDetailKey
+      field: WorkDetailKey,
     ): ((
-      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => void) =>
     (event) => {
       const value = event.target.value;
@@ -228,7 +228,7 @@ export default function Preventivo() {
   };
 
   const hasWorksSelection = WORK_TOGGLE_FIELDS.some(
-    (field) => formData.works[field]
+    (field) => formData.works[field],
   );
   const showAnagrafica =
     Boolean(formData.squareMeters && formData.floor) && hasWorksSelection;
@@ -236,13 +236,13 @@ export default function Preventivo() {
   const isSubmitting = requestStatus === "loading";
 
   const handleSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
+    event: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     event.preventDefault();
 
     if (!showAnagrafica) {
       setErrorMessage(
-        "Compila i dati dell'immobile e seleziona almeno un'opera richiesta prima di procedere."
+        "Compila i dati dell'immobile e seleziona almeno un'opera richiesta prima di procedere.",
       );
       setRequestStatus("error");
       return;
@@ -254,28 +254,28 @@ export default function Preventivo() {
     const worksSummary: string[] = [];
     if (formData.works.bagni) {
       worksSummary.push(
-        `- Bagni: ${formData.works.numeroBagni.trim() || "numero non indicato"}`
+        `- Bagni: ${formData.works.numeroBagni.trim() || "numero non indicato"}`,
       );
     }
     if (formData.works.controsoffitto) {
       worksSummary.push(
         `- Controsoffitto: ${
           formData.works.mqControsoffitto.trim() || "metri quadri non indicati"
-        }`
+        }`,
       );
     }
     if (formData.works.condizionatori) {
       worksSummary.push(
         `- Condizionatori: ${
           formData.works.numeroCondizionatori.trim() || "quantitA  non indicata"
-        }`
+        }`,
       );
     }
     if (formData.works.cucina) {
       worksSummary.push(
         `- Cucina: ${
           formData.works.noteCucina.trim() || "nessuna nota fornita"
-        }`
+        }`,
       );
     }
     if (!worksSummary.length) {
@@ -283,7 +283,7 @@ export default function Preventivo() {
     }
 
     const plantsSummary = PLANTS_OPTIONS.filter(
-      ({ key }) => formData.plants[key]
+      ({ key }) => formData.plants[key],
     ).map(({ label }) => `- ${label}`);
 
     if (!plantsSummary.length) {
@@ -374,11 +374,11 @@ export default function Preventivo() {
         className="w-full px-4 pb-16 mt-12"
       >
         <div className="max-w-3xl mx-auto bg-white rounded-3xl border border-[#e5e7eb] shadow-[0_20px_45px_rgba(11,21,46,0.08)] p-8">
-          <span className="text-xs tracking-[0.3em] uppercase text-[#1a2a4e]/70">
+          <span className="text-xs tracking-[0.3em] uppercase text-[#1E2A22]/70">
             Preventivo su misura
           </span>
 
-          <h2 className="text-3xl font-semibold text-[#1a2a4e] mt-2">
+          <h2 className="text-3xl font-semibold text-[#1E2A22] mt-2">
             Richiedi un preventivo professionale
           </h2>
 
@@ -390,7 +390,7 @@ export default function Preventivo() {
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-8">
             <div className="space-y-4">
-              <p className="text-xs tracking-[0.35em] uppercase text-[#1a2a4e]/60">
+              <p className="text-xs tracking-[0.35em] uppercase text-[#1E2A22]/60">
                 Dati dell'immobile
               </p>
 
@@ -398,7 +398,7 @@ export default function Preventivo() {
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="squareMeters"
-                    className="text-sm font-medium text-[#1a2a4e]"
+                    className="text-sm font-medium text-[#1E2A22]"
                   >
                     Metri quadri totali *
                   </label>
@@ -409,7 +409,7 @@ export default function Preventivo() {
                     min={30}
                     required
                     placeholder="Es. 120"
-                    className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+                    className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                     value={formData.squareMeters}
                     onChange={handleFieldChange("squareMeters")}
                   />
@@ -418,7 +418,7 @@ export default function Preventivo() {
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="floor"
-                    className="text-sm font-medium text-[#1a2a4e]"
+                    className="text-sm font-medium text-[#1E2A22]"
                   >
                     Piano dell'immobile *
                   </label>
@@ -428,7 +428,7 @@ export default function Preventivo() {
                     type="number"
                     required
                     placeholder="Es. 2"
-                    className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+                    className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                     value={formData.floor}
                     onChange={handleFieldChange("floor")}
                   />
@@ -437,7 +437,7 @@ export default function Preventivo() {
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="constructionYear"
-                    className="text-sm font-medium text-[#1a2a4e]"
+                    className="text-sm font-medium text-[#1E2A22]"
                   >
                     Anno di costruzione
                   </label>
@@ -446,7 +446,7 @@ export default function Preventivo() {
                     id="constructionYear"
                     type="number"
                     placeholder="Es. 1998"
-                    className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+                    className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                     value={formData.constructionYear}
                     onChange={handleFieldChange("constructionYear")}
                   />
@@ -455,7 +455,7 @@ export default function Preventivo() {
             </div>
 
             <div className="space-y-4">
-              <p className="text-xs tracking-[0.35em] uppercase text-[#1a2a4e]/60">
+              <p className="text-xs tracking-[0.35em] uppercase text-[#1E2A22]/60">
                 Opere richieste
               </p>
 
@@ -471,10 +471,10 @@ export default function Preventivo() {
                       className="rounded-2xl border border-[#e5e7eb] p-4 shadow-sm bg-[#fdfdfd]"
                     >
                       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                        <label className="inline-flex items-center gap-3 text-[#1a2a4e] font-semibold">
+                        <label className="inline-flex items-center gap-3 text-[#1E2A22] font-semibold">
                           <input
                             type="checkbox"
-                            className="w-4 h-4 accent-[#1a2a4e]"
+                            className="w-4 h-4 accent-[#1E2A22]"
                             checked={formData.works[work.key]}
                             onChange={() => toggleWork(work.key)}
                           />
@@ -487,7 +487,7 @@ export default function Preventivo() {
                             <textarea
                               rows={3}
                               placeholder={work.placeholder}
-                              className="w-full md:max-w-[320px] border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+                              className="w-full md:max-w-[320px] border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                               value={detailValue}
                               onChange={handleWorkDetailChange(detailKey)}
                               required
@@ -497,7 +497,7 @@ export default function Preventivo() {
                               type="number"
                               min={work.min}
                               placeholder={work.placeholder}
-                              className="w-full md:max-w-[200px] border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+                              className="w-full md:max-w-[200px] border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                               value={detailValue}
                               onChange={handleWorkDetailChange(detailKey)}
                               required
@@ -511,7 +511,7 @@ export default function Preventivo() {
             </div>
 
             <div className="space-y-4">
-              <p className="text-xs tracking-[0.35em] uppercase text-[#1a2a4e]/60">
+              <p className="text-xs tracking-[0.35em] uppercase text-[#1E2A22]/60">
                 Impianti
               </p>
 
@@ -519,16 +519,16 @@ export default function Preventivo() {
                 {PLANTS_OPTIONS.map(({ key, label }) => (
                   <label
                     key={key}
-                    className="flex items-center gap-3 border border-[#e5e7eb] rounded-2xl px-4 py-3 bg-[#f8fafc] hover:border-[#1a2a4e]/40 transition"
+                    className="flex items-center gap-3 border border-[#e5e7eb] rounded-2xl px-4 py-3 bg-[#f8fafc] hover:border-[#1E2A22]/40 transition"
                   >
                     <input
                       type="checkbox"
-                      className="w-4 h-4 accent-[#1a2a4e]"
+                      className="w-4 h-4 accent-[#1E2A22]"
                       checked={formData.plants[key]}
                       onChange={() => togglePlant(key)}
                     />
 
-                    <span className="text-sm font-medium text-[#1a2a4e]">
+                    <span className="text-sm font-medium text-[#1E2A22]">
                       {label}
                     </span>
                   </label>
@@ -537,7 +537,7 @@ export default function Preventivo() {
             </div>
 
             <div className="space-y-2">
-              <p className="text-xs tracking-[0.35em] uppercase text-[#1a2a4e]/60">
+              <p className="text-xs tracking-[0.35em] uppercase text-[#1E2A22]/60">
                 Altre informazioni
               </p>
 
@@ -548,7 +548,7 @@ export default function Preventivo() {
                 maxLength={2000}
                 required
                 placeholder="Descrivi cosa vuoi realizzare, materiali preferiti, tempistiche o note aggiuntive."
-                className="w-full border border-[#e5e7eb] rounded-2xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+                className="w-full border border-[#e5e7eb] rounded-2xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                 value={formData.description}
                 onChange={handleFieldChange("description")}
               />
@@ -559,7 +559,7 @@ export default function Preventivo() {
             </div>
 
             <div className="space-y-4">
-              <p className="text-xs tracking-[0.35em] uppercase text-[#1a2a4e]/60">
+              <p className="text-xs tracking-[0.35em] uppercase text-[#1E2A22]/60">
                 Dati anagrafici
               </p>
 
@@ -568,7 +568,7 @@ export default function Preventivo() {
                   <div className="flex flex-col gap-2">
                     <label
                       htmlFor="fullName"
-                      className="text-sm font-medium text-[#1a2a4e]"
+                      className="text-sm font-medium text-[#1E2A22]"
                     >
                       Nome e cognome *
                     </label>
@@ -578,7 +578,7 @@ export default function Preventivo() {
                       type="text"
                       required
                       placeholder="Mario Rossi"
-                      className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+                      className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                       value={formData.fullName}
                       onChange={handleFieldChange("fullName")}
                     />
@@ -587,7 +587,7 @@ export default function Preventivo() {
                   <div className="flex flex-col gap-2">
                     <label
                       htmlFor="email"
-                      className="text-sm font-medium text-[#1a2a4e]"
+                      className="text-sm font-medium text-[#1E2A22]"
                     >
                       Email *
                     </label>
@@ -597,7 +597,7 @@ export default function Preventivo() {
                       type="email"
                       required
                       placeholder="nome@email.com"
-                      className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+                      className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                       value={formData.email}
                       onChange={handleFieldChange("email")}
                     />
@@ -606,7 +606,7 @@ export default function Preventivo() {
                   <div className="flex flex-col gap-2">
                     <label
                       htmlFor="phone"
-                      className="text-sm font-medium text-[#1a2a4e]"
+                      className="text-sm font-medium text-[#1E2A22]"
                     >
                       Telefono
                     </label>
@@ -618,7 +618,7 @@ export default function Preventivo() {
                       pattern="^[0-9+\s-]*$"
                       title="Sono ammessi solo numeri, spazi e i simboli + e -"
                       placeholder="+39 333 1234567"
-                      className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+                      className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                       value={formData.phone}
                       onChange={handleFieldChange("phone")}
                     />
@@ -627,7 +627,7 @@ export default function Preventivo() {
                   <div className="flex flex-col gap-2">
                     <label
                       htmlFor="city"
-                      className="text-sm font-medium text-[#1a2a4e]"
+                      className="text-sm font-medium text-[#1E2A22]"
                     >
                       Comune immobile *
                     </label>
@@ -637,14 +637,14 @@ export default function Preventivo() {
                       type="text"
                       required
                       placeholder="Es. Milano"
-                      className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+                      className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                       value={formData.city}
                       onChange={handleFieldChange("city")}
                     />
                   </div>
                 </div>
               ) : (
-                <div className="rounded-2xl border border-dashed border-[#cfd3dc] bg-[#f9fbff] p-4 text-sm text-[#1a2a4e]">
+                <div className="rounded-2xl border border-dashed border-[#cfd3dc] bg-[#f9fbff] p-4 text-sm text-[#1E2A22]">
                   Compila i dati dell'immobile e seleziona almeno un'opera per
                   inserire i tuoi riferimenti di contatto.
                 </div>
@@ -676,7 +676,7 @@ export default function Preventivo() {
               <button
                 type="submit"
                 disabled={!showAnagrafica || isSubmitting}
-                className="w-full bg-[#1a2a4e] text-white font-semibold rounded-xl py-3 hover:bg-[#102046] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full bg-[#1E2A22] text-white font-semibold rounded-xl py-3 hover:bg-[#102046] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? "Invio in corso..." : "Richiedi preventivo"}
               </button>

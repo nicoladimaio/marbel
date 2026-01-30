@@ -161,7 +161,7 @@ export default function CookieBanner() {
             >
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="space-y-2">
-                  <h3 className="text-xl font-bold text-[#1a2a4e]">
+                  <h3 className="text-xl font-bold text-[#317614]">
                     Rispettiamo la tua privacy
                   </h3>
                   <p className="text-sm text-[#475569] leading-relaxed">
@@ -179,7 +179,7 @@ export default function CookieBanner() {
                 <div className="flex flex-col sm:flex-row gap-3 sm:min-w-[280px]">
                   <button
                     onClick={rejectAll}
-                    className="w-full px-4 py-2 rounded-lg border border-[#1a2a4e] text-[#1a2a4e] font-semibold hover:bg-[#f1f5f9] transition-colors"
+                    className="w-full px-4 py-2 rounded-lg border border-[#317614] text-[#317614] font-semibold hover:bg-[#f1f5f9] transition-colors"
                   >
                     Rifiuta tutto
                   </button>
@@ -195,7 +195,7 @@ export default function CookieBanner() {
                       blockScriptsByPreference(prefs);
                       setVisible(false);
                     }}
-                    className="w-full px-4 py-2 rounded-lg border border-[#1a2a4e] text-[#1a2a4e] font-semibold hover:bg-[#f1f5f9] transition-colors"
+                    className="w-full px-4 py-2 rounded-lg border border-[#317614] text-[#317614] font-semibold hover:bg-[#f1f5f9] transition-colors"
                   >
                     Accetta tutto
                   </button>
@@ -212,7 +212,7 @@ export default function CookieBanner() {
           setVisible(true);
           setShowPreferences(false);
         }}
-        className="fixed left-4 bottom-4 z-[99999] px-4 py-2 rounded-lg border border-[#e2e8f0] bg-white text-[#1a2a4e] font-semibold shadow hover:bg-[#f1f5f9] transition-colors text-sm cursor-pointer"
+        className="fixed left-4 bottom-4 z-[99999] px-4 py-2 rounded-lg border border-[#e2e8f0] bg-white text-[#317614] font-semibold shadow hover:bg-[#f1f5f9] transition-colors text-sm cursor-pointer"
         style={{ display: "block" }}
         aria-label="Gestisci preferenze cookie"
         title="Gestisci preferenze cookie"

@@ -75,7 +75,7 @@ export default function Portfolio() {
               visibile: data.visibile !== false,
             };
           })
-          .filter((item) => item.visibile)
+          .filter((item) => item.visibile),
       );
     };
     fetchItems();
@@ -149,7 +149,7 @@ export default function Portfolio() {
   }, [categoriaFiltro]);
 
   return (
-    <main className="min-h-screen bg-[#f5f6fa] text-[#1a2a4e]">
+    <main className="min-h-screen bg-[#f5f6fa] text-[#317614]">
       <SocialBar />
 
       <Hero
@@ -210,8 +210,8 @@ export default function Portfolio() {
                   }}
                   className={`snap-center min-w-[140px] px-5 py-2 rounded-full text-sm font-semibold tracking-[0.2em] transition-all duration-300 border flex-shrink-0 ${
                     isActive
-                      ? "bg-[#1a2a4e] text-white border-[#1a2a4e] shadow-lg shadow-[#1a2a4e]/30"
-                      : "bg-white text-[#1a2a4e] border-[#e5e7eb]"
+                      ? "bg-[#317614] text-white border-[#317614] shadow-lg shadow-[#317614]/30"
+                      : "bg-white text-[#317614] border-[#e5e7eb]"
                   }`}
                 >
                   <span className="inline-flex items-center gap-2 transition-transform duration-300 hover:scale-[1.02]">
@@ -228,7 +228,7 @@ export default function Portfolio() {
                 key={cat}
                 className={`block w-2 h-2 rounded-full transition-all duration-300 ${
                   categoriaFiltro === cat
-                    ? "bg-[#1a2a4e]"
+                    ? "bg-[#317614]"
                     : "bg-[#cbd5e1] opacity-60"
                 }`}
               />
@@ -292,7 +292,7 @@ export default function Portfolio() {
             <div className="flex justify-center mt-8">
               <button
                 onClick={() => setImmaginiMostrate((n) => n + 12)}
-                className="px-6 py-3 rounded-full bg-[#1a2a4e] text-white font-semibold shadow-lg hover:bg-[#223867] transition-all duration-250"
+                className="px-6 py-3 rounded-full bg-[#317614] text-white font-semibold shadow-lg hover:bg-[#223867] transition-all duration-250"
               >
                 Carica altri progetti
               </button>

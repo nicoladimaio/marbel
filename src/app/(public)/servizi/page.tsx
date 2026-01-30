@@ -37,7 +37,7 @@ const premiumReasons = [
 
 export default function Servizi() {
   return (
-    <main className="min-h-screen bg-[#f5f6fa] text-[#1a2a4e]">
+    <main className="min-h-screen bg-[#f5f6fa] text-[#317614]">
       <SocialBar />
 
       {/* HERO */}
@@ -88,11 +88,11 @@ export default function Servizi() {
                 className="rounded-2xl border border-[#e5e7eb] bg-white/90 p-8 shadow-lg shadow-[#0b152e]/10 flex flex-col justify-between"
               >
                 <div className="flex flex-col gap-5">
-                  <div className="w-14 h-14 rounded-full bg-white text-[#1a2a4e] flex items-center justify-center shadow-md">
+                  <div className="w-14 h-14 rounded-full bg-white text-[#1E2A22] flex items-center justify-center shadow-md">
                     <Icon size={26} />
                   </div>
                   <div className="space-y-3">
-                    <h3 className="text-lg font-bold uppercase tracking-[0.35em] text-[#1a2a4e]">
+                    <h3 className="text-lg font-bold uppercase tracking-[0.35em] text-[#1E2A22]">
                       {title}
                     </h3>
                     <p className="text-[#475569] leading-relaxed text-sm">
@@ -102,7 +102,7 @@ export default function Servizi() {
                 </div>
                 <Link
                   href={href}
-                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.3em] text-[#1a2a4e] hover:text-[#102046] transition-colors"
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.3em] text-[#1E2A22] hover:text-[#317614] transition-colors"
                 >
                   Scopri di più →
                 </Link>
@@ -146,13 +146,13 @@ export default function Servizi() {
                   ease: cubicBezier(0.22, 1, 0.36, 1),
                 }}
                 whileHover={{ y: -6 }}
-                className="rounded-2xl bg-white/90 border border-[#e5e7eb] p-8 shadow-xl shadow-[#0b152e]/10 flex gap-6"
+                className="rounded-2xl bg-white/90 border border-[#e5e7eb] p-8 shadow-xl shadow-[#1E2A22]/10 flex gap-6"
               >
-                <div className="w-14 h-14 rounded-xl bg-[#1a2a4e]/10 text-[#1a2a4e] flex items-center justify-center flex-shrink-0">
+                <div className="w-14 h-14 rounded-xl bg-[#1E2A22]/10 text-[#1E2A22] flex items-center justify-center flex-shrink-0">
                   <Icon size={28} />
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-lg font-bold uppercase tracking-[0.25em]">
+                  <h3 className="text-lg font-bold uppercase tracking-[0.25em] text-[#1E2A22]">
                     {title}
                   </h3>
                   <p className="text-[#475569]">{description}</p>

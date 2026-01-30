@@ -45,7 +45,7 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 backdrop-blur-md ${
         scrolled
-          ? "bg-white/95 shadow-lg border-b border-[#1a2a4e]/30"
+          ? "bg-white/95 shadow-lg border-b border-[#317614]/30"
           : "bg-white/70"
       }`}
       role="navigation"
@@ -57,8 +57,8 @@ export default function Navbar() {
             <Image
               src="/logo.png"
               alt="Logo MarBel"
-              width={42}
-              height={42}
+              width={90}
+              height={90}
               className="drop-shadow"
             />
           </Link>
@@ -74,10 +74,10 @@ export default function Navbar() {
                   aria-current={isActive ? "page" : undefined}
                   aria-label={item.label}
                   tabIndex={0}
-                  className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#1a2a4e] focus:ring-offset-2 focus:ring-offset-white ${
+                  className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#317614] focus:ring-offset-2 focus:ring-offset-white ${
                     isActive
-                      ? "bg-[#1a2a4e]/10 text-[#1a2a4e] shadow"
-                      : "text-[#3a4a5a] hover:text-[#274472] hover:bg-[#1a2a4e]/5"
+                      ? "bg-[#317614]/10 text-[#317614] shadow"
+                      : "text-[#3a4a5a] hover:text-[#274472] hover:bg-[#317614]/5"
                   }`}
                 >
                   {item.label}
@@ -88,7 +88,7 @@ export default function Navbar() {
         </ul>
 
         <button
-          className="md:hidden ml-auto p-2 rounded focus:outline-none focus:ring-2 focus:ring-[#1a2a4e] z-[60]"
+          className="md:hidden ml-auto p-2 rounded focus:outline-none focus:ring-2 focus:ring-[#317614] z-[60]"
           aria-label={menuOpen ? "Chiudi menu" : "Apri menu"}
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((v) => !v)}
@@ -99,7 +99,7 @@ export default function Navbar() {
             height="28"
             fill="none"
             viewBox="0 0 24 24"
-            stroke="#1a2a4e"
+            stroke="#317614"
             aria-hidden="true"
           >
             {menuOpen ? (
@@ -150,10 +150,10 @@ export default function Navbar() {
                         aria-label={item.label}
                         onClick={handleNavClick}
                         tabIndex={0}
-                        className={`flex items-center gap-3 px-3 py-3 rounded-lg font-semibold text-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#1a2a4e] focus:ring-offset-2 focus:ring-offset-white ${
+                        className={`flex items-center gap-3 px-3 py-3 rounded-lg font-semibold text-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#317614] focus:ring-offset-2 focus:ring-offset-white ${
                           isActive
-                            ? "bg-[#1a2a4e]/10 text-[#1a2a4e] shadow"
-                            : "text-[#1a2a4e] hover:text-[#223867] hover:bg-[#1a2a4e]/5"
+                            ? "bg-[#317614]/10 text-[#317614] shadow"
+                            : "text-[#317614] hover:text-[#223867] hover:bg-[#317614]/5"
                         }`}
                       >
                         {Icon && <Icon size={20} aria-hidden="true" />}
@@ -173,16 +173,16 @@ export default function Navbar() {
 
 export function Footer() {
   return (
-    <footer className="w-full bg-white border-t border-[#1a2a4e]/30 py-6 px-4 flex items-center justify-between font-sans">
+    <footer className="w-full bg-white border-t border-[#317614]/30 py-6 px-4 flex items-center justify-between font-sans">
       <div className="flex items-center gap-2">
         <Image
           src="/logo.png"
           alt="Logo"
-          width={40}
-          height={40}
+          width={90}
+          height={90}
           className="drop-shadow"
         />
-        <span className="text-[#1a2a4e] font-bold text-lg">Mar.Bel.</span>
+        <span className="text-[#317614] font-bold text-lg">Mar.Bel.</span>
       </div>
       <div className="text-[#3a4a5a] text-sm">
         ЖИ {new Date().getFullYear()} Tutti i diritti riservati

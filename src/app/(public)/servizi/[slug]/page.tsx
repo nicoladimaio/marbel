@@ -42,7 +42,7 @@ export default function ServizioDettaglio({}: { params: { slug: string } }) {
           // Filtra per categoria
           const portfolioQuery = query(
             collection(db, "portfolio"),
-            where("categoria", "==", service.portfolioCategory)
+            where("categoria", "==", service.portfolioCategory),
           );
           snapshot = await getDocs(portfolioQuery);
         }
@@ -99,7 +99,7 @@ export default function ServizioDettaglio({}: { params: { slug: string } }) {
   }, [zoomIndex, galleryItems.length]);
 
   return (
-    <main className="min-h-screen bg-[#f5f6fa] text-[#1a2a4e]">
+    <main className="min-h-screen bg-[#f5f6fa] text-[#1E2A22]">
       <SocialBar />
 
       <Hero
@@ -114,7 +114,7 @@ export default function ServizioDettaglio({}: { params: { slug: string } }) {
       <div className="mx-auto px-4 sm:px-6 pt-6 bg-white">
         <button
           onClick={() => router.push("/servizi")}
-          className="flex items-center gap-2 text-[#1a2a4e] hover:text-white text-sm font-semibold px-3 py-2 rounded-full border border-[#e5e7eb] shadow transition-colors duration-200 cursor-pointer bg-transparent hover:bg-[#1a2a4e] focus:outline-none focus:ring-2 focus:ring-[#1a2a4e]/40"
+          className="flex items-center gap-2 text-[#317614] hover:text-white text-sm font-semibold px-3 py-2 rounded-full border border-[#e5e7eb] shadow transition-colors duration-200 cursor-pointer bg-transparent hover:bg-[#317614] focus:outline-none focus:ring-2 focus:ring-[#317614]/40"
           aria-label="Torna alla lista servizi"
         >
           <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
@@ -186,7 +186,7 @@ export default function ServizioDettaglio({}: { params: { slug: string } }) {
                 whileHover={{ y: -6, scale: 1.01 }}
                 className="rounded-2xl border border-[#e5e7eb] bg-[#f8fafc] p-6 shadow-lg shadow-[#0b152e]/10 space-y-3"
               >
-                <div className="w-12 h-12 rounded-xl bg-[#1a2a4e]/10 text-[#1a2a4e] flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-[#317614]/10 text-[#317614] flex items-center justify-center">
                   <Icon size={22} />
                 </div>
                 <h3 className="text-base sm:text-lg font-bold uppercase tracking-[0.08em] sm:tracking-[0.25em] break-words">

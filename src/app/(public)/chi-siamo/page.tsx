@@ -54,7 +54,7 @@ const valori = [
 
 export default function ChiSiamo() {
   return (
-    <main className="min-h-screen bg-white text-[#1a2a4e] font-sans">
+    <main className="min-h-screen bg-white text-[#317614] font-sans">
       <SocialBar />
 
       {/* HERO */}
@@ -152,7 +152,7 @@ export default function ChiSiamo() {
               whileInView={{ height: "100%" }}
               viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-              className="relative border-l border-[#1a2a4e]/30 pl-8 space-y-8"
+              className="relative border-l border-[#317614]/30 pl-8 space-y-8"
             >
               {timeline.map((step) => (
                 <div key={step.title} className="space-y-1">
@@ -191,7 +191,7 @@ export default function ChiSiamo() {
                 whileHover={{ rotateX: 2, rotateY: -2, scale: 1.01 }}
                 className="rounded-2xl border border-[#e5e7eb] p-8 shadow-md transition-transform duration-300"
               >
-                <div className="text-2xl text-[#1a2a4e] mb-3">
+                <div className="text-2xl text-[#317614] mb-3">
                   {valore.icon}
                 </div>
                 <h4 className="text-lg font-semibold uppercase tracking-[0.3em] mb-2">
@@ -223,7 +223,7 @@ export default function ChiSiamo() {
           </h4>
           <a
             href="/servizi"
-            className="inline-flex items-center justify-center px-8 py-3 rounded-xl bg-[#1a2a4e] text-white font-semibold shadow-lg shadow-[#1a2a4e]/30 hover:bg-[#223867] transition-colors duration-300"
+            className="inline-flex items-center justify-center px-8 py-3 rounded-xl bg-[#317614] text-white font-semibold shadow-lg shadow-[#317614]/30 hover:bg-[#1E2A22] transition-colors duration-300"
           >
             Vai ai servizi
           </a>

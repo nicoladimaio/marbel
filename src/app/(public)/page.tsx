@@ -56,7 +56,7 @@ export default function Home() {
               visibile: data.visibile,
             };
           })
-          .filter((offer) => offer.visibile !== false)
+          .filter((offer) => offer.visibile !== false),
       );
     };
     fetchOffers();
@@ -128,7 +128,7 @@ export default function Home() {
   const activeMethodStep =
     methodSteps.find((step) => step.key === methodTab) ?? methodSteps[0];
   const activeMethodIndex = methodSteps.findIndex(
-    (step) => step.key === activeMethodStep.key
+    (step) => step.key === activeMethodStep.key,
   );
 
   const testimonials = [
@@ -224,7 +224,7 @@ export default function Home() {
                     <Image
                       src="/logo.png"
                       alt="Logo"
-                      width={240}
+                      width={260}
                       height={80}
                       priority
                       className="mb-0 drop-shadow-md hero-logo-landscape"
@@ -286,7 +286,7 @@ export default function Home() {
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.98 }}
                       href="/preventivo"
-                      className="px-10 py-3 rounded-xl bg-[#1a2a4e] text-white font-semibold shadow-lg shadow-black/30 hover:bg-[#223867] transition-all duration-250 text-lg"
+                      className="px-10 py-3 rounded-xl bg-[#317614] text-white font-semibold shadow-lg shadow-black/30 hover:bg-[#24540F] transition-all duration-250 text-lg"
                     >
                       Calcola ora
                     </motion.a>
@@ -333,7 +333,7 @@ export default function Home() {
                         }
                         className={`px-10 py-4 text-sm font-semibold tracking-[0.4em] ${
                           valuesTab === tab.key
-                            ? "text-[#1a2a4e]"
+                            ? "text-[#1E2A22]"
                             : "text-[#94a3b8]"
                         }`}
                       >
@@ -341,7 +341,7 @@ export default function Home() {
                         <span
                           className={`block h-[2px] mt-3 transition-all duration-300 ${
                             valuesTab === tab.key
-                              ? "bg-[#1a2a4e] w-full"
+                              ? "bg-[#1E2A22] w-full"
                               : "bg-transparent w-0"
                           }`}
                         />
@@ -364,8 +364,8 @@ export default function Home() {
                             onClick={() => setMethodTab(step.key)}
                             className={`snap-center w-[90vw] max-w-xs sm:w-auto px-8 py-3 rounded-2xl border text-sm font-semibold tracking-[0.35em] uppercase transition-all flex-shrink-0 ${
                               methodTab === step.key
-                                ? "border-[#1a2a4e] text-[#1a2a4e] bg-white shadow-lg shadow-[#1a2a4e]/20"
-                                : "border-[#d8dee7] text-[#94a3b8] hover:text-[#1a2a4e]"
+                                ? "border-[#1E2A22] text-[#1E2A22] bg-white shadow-lg shadow-[#317614]/20"
+                                : "border-[#d8dee7] text-[#94a3b8] hover:text-[#317614]"
                             }`}
                           >
                             {step.title}
@@ -379,7 +379,7 @@ export default function Home() {
                             key={step.key}
                             className={`block w-2 h-2 rounded-full transition-all duration-300 ${
                               methodTab === step.key
-                                ? "bg-[#1a2a4e]"
+                                ? "bg-[#1E2A22]"
                                 : "bg-[#cbd5e1] opacity-60"
                             }`}
                           />
@@ -418,7 +418,7 @@ export default function Home() {
                         <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
                           Step {String(activeMethodIndex + 1).padStart(2, "0")}
                         </p>
-                        <h3 className="text-3xl font-bold text-[#1a2a4e]">
+                        <h3 className="text-3xl font-bold text-[#1E2A22]">
                           {activeMethodStep.title}
                         </h3>
                         <p className="text-lg text-[#475569] leading-relaxed">
@@ -446,15 +446,15 @@ export default function Home() {
                             rotateX: 3,
                             rotateY: -3,
                             y: -10,
-                            boxShadow: "0 30px 70px -40px rgba(26,42,78,0.45)",
+                            boxShadow: "0 30px 70px -40px #1E2A22",
                             transition: {
                               duration: 0.35,
                               ease: cubicBezier(0.22, 1, 0.36, 1),
                             },
                           }}
                         >
-                          <Icon className="text-4xl text-[#1A2A4E] mb-4" />
-                          <h3 className="text-xl font-semibold uppercase tracking-wide mb-3 text-[#1A2A4E]">
+                          <Icon className="text-4xl text-[#1E2A22] mb-4" />
+                          <h3 className="text-xl font-semibold uppercase tracking-wide mb-3 text-[#1E2A22]">
                             {card.title}
                           </h3>
                           <p className="text-[#475569] leading-relaxed">
@@ -474,7 +474,7 @@ export default function Home() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={scrollReveal}
-              className="py-24 bg-[#0f172a] overflow-visible"
+              className="py-24 bg-[#1E2A22] overflow-visible"
             >
               <div
                 className="max-w-7xl mx-auto px-6 space-y-12 overflow-visible"
@@ -504,7 +504,7 @@ export default function Home() {
                       >
                         <span className="w-4 h-4 flex items-center justify-center rounded-full bg-[#8de8ff] text-white flex-shrink-0">
                           <FiCheck
-                            className="text-[#0f172a] stroke-[3]"
+                            className="text-[#1E2A22] stroke-[3]"
                             size={14}
                           />
                         </span>
@@ -516,7 +516,7 @@ export default function Home() {
                 <div className="flex gap-4 pt-4">
                   <a
                     href="/servizi"
-                    className="px-8 py-3 rounded-2xl bg-white text-[#1a2a4e] font-semibold shadow-xl hover:bg-blue-50 transition-all duration-300"
+                    className="px-8 py-3 rounded-2xl bg-white text-[#1E2A22] font-semibold shadow-xl hover:bg-blue-50 hover:text-[#317614] transition-all duration-300"
                   >
                     Scopri tutti i servizi
                   </a>
@@ -544,7 +544,7 @@ export default function Home() {
                   <p className="text-sm uppercase tracking-[0.4em] text-[#7c8cab]">
                     Offerte
                   </p>
-                  <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A2A4E]">
+                  <h2 className="text-3xl md:text-4xl font-extrabold text-[#317614]">
                     Offerte attive
                   </h2>
                   <p className="text-lg text-[#475569] max-w-3xl mx-auto">
@@ -595,7 +595,7 @@ export default function Home() {
                               delay: 0.15,
                               ease: cubicBezier(0.22, 1, 0.36, 1),
                             }}
-                            className="text-xl font-bold text-[#1A2A4E]"
+                            className="text-xl font-bold text-[#1E2A22]"
                           >
                             {offer.titolo}
                           </motion.h3>
@@ -610,7 +610,7 @@ export default function Home() {
                 <div className="flex justify-center">
                   <a
                     href="/offerte"
-                    className="w-full max-w-xs sm:max-w-none px-6 sm:px-10 py-3 rounded-2xl bg-[#1a2a4e] text-white font-semibold uppercase tracking-[0.18em] shadow-xl hover:bg-[#223867] transition-all duration-300 text-center text-sm sm:text-base"
+                    className="w-full max-w-xs sm:max-w-none px-6 sm:px-10 py-3 rounded-2xl bg-[#317614] text-white font-semibold uppercase tracking-[0.18em] shadow-xl hover:bg-[#24540F] transition-all duration-300 text-center text-sm sm:text-base"
                   >
                     <span className="sm:hidden">Tutte le offerte</span>
                     <span className="hidden sm:inline">
@@ -627,7 +627,7 @@ export default function Home() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={scrollReveal}
-              className="py-20 bg-[#0d1b2a] text-white"
+              className="py-20 bg-[#1E2A22] text-white"
             >
               <div className="max-w-6xl w-full mx-auto px-6 text-center space-y-10">
                 <div>
