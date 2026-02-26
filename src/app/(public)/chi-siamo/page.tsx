@@ -1,10 +1,10 @@
 "use client";
-import React, { useRef } from "react";
+import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import SocialBar from "../../components/SocialBar";
 import PreventivoFooter from "../../components/PreventivoFooter";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { cubicBezier } from "framer-motion";
+import { motion, cubicBezier } from "framer-motion";
 import Hero from "../../components/Hero";
 
 const fadeUp = {
@@ -15,7 +15,6 @@ const fadeUp = {
     transition: { duration: 0.9, ease: cubicBezier(0.22, 1, 0.36, 1) },
   },
 };
-
 const introText =
   "MarBel nasce con l’idea di rendere semplice ogni fase: ascolto, progettazione e consegna chiavi in mano coordinata da un unico interlocutore.";
 
@@ -78,9 +77,12 @@ export default function ChiSiamo() {
       >
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <p className="text-sm uppercase tracking-[0.35em] text-[#94a3b8]">
+            <p className="text-sm uppercase tracking-[0.22em] text-[#94a3b8]">
               Chi siamo
             </p>
+            <h2 className="text-3xl sm:text-4xl font-semibold uppercase tracking-[0.1em] text-[#1E2A22] leading-tight">
+              Un solo partner, dall&apos;idea alla consegna
+            </h2>
             {/* Immagine operai solo mobile */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -97,10 +99,52 @@ export default function ChiSiamo() {
                 priority
               />
             </motion.div>
-            <p className="text-xl text-[#475569] leading-relaxed">
+            <p className="text-lg sm:text-xl text-[#475569] leading-relaxed">
               {introText}
             </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+              <div className="rounded-xl border border-[#e2e8e4] bg-[#f8faf9] px-4 py-3">
+                <p className="text-xs uppercase tracking-[0.22em] text-[#64748b]">
+                  Referente unico
+                </p>
+                <p className="text-sm font-semibold text-[#1E2A22] mt-1">
+                  Gestione chiara
+                </p>
+              </div>
+              <div className="rounded-xl border border-[#e2e8e4] bg-[#f8faf9] px-4 py-3">
+                <p className="text-xs uppercase tracking-[0.22em] text-[#64748b]">
+                  Cantiere controllato
+                </p>
+                <p className="text-sm font-semibold text-[#1E2A22] mt-1">
+                  Qualità costante
+                </p>
+              </div>
+              <div className="rounded-xl border border-[#e2e8e4] bg-[#f8faf9] px-4 py-3">
+                <p className="text-xs uppercase tracking-[0.22em] text-[#64748b]">
+                  Team interno
+                </p>
+                <p className="text-sm font-semibold text-[#1E2A22] mt-1">
+                  Tempi affidabili
+                </p>
+              </div>
+            </div>
           </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="relative h-[440px] w-full rounded-3xl overflow-hidden border border-[#e2e8e4] shadow-[0_20px_50px_-30px_rgba(15,23,42,0.35)] hidden sm:block"
+          >
+            <Image
+              src="/team.jpg"
+              alt="Team MarBel"
+              fill
+              className="object-cover"
+              priority
+            />
+          </motion.div>
         </div>
       </motion.section>
 
@@ -135,10 +179,10 @@ export default function ChiSiamo() {
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
               className="space-y-4"
             >
-              <p className="text-sm uppercase tracking-[0.35em] text-[#94a3b8]">
+              <p className="text-sm uppercase tracking-[0.22em] text-[#94a3b8]">
                 La nostra storia
               </p>
-              <h2 className="text-3xl font-semibold uppercase tracking-[0.25em]">
+              <h2 className="text-3xl font-semibold uppercase tracking-[0.14em]">
                 Progettare con intelletto, costruire con cura
               </h2>
               <p className="text-lg text-[#475569] leading-relaxed">
@@ -156,7 +200,7 @@ export default function ChiSiamo() {
             >
               {timeline.map((step) => (
                 <div key={step.title} className="space-y-1">
-                  <p className="text-sm uppercase tracking-[0.35em] text-[#94a3b8]">
+                  <p className="text-sm uppercase tracking-[0.22em] text-[#94a3b8]">
                     {step.title}
                   </p>
                   <p className="text-base text-[#475569]">{step.text}</p>
@@ -177,10 +221,10 @@ export default function ChiSiamo() {
       >
         <div className="max-w-5xl mx-auto text-center space-y-12">
           <div className="space-y-3">
-            <p className="text-sm uppercase tracking-[0.35em] text-[#94a3b8]">
+            <p className="text-sm uppercase tracking-[0.22em] text-[#94a3b8]">
               I nostri valori
             </p>
-            <h3 className="text-3xl font-semibold uppercase tracking-[0.25em]">
+            <h3 className="text-3xl font-semibold uppercase tracking-[0.14em]">
               La cura in ogni scelta
             </h3>
           </div>
@@ -194,7 +238,7 @@ export default function ChiSiamo() {
                 <div className="text-2xl text-[#317614] mb-3">
                   {valore.icon}
                 </div>
-                <h4 className="text-lg font-semibold uppercase tracking-[0.3em] mb-2">
+                <h4 className="text-lg font-semibold uppercase tracking-[0.18em] mb-2">
                   {valore.title}
                 </h4>
                 <p className="text-[#475569] leading-relaxed text-sm">
@@ -202,6 +246,134 @@ export default function ChiSiamo() {
                 </p>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </motion.section>
+
+      {/* CERTIFICAZIONI */}
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        className="py-24 px-6 bg-gradient-to-b from-[#f5f6fa] to-[#edf3ef]"
+      >
+        <div className="max-w-5xl mx-auto text-center space-y-10">
+          <div className="space-y-3">
+            <p className="text-sm uppercase tracking-[0.22em] text-[#94a3b8]">
+              Certificazioni
+            </p>
+            <h3 className="text-3xl font-semibold uppercase tracking-[0.14em]">
+              Qualità e sicurezza riconosciute
+            </h3>
+          </div>
+          <div className="grid gap-8 md:grid-cols-3 text-left">
+            <div className="rounded-2xl border border-[#d8e2da] bg-white p-8 shadow-[0_20px_50px_-35px_rgba(15,23,42,0.45)]">
+              <div className="inline-flex items-center rounded-full bg-[#eaf4eb] px-3 py-1 text-xs font-bold tracking-[0.2em] text-[#256029] mb-4">
+                CERT
+              </div>
+              <h4 className="text-lg font-semibold uppercase tracking-[0.24em] mb-2 text-[#256029]">
+                ISO 9001
+              </h4>
+              <p className="text-[#475569] leading-relaxed text-sm">
+                Gestione della qualità certificata per tutti i processi
+                aziendali.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-[#d8e2da] bg-white p-8 shadow-[0_20px_50px_-35px_rgba(15,23,42,0.45)]">
+              <div className="inline-flex items-center rounded-full bg-[#eaf4eb] px-3 py-1 text-xs font-bold tracking-[0.2em] text-[#256029] mb-4">
+                APPALTI
+              </div>
+              <h4 className="text-lg font-semibold uppercase tracking-[0.24em] mb-2 text-[#256029]">
+                SOA OG1
+              </h4>
+              <p className="text-[#475569] leading-relaxed text-sm">
+                Abilitazione a lavori pubblici e grandi appalti nel settore
+                edilizio.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-[#d8e2da] bg-white p-8 shadow-[0_20px_50px_-35px_rgba(15,23,42,0.45)]">
+              <div className="inline-flex items-center rounded-full bg-[#eaf4eb] px-3 py-1 text-xs font-bold tracking-[0.2em] text-[#256029] mb-4">
+                IMPIANTI
+              </div>
+              <h4 className="text-lg font-semibold uppercase tracking-[0.24em] mb-2 text-[#256029]">
+                F-GAS
+              </h4>
+              <p className="text-[#475569] leading-relaxed text-sm">
+                Certificazione per installazione e manutenzione di impianti di
+                climatizzazione.
+              </p>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* PARTNERSHIP */}
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        className="py-24 px-6 bg-white"
+      >
+        <div className="max-w-5xl mx-auto text-center space-y-10">
+          <div className="space-y-3">
+            <p className="text-sm uppercase tracking-[0.22em] text-[#94a3b8]">
+              Partnership
+            </p>
+            <h3 className="text-3xl font-semibold uppercase tracking-[0.14em]">
+              Collaborazioni di valore
+            </h3>
+          </div>
+          <div className="grid gap-8 md:grid-cols-3 text-left">
+            <div className="rounded-2xl border border-[#d8e2da] bg-[#f8faf9] p-8 shadow-[0_20px_45px_-35px_rgba(15,23,42,0.45)] flex flex-col items-center text-center">
+              <Image
+                src="/partner1.png"
+                alt="Rete fornitori certificati"
+                width={92}
+                height={92}
+                className="mb-5"
+              />
+              <h4 className="text-base font-semibold uppercase tracking-[0.16em] mb-2 text-[#256029]">
+                Rete fornitori certificati
+              </h4>
+              <p className="text-[#475569] leading-relaxed text-sm">
+                Collaboriamo con produttori e distributori selezionati per
+                garantire materiali affidabili e tempi certi.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-[#d8e2da] bg-[#f8faf9] p-8 shadow-[0_20px_45px_-35px_rgba(15,23,42,0.45)] flex flex-col items-center text-center">
+              <Image
+                src="/partner2.png"
+                alt="Studi tecnici e professionisti"
+                width={92}
+                height={92}
+                className="mb-5"
+              />
+              <h4 className="text-base font-semibold uppercase tracking-[0.16em] mb-2 text-[#256029]">
+                Studi tecnici partner
+              </h4>
+              <p className="text-[#475569] leading-relaxed text-sm">
+                Lavoriamo con professionisti qualificati per pratiche,
+                progettazione esecutiva e coordinamento di cantiere.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-[#d8e2da] bg-[#f8faf9] p-8 shadow-[0_20px_45px_-35px_rgba(15,23,42,0.45)] flex flex-col items-center text-center">
+              <Image
+                src="/partner3.png"
+                alt="Partner impiantistici specializzati"
+                width={92}
+                height={92}
+                className="mb-5"
+              />
+              <h4 className="text-base font-semibold uppercase tracking-[0.16em] mb-2 text-[#256029]">
+                Partner impiantistici
+              </h4>
+              <p className="text-[#475569] leading-relaxed text-sm">
+                Team specializzati in idraulica, elettrico e climatizzazione per
+                interventi coordinati e certificati.
+              </p>
+            </div>
           </div>
         </div>
       </motion.section>
@@ -215,18 +387,18 @@ export default function ChiSiamo() {
         className="py-24 px-6 bg-[#f5f6fa] text-center"
       >
         <div className="max-w-3xl mx-auto space-y-5">
-          <p className="text-sm uppercase tracking-[0.35em] text-[#94a3b8]">
+          <p className="text-sm uppercase tracking-[0.22em] text-[#94a3b8]">
             Vuoi conoscerci meglio?
           </p>
-          <h4 className="text-2xl font-semibold uppercase tracking-[0.3em]">
+          <h4 className="text-2xl font-semibold uppercase tracking-[0.14em]">
             Scopri i nostri servizi
           </h4>
-          <a
+          <Link
             href="/servizi"
             className="inline-flex items-center justify-center px-8 py-3 rounded-xl bg-[#317614] text-white font-semibold shadow-lg shadow-[#317614]/30 hover:bg-[#1E2A22] transition-colors duration-300"
           >
             Vai ai servizi
-          </a>
+          </Link>
         </div>
       </motion.section>
 

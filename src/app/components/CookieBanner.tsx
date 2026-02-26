@@ -81,50 +81,30 @@ function blockScriptsByPreference(prefs: CookiePreferences) {
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function CookieBanner() {
-  const [visible, setVisible] = useState(false);
-  const [preferences, setPreferences] =
-    useState<CookiePreferences>(defaultPreferences);
-  const [showPreferences, setShowPreferences] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+  const [preferences, setPreferences] = useState<CookiePreferences>(() => {
+    if (typeof window === "undefined") return defaultPreferences;
+    const storedPrefs = localStorage.getItem(PREF_KEY);
+    if (!storedPrefs) return defaultPreferences;
+    try {
+      const parsed = JSON.parse(storedPrefs) as CookiePreferences;
+      return {
+        analytics: !!parsed.analytics,
+        marketing: !!parsed.marketing,
+      };
+    } catch {
+      return defaultPreferences;
+    }
+  });
+  const [visible, setVisible] = useState(() => {
+    if (typeof window === "undefined") return false;
     const storedConsent = localStorage.getItem(CONSENT_KEY);
     const storedPrefs = localStorage.getItem(PREF_KEY);
+    return !(storedPrefs || storedConsent === "accepted" || storedConsent === "rejected");
+  });
 
-    if (storedPrefs) {
-      try {
-        const parsed = JSON.parse(storedPrefs) as CookiePreferences;
-        setPreferences({
-          analytics: !!parsed.analytics,
-          marketing: !!parsed.marketing,
-        });
-        setVisible(false);
-        blockScriptsByPreference(parsed);
-        return;
-      } catch {
-        /* ignore parse errors */
-      }
-    }
-
-    if (storedConsent === "accepted" || storedConsent === "rejected") {
-      setVisible(false);
-    } else {
-      setVisible(true);
-    }
-  }, []);
-
-  // Effettua il blocco/caricamento script ogni volta che le preferenze cambiano e il banner non è visibile
   useEffect(() => {
-    if (!visible) {
-      const storedPrefs = localStorage.getItem(PREF_KEY);
-      if (storedPrefs) {
-        try {
-          const parsed = JSON.parse(storedPrefs) as CookiePreferences;
-          blockScriptsByPreference(parsed);
-        } catch {}
-      }
-    }
-  }, [preferences, visible]);
+    blockScriptsByPreference(preferences);
+  }, [preferences]);
 
   const rejectAll = () => {
     const prefs: CookiePreferences = { analytics: false, marketing: false };
@@ -132,14 +112,6 @@ export default function CookieBanner() {
     localStorage.setItem(CONSENT_KEY, "rejected");
     localStorage.setItem(PREF_KEY, JSON.stringify(prefs));
     setVisible(false);
-  };
-
-  const savePreferences = () => {
-    localStorage.setItem(CONSENT_KEY, "custom");
-    localStorage.setItem(PREF_KEY, JSON.stringify(preferences));
-    blockScriptsByPreference(preferences);
-    setVisible(false);
-    setShowPreferences(false);
   };
 
   return (
@@ -171,8 +143,8 @@ export default function CookieBanner() {
                     aggregate e migliorare i nostri servizi. Nessun dato
                     personale viene tracciato senza il tuo consenso. Puoi
                     accettare, rifiutare o modificare le tue preferenze in
-                    qualsiasi momento tramite il pulsante "Gestisci preferenze
-                    cookie" sempre visibile in basso a sinistra.
+                    qualsiasi momento tramite il pulsante &quot;Gestisci preferenze
+                    cookie&quot; sempre visibile in basso a sinistra.
                   </p>
                 </div>
 
@@ -210,7 +182,6 @@ export default function CookieBanner() {
       <button
         onClick={() => {
           setVisible(true);
-          setShowPreferences(false);
         }}
         className="fixed left-4 bottom-4 z-[99999] px-4 py-2 rounded-lg border border-[#e2e8f0] bg-white text-[#317614] font-semibold shadow hover:bg-[#f1f5f9] transition-colors text-sm cursor-pointer"
         style={{ display: "block" }}

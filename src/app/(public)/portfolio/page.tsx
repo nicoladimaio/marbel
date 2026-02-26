@@ -1,152 +1,131 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
 import { db } from "../../../firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
 import Image from "next/image";
 import SocialBar from "../../components/SocialBar";
 import PreventivoFooter from "../../components/PreventivoFooter";
 import { AnimatePresence, motion } from "framer-motion";
 import { cubicBezier } from "framer-motion";
 import Hero from "../../components/Hero";
-import { FiX, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiX, FiChevronLeft, FiChevronRight, FiMapPin } from "react-icons/fi";
 
 type PortfolioItem = {
   id: string;
   titolo: string;
   immagine: string;
-  categoria?: string;
+  macro: string;
+  categoria: string;
+  visibile?: boolean;
   descrizione?: string;
+  luogo?: string;
+};
+
+// --- DATI DINAMICI FIREBASE ---
+const fetchMacros = async () => {
+  const snap = await getDocs(collection(db, "macrocategorie"));
+  return snap.docs.map((doc) => doc.data().nome);
+};
+const fetchCategories = async () => {
+  const snap = await getDocs(collection(db, "categorie"));
+  return snap.docs.map((doc) => ({
+    nome: doc.data().nome,
+    macro: doc.data().macro,
+  }));
+};
+const fetchPortfolio = async () => {
+  const snap = await getDocs(collection(db, "portfolio"));
+  return snap.docs.map((doc) => {
+    const data = doc.data() as {
+      titolo?: string;
+      immagine?: string;
+      macro?: string;
+      categoria?: string;
+      visibile?: boolean;
+      descrizione?: string;
+      luogo?: string;
+    };
+
+    return {
+      id: doc.id,
+      titolo: data.titolo || "",
+      immagine: data.immagine || "",
+      macro: data.macro || "",
+      categoria: data.categoria || "",
+      visibile: data.visibile !== false,
+      descrizione: data.descrizione || "",
+      luogo: data.luogo || "",
+    };
+  });
 };
 
 export default function Portfolio() {
-  const [items, setItems] = useState<PortfolioItem[]>([]);
-  const [categoriaFiltro, setCategoriaFiltro] = useState("Tutti");
+  const [macros, setMacros] = useState<string[]>([]);
+  const [categories, setCategories] = useState<
+    { nome: string; macro: string }[]
+  >([]);
+  const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
+  const [macroSelected, setMacroSelected] = useState<string>("");
+  const [subSelected, setSubSelected] = useState<string | null>(null);
   const [zoomIndex, setZoomIndex] = useState<number | null>(null);
   const [immaginiMostrate, setImmaginiMostrate] = useState(12);
-  // --- DRAG TO SCROLL CATEGORIE ---
-  const categorieRef = React.useRef<HTMLDivElement>(null);
-  const [dragging, setDragging] = useState(false);
-  const dragState = React.useRef({
-    startX: 0,
-    scrollLeft: 0,
-    hasDragged: false,
-  });
-  // Migliorata: click e drag non si bloccano a vicenda
-  function handleDragStart(e: React.MouseEvent<HTMLDivElement>) {
-    setDragging(true);
-    dragState.current.startX =
-      e.pageX - (categorieRef.current?.getBoundingClientRect().left || 0);
-    dragState.current.scrollLeft = categorieRef.current?.scrollLeft || 0;
-    dragState.current.hasDragged = false;
-  }
-  function handleDragMove(e: React.MouseEvent<HTMLDivElement>) {
-    if (!dragging) return;
-    const x =
-      e.pageX - (categorieRef.current?.getBoundingClientRect().left || 0);
-    const walk = x - dragState.current.startX;
-    if (Math.abs(walk) > 5) dragState.current.hasDragged = true;
-    if (categorieRef.current) {
-      categorieRef.current.scrollLeft = dragState.current.scrollLeft - walk;
-    }
-  }
-  function handleDragEnd() {
-    setDragging(false);
-  }
 
   useEffect(() => {
-    const fetchItems = async () => {
-      const querySnapshot = await getDocs(collection(db, "portfolio"));
-      setItems(
-        querySnapshot.docs
-          .map((doc) => {
-            const data = doc.data() as {
-              titolo: string;
-              immagine: string;
-              categoria?: string;
-              descrizione?: string;
-              visibile?: boolean;
-            };
-            return {
-              id: doc.id,
-              titolo: data.titolo,
-              immagine: data.immagine,
-              categoria: data.categoria?.trim() || "",
-              descrizione: data.descrizione || "",
-              visibile: data.visibile !== false,
-            };
-          })
-          .filter((item) => item.visibile),
-      );
-    };
-    fetchItems();
+    fetchMacros().then((macros) => {
+      setMacros(macros);
+    });
+    fetchCategories().then(setCategories);
+    fetchPortfolio().then(setPortfolio);
   }, []);
 
-  // Calcolo le categorie uniche presenti negli items
-  const categorieUI = React.useMemo(() => {
-    const set = new Set<string>();
-    items.forEach((item) => {
-      if (item.categoria && item.categoria.trim() !== "")
-        set.add(item.categoria.trim());
-    });
-    return ["Tutti", ...Array.from(set)];
-  }, [items]);
-  const lavoriFiltrati =
-    categoriaFiltro === "Tutti"
-      ? items
-      : items.filter((i) => i.categoria === categoriaFiltro);
-  const cardHeights = ["h-64", "h-80", "h-72", "h-96"];
+  const portfolioConImmagini = portfolio.filter(
+    (item) => item.visibile !== false && !!item.immagine?.trim(),
+  );
+
+  const macrosVisibili = macros.filter((macro) =>
+    portfolioConImmagini.some((item) => item.macro === macro),
+  );
+  const macroSelectedEffettiva = macrosVisibili.includes(macroSelected)
+    ? macroSelected
+    : macrosVisibili[0] || "";
+
+  // Sottocategorie dinamiche
+  const subcategories = Array.from(
+    new Set(
+      categories
+        .filter((c) => c.macro === macroSelectedEffettiva)
+        .map((c) => c.nome)
+        .filter((cat) =>
+          portfolioConImmagini.some(
+            (item) =>
+              item.macro === macroSelectedEffettiva && item.categoria === cat,
+          ),
+        ),
+    ),
+  );
+  const subSelectedEffettiva =
+    subSelected && subcategories.includes(subSelected) ? subSelected : null;
+
+  // Filtro lavori per macro e sotto
+  const lavoriFiltrati = portfolio.filter(
+    (item) =>
+      item.visibile !== false &&
+      !!item.immagine?.trim() &&
+      item.macro === macroSelectedEffettiva &&
+      (!subSelectedEffettiva || item.categoria === subSelectedEffettiva),
+  );
   const activeItem =
     zoomIndex !== null && lavoriFiltrati[zoomIndex]
       ? lavoriFiltrati[zoomIndex]
       : null;
 
-  const openZoom = (idx: number) => {
-    setZoomIndex(idx);
-  };
-
-  const closeZoom = () => {
-    setZoomIndex(null);
-  };
-
-  const nextZoom = React.useCallback(() => {
-    setZoomIndex((current) => {
-      if (current === null) return current;
-      if (current >= lavoriFiltrati.length - 1) return current;
-      return current + 1;
-    });
-  }, [lavoriFiltrati.length]);
-
-  const prevZoom = React.useCallback(() => {
-    setZoomIndex((current) => {
-      if (current === null) return current;
-      if (current <= 0) return current;
-      return current - 1;
-    });
-  }, []);
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (zoomIndex === null) return;
-      if (event.key === "Escape") {
-        closeZoom();
-      }
-      if (event.key === "ArrowRight") {
-        nextZoom();
-      }
-      if (event.key === "ArrowLeft") {
-        prevZoom();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [zoomIndex, lavoriFiltrati.length, nextZoom, prevZoom]);
-
-  // Reset paginazione quando cambia filtro
-  useEffect(() => {
-    setImmaginiMostrate(12);
-    setZoomIndex(null);
-  }, [categoriaFiltro]);
+  const openZoom = (idx: number) => setZoomIndex(idx);
+  const closeZoom = () => setZoomIndex(null);
+  const nextZoom = () =>
+    setZoomIndex((c) =>
+      c !== null && c < lavoriFiltrati.length - 1 ? c + 1 : c,
+    );
+  const prevZoom = () => setZoomIndex((c) => (c !== null && c > 0 ? c - 1 : c));
 
   return (
     <main className="min-h-screen bg-[#f5f6fa] text-[#317614]">
@@ -161,6 +140,7 @@ export default function Portfolio() {
         centerImage={true}
       />
 
+      {/* MACRO-CATEGORIE */}
       <motion.section
         variants={{
           hidden: { opacity: 0, y: 20 },
@@ -173,67 +153,82 @@ export default function Portfolio() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
-        className="py-16 px-6 bg-[#f5f6fa]"
+        className="pt-8 pb-4 px-6 bg-[#f5f6fa]"
       >
-        <div className="w-full">
-          <div
-            className="flex flex-row flex-nowrap snap-x snap-mandatory gap-2 w-full pb-2 scroll-smooth select-none px-4"
-            style={{
-              cursor: dragging ? "grabbing" : "grab",
-              userSelect: "none",
-              overflowX: "auto",
-              msOverflowStyle: "none",
-              scrollbarWidth: "none",
+        <div className="w-full flex flex-wrap gap-3 justify-center">
+          {macrosVisibili.map((macro) => (
+            <button
+              key={macro}
+              onClick={() => {
+                setMacroSelected(macro);
+                setSubSelected(null);
+                setImmaginiMostrate(12);
+                setZoomIndex(null);
+              }}
+              className={`px-6 py-2 rounded-full text-sm font-semibold tracking-[0.12em] border transition-all duration-300 ${
+                macroSelectedEffettiva === macro
+                  ? "bg-[#256029] text-white border-[#256029] shadow-lg shadow-[#256029]/30"
+                  : "bg-white text-[#317614] border-[#e5e7eb]"
+              }`}
+            >
+              {macro}
+            </button>
+          ))}
+          {macrosVisibili.length === 0 && (
+            <div className="text-sm text-[#64748b]">
+              Nessuna categoria disponibile al momento.
+            </div>
+          )}
+        </div>
+      </motion.section>
+
+      {/* SOTTOCATEGORIE */}
+      <motion.section
+        variants={{
+          hidden: { opacity: 0, y: 20 },
+          visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.7, ease: cubicBezier(0.22, 1, 0.36, 1) },
+          },
+        }}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        className="pt-4 pb-8 px-6 bg-[#f5f6fa]"
+      >
+        <div className="w-full flex flex-wrap gap-2 justify-center">
+          <button
+            onClick={() => {
+              setSubSelected(null);
+              setImmaginiMostrate(12);
+              setZoomIndex(null);
             }}
-            ref={categorieRef}
-            onMouseDown={handleDragStart}
-            onMouseMove={handleDragMove}
-            onMouseUp={handleDragEnd}
-            onMouseLeave={handleDragEnd}
-            // Nasconde la scrollbar
-            onScroll={() => {
-              if (categorieRef.current) {
-                categorieRef.current.style.scrollbarWidth = "none";
-              }
-            }}
+            className={`px-4 py-1 rounded-full text-xs font-semibold border transition-all duration-200 ${
+              subSelectedEffettiva === null
+                ? "bg-[#317614] text-white border-[#317614]"
+                : "bg-white text-[#317614] border-[#e5e7eb]"
+            }`}
           >
-            {categorieUI.map((cat) => {
-              const isActive = categoriaFiltro === cat;
-              return (
-                <button
-                  key={cat}
-                  onClick={(e) => {
-                    // Se non c'è stato vero drag, consenti il click
-                    if (!dragState.current.hasDragged) {
-                      setCategoriaFiltro(cat);
-                    }
-                  }}
-                  className={`snap-center min-w-[140px] px-5 py-2 rounded-full text-sm font-semibold tracking-[0.2em] transition-all duration-300 border flex-shrink-0 ${
-                    isActive
-                      ? "bg-[#317614] text-white border-[#317614] shadow-lg shadow-[#317614]/30"
-                      : "bg-white text-[#317614] border-[#e5e7eb]"
-                  }`}
-                >
-                  <span className="inline-flex items-center gap-2 transition-transform duration-300 hover:scale-[1.02]">
-                    {cat}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-          {/* Dots indicator mobile */}
-          <div className="flex justify-center gap-2 mt-2 sm:hidden w-full">
-            {categorieUI.map((cat) => (
-              <span
-                key={cat}
-                className={`block w-2 h-2 rounded-full transition-all duration-300 ${
-                  categoriaFiltro === cat
-                    ? "bg-[#317614]"
-                    : "bg-[#cbd5e1] opacity-60"
-                }`}
-              />
-            ))}
-          </div>
+            Tutte
+          </button>
+          {subcategories.map((sub) => (
+            <button
+              key={sub}
+              onClick={() => {
+                setSubSelected(sub);
+                setImmaginiMostrate(12);
+                setZoomIndex(null);
+              }}
+              className={`px-4 py-1 rounded-full text-xs font-semibold border transition-all duration-200 ${
+                subSelectedEffettiva === sub
+                  ? "bg-[#317614] text-white border-[#317614]"
+                  : "bg-white text-[#317614] border-[#e5e7eb]"
+              }`}
+            >
+              {sub}
+            </button>
+          ))}
         </div>
       </motion.section>
 
@@ -353,20 +348,43 @@ export default function Portfolio() {
               className="relative flex items-center justify-center w-full"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative w-[90vw] h-[90vh] max-w-[90vw] max-h-[90vh] flex items-center justify-center">
-                <Image
-                  src={activeItem.immagine || "/placeholder.jpg"}
-                  alt={activeItem.titolo}
-                  fill
-                  sizes="90vw"
-                  className="object-contain"
-                  priority
-                />
-                <span className="absolute top-4 right-16 px-3 py-1 rounded-full bg-black/40 backdrop-blur-sm text-white/90 text-xs font-semibold uppercase tracking-wide">
-                  {categoriaFiltro === "Tutti"
-                    ? activeItem.categoria || "Progetto"
-                    : categoriaFiltro}
-                </span>
+              <div className="w-[92vw] max-w-[1220px] flex flex-col items-center gap-3">
+                <div className="relative w-full h-[72vh] max-h-[72vh] lg:h-[78vh] lg:max-h-[78vh] rounded-2xl overflow-hidden bg-black/35">
+                  <Image
+                    src={activeItem.immagine || "/placeholder.jpg"}
+                    alt={activeItem.titolo}
+                    fill
+                    sizes="90vw"
+                    className="object-contain"
+                    priority
+                  />
+                </div>
+
+                <div className="w-full rounded-2xl bg-black/55 backdrop-blur-md border border-white/15 p-3 sm:p-4 text-white shadow-lg">
+                  <div className="flex items-start justify-between gap-3 flex-wrap">
+                    <h3 className="text-base sm:text-xl font-bold leading-tight tracking-tight">
+                      {activeItem.titolo || "Progetto"}
+                    </h3>
+                    <span className="px-3 py-1 rounded-full bg-black/40 text-white/90 text-[11px] sm:text-xs font-semibold uppercase tracking-[0.12em]">
+                      {activeItem.categoria || "Progetto"}
+                    </span>
+                  </div>
+
+                  {activeItem.descrizione && (
+                    <p className="mt-2 text-xs sm:text-sm text-white/90 leading-relaxed max-w-4xl">
+                      {activeItem.descrizione}
+                    </p>
+                  )}
+
+                  {activeItem.luogo && (
+                    <div className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-emerald-200/35 bg-emerald-300/10 px-2.5 py-1 text-[11px] sm:text-xs font-semibold text-emerald-100">
+                      <FiMapPin className="text-sm" />
+                      <span className="truncate max-w-[60vw] sm:max-w-none">
+                        {activeItem.luogo}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           </motion.div>

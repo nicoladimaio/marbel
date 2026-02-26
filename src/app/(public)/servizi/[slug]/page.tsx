@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { notFound, useParams } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, cubicBezier, AnimatePresence } from "framer-motion";
 import { collection, getDocs, query, where } from "firebase/firestore";
@@ -20,12 +20,9 @@ type GalleryItem = {
 
 export default function ServizioDettaglio({}: { params: { slug: string } }) {
   // Per tornare indietro
-  const router = require("next/navigation").useRouter();
+  const router = useRouter();
   const { slug } = useParams<{ slug: string }>();
   const service = slug ? servicesDetails[slug] : undefined;
-  if (!service) {
-    return notFound();
-  }
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [zoomIndex, setZoomIndex] = useState<number | null>(null);
 
@@ -97,6 +94,10 @@ export default function ServizioDettaglio({}: { params: { slug: string } }) {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [zoomIndex, galleryItems.length]);
+
+  if (!service) {
+    notFound();
+  }
 
   return (
     <main className="min-h-screen bg-[#f5f6fa] text-[#1E2A22]">

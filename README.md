@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MarBel Website
 
-## Getting Started
+Sito vetrina + area amministrativa per MarBel, sviluppato con Next.js App Router, Firebase Firestore/Storage e Tailwind CSS.
 
-First, run the development server:
+## Stack tecnico
+
+- Next.js 16 (App Router)
+- React 19 + TypeScript
+- Tailwind CSS 4
+- Firebase (Auth, Firestore, Storage)
+- Framer Motion
+
+## Script disponibili
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+npm run start
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Avvio locale
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Installa dipendenze:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+```
 
-## Learn More
+2. Avvia in sviluppo:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Apri `http://localhost:3000`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Struttura principale
 
-## Deploy on Vercel
+- `src/app/(public)` → pagine pubbliche (`home`, `chi-siamo`, `servizi`, `portfolio`, `offerte`, `preventivo`, `contatti`, `privacy`, `cookie`)
+- `src/app/admin/page.tsx` → dashboard amministrativa
+- `src/app/components` → componenti condivisi (`Hero`, `Navbar`, `PreventivoFooter`, ecc.)
+- `src/firebaseConfig.ts` → configurazione Firebase
+- `src/data` → dataset statici di supporto
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contenuti dinamici Firebase
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Hero homepage (`homepage/hero`)
+- Portfolio (`portfolio`)
+- Categorie/macrocategorie (`categorie`, `macrocategorie`)
+- Luoghi (`luoghi`)
+- Offerte (`offerte`)
+- Voci preventivo (`preventivo`)
+
+## Note operative
+
+- Il componente `PreventivoFooter` usa automaticamente immagine e posizione del hero homepage come sfondo CTA (con fallback locale).
+- Le pagine pubbliche usano `next/link` per navigazione interna e `next/image` per ottimizzazione immagini.

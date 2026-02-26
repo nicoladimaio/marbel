@@ -61,10 +61,10 @@ export default function Servizi() {
             transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
             className="text-center space-y-3"
           >
-            <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
+            <p className="text-sm uppercase tracking-[0.24em] text-[#94a3b8]">
               Il nostro metodo
             </p>
-            <h2 className="text-3xl font-extrabold uppercase tracking-[0.3em]">
+            <h2 className="text-3xl font-extrabold uppercase tracking-[0.18em]">
               Servizi principali
             </h2>
             <p className="text-[#475569] max-w-3xl mx-auto">
@@ -92,7 +92,7 @@ export default function Servizi() {
                     <Icon size={26} />
                   </div>
                   <div className="space-y-3">
-                    <h3 className="text-lg font-bold uppercase tracking-[0.35em] text-[#1E2A22]">
+                    <h3 className="text-lg font-bold uppercase tracking-[0.18em] text-[#1E2A22]">
                       {title}
                     </h3>
                     <p className="text-[#475569] leading-relaxed text-sm">
@@ -102,7 +102,7 @@ export default function Servizi() {
                 </div>
                 <Link
                   href={href}
-                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.3em] text-[#1E2A22] hover:text-[#317614] transition-colors"
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#1E2A22] hover:text-[#317614] transition-colors"
                 >
                   Scopri di più →
                 </Link>
@@ -122,10 +122,10 @@ export default function Servizi() {
             transition={{ duration: 0.8, ease: cubicBezier(0.22, 1, 0.36, 1) }}
             className="text-center space-y-3"
           >
-            <p className="text-sm uppercase tracking-[0.4em] text-[#94a3b8]">
+            <p className="text-sm uppercase tracking-[0.24em] text-[#94a3b8]">
               Perché scegliere MarBel
             </p>
-            <h2 className="text-3xl font-extrabold uppercase tracking-[0.3em]">
+            <h2 className="text-3xl font-extrabold uppercase tracking-[0.18em]">
               Approccio premium
             </h2>
             <p className="text-[#475569] max-w-3xl mx-auto">
@@ -152,7 +152,7 @@ export default function Servizi() {
                   <Icon size={28} />
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-lg font-bold uppercase tracking-[0.25em] text-[#1E2A22]">
+                  <h3 className="text-lg font-bold uppercase tracking-[0.16em] text-[#1E2A22]">
                     {title}
                   </h3>
                   <p className="text-[#475569]">{description}</p>

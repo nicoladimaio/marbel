@@ -36,8 +36,13 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
+    if (!menuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [menuOpen]);
 
   const handleNavClick = () => setMenuOpen(false);
 
@@ -51,7 +56,7 @@ export default function Navbar() {
       role="navigation"
       aria-label="Main navigation"
     >
-      <div className="w-full flex items-center justify-between px-4 sm:px-6 lg:px-10 xl:px-16 2xl:px-24 h-20">
+      <div className="w-full max-w-[96rem] mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16 h-20">
         <div className="flex-shrink-0">
           <Link href="/" aria-label="Logo MarBel">
             <Image
@@ -74,7 +79,7 @@ export default function Navbar() {
                   aria-current={isActive ? "page" : undefined}
                   aria-label={item.label}
                   tabIndex={0}
-                  className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#317614] focus:ring-offset-2 focus:ring-offset-white ${
+                  className={`px-3 py-2.5 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#317614] focus:ring-offset-2 focus:ring-offset-white ${
                     isActive
                       ? "bg-[#317614]/10 text-[#317614] shadow"
                       : "text-[#3a4a5a] hover:text-[#274472] hover:bg-[#317614]/5"
@@ -88,9 +93,10 @@ export default function Navbar() {
         </ul>
 
         <button
-          className="md:hidden ml-auto p-2 rounded focus:outline-none focus:ring-2 focus:ring-[#317614] z-[60]"
+          className="md:hidden ml-auto p-2 min-h-11 min-w-11 flex items-center justify-center rounded focus:outline-none focus:ring-2 focus:ring-[#317614] z-[60]"
           aria-label={menuOpen ? "Chiudi menu" : "Apri menu"}
           aria-expanded={menuOpen}
+          aria-controls="mobile-main-menu"
           onClick={() => setMenuOpen((v) => !v)}
         >
           <span className="sr-only">Menu</span>
@@ -135,7 +141,8 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-0 left-0 w-full bg-white rounded-b-2xl shadow-2xl p-6 pt-16 overflow-y-auto max-h-[100dvh]"
+              id="mobile-main-menu"
+              className="absolute top-0 left-0 w-full bg-white rounded-b-2xl shadow-2xl p-6 pt-16 pb-[max(1.25rem,env(safe-area-inset-bottom))] overflow-y-auto overscroll-contain max-h-[100dvh]"
               onClick={(e) => e.stopPropagation()}
             >
               <ul className="flex flex-col gap-3" role="menu">
@@ -150,7 +157,7 @@ export default function Navbar() {
                         aria-label={item.label}
                         onClick={handleNavClick}
                         tabIndex={0}
-                        className={`flex items-center gap-3 px-3 py-3 rounded-lg font-semibold text-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#317614] focus:ring-offset-2 focus:ring-offset-white ${
+                        className={`flex items-center gap-3 px-3 py-3 min-h-11 rounded-lg font-semibold text-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#317614] focus:ring-offset-2 focus:ring-offset-white ${
                           isActive
                             ? "bg-[#317614]/10 text-[#317614] shadow"
                             : "text-[#317614] hover:text-[#223867] hover:bg-[#317614]/5"

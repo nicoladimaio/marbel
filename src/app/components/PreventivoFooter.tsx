@@ -1,4 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { db } from "../../firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
+
 type PreventivoFooterProps = {
   eyebrow?: string;
   title?: string;
@@ -12,32 +18,74 @@ export default function PreventivoFooter({
   subtitle = "Contattaci ora e ricevi una consulenza personalizzata per il tuo progetto.",
   buttonText = "Richiedi preventivo",
 }: PreventivoFooterProps) {
+  const [backgroundImage, setBackgroundImage] = useState<string>("/sfondo.jpg");
+  const [backgroundPosition, setBackgroundPosition] =
+    useState<string>("center 50%");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const snap = await getDoc(doc(db, "homepage", "hero"));
+        if (snap.exists()) {
+          const data = snap.data() as {
+            imageUrl?: string;
+            imagePosition?: string;
+          };
+          if (data.imageUrl?.trim()) {
+            setBackgroundImage(data.imageUrl);
+          }
+          if (data.imagePosition?.trim()) {
+            setBackgroundPosition(data.imagePosition);
+          }
+        }
+      } catch {
+        setBackgroundImage("/sfondo.jpg");
+        setBackgroundPosition("center 50%");
+      }
+    })();
+  }, []);
+
   return (
     <>
       {/* CTA FINALE con effetto parallax */}
 
       <section
-        className="w-full flex flex-col items-center justify-center py-16 px-4 bg-[url('/sfondo.jpg')] bg-cover bg-center bg-fixed relative"
-        style={{ minHeight: "300px" }}
+        className="w-full flex flex-col items-center justify-center py-16 px-4 bg-cover bg-center bg-fixed relative"
+        style={{
+          minHeight: "300px",
+          backgroundImage: `url('${backgroundImage}')`,
+          backgroundPosition,
+        }}
       >
+        <div
+          aria-hidden
+          className="absolute inset-0 z-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(0, 0, 0, 0.52) 0%, rgba(0, 0, 0, 0.42) 45%, rgba(0, 0, 0, 0.58) 100%)",
+          }}
+        />
+
         <div className="max-w-2xl w-full mx-auto text-center flex flex-col items-center justify-center relative z-10 space-y-4">
           {eyebrow && (
-            <p className="text-sm uppercase tracking-[0.4em] text-white/75 drop-shadow-lg">
+            <p className="text-sm uppercase tracking-[0.24em] text-white/85 drop-shadow-[0_2px_6px_rgba(0,0,0,0.55)]">
               {eyebrow}
             </p>
           )}
           {title && (
-            <h2 className="text-3xl font-bold text-white drop-shadow-lg">
+            <h2 className="text-3xl font-bold text-white drop-shadow-[0_3px_8px_rgba(0,0,0,0.6)]">
               {title}
             </h2>
           )}
           {subtitle && (
-            <p className="text-white text-lg drop-shadow-lg">{subtitle}</p>
+            <p className="text-white/95 text-lg drop-shadow-[0_2px_6px_rgba(0,0,0,0.55)]">
+              {subtitle}
+            </p>
           )}
           {buttonText && (
             <Link
               href="/preventivo"
-              className="px-8 py-3 rounded-xl bg-white text-[#1E2A22] font-semibold shadow-lg hover:bg-blue-50 hover:text-[#317614] transition-all duration-300 text-lg"
+              className="inline-flex items-center justify-center px-8 py-3 min-h-11 rounded-xl bg-white text-[#1E2A22] font-semibold shadow-lg hover:bg-blue-50 hover:text-[#317614] transition-all duration-300 text-lg"
             >
               {buttonText}
             </Link>
@@ -45,8 +93,8 @@ export default function PreventivoFooter({
         </div>
       </section>
       {/* CONTATTI E INFO */}
-      <section className="w-full flex flex-col items-center py-12 bg-white border-t border-gray-200">
-        <div className="max-w-4xl w-full mx-auto flex flex-col md:flex-row justify-between gap-8">
+      <section className="w-full flex flex-col items-center pt-12 pb-[max(3rem,env(safe-area-inset-bottom))] bg-white border-t border-gray-200">
+        <div className="max-w-6xl 2xl:max-w-[90rem] w-full mx-auto flex flex-col md:flex-row justify-between gap-8 px-4 sm:px-6">
           <div>
             <h3 className="text-2xl font-bold text-[#1E2A22] mb-4 ml-4 md:ml-0">
               Contattaci

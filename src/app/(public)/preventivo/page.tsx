@@ -10,20 +10,6 @@ import Hero from "../../components/Hero";
 const CONTACT_ENDPOINT =
   process.env.NEXT_PUBLIC_CONTACT_ENDPOINT ?? "/api/contact";
 
-const WORK_TOGGLE_FIELDS = [
-  "bagni",
-  "controsoffitto",
-  "condizionatori",
-  "cucina",
-] as const;
-
-const WORK_DETAIL_BY_TOGGLE = {
-  bagni: "numeroBagni",
-  controsoffitto: "mqControsoffitto",
-  condizionatori: "numeroCondizionatori",
-  cucina: "noteCucina",
-} as const;
-
 const PLANTS_OPTIONS = [
   { key: "elettrico", label: "Impianto elettrico" },
   { key: "idraulico", label: "Impianto idraulico" },
@@ -31,50 +17,7 @@ const PLANTS_OPTIONS = [
   { key: "termoidraulico", label: "Impianto termoidraulico" },
 ] as const;
 
-type WorkToggleKey = (typeof WORK_TOGGLE_FIELDS)[number];
-type WorkDetailKey = (typeof WORK_DETAIL_BY_TOGGLE)[WorkToggleKey];
 type PlantKey = (typeof PLANTS_OPTIONS)[number]["key"];
-
-const WORKS_UI_CONFIG: {
-  key: WorkToggleKey;
-  label: string;
-  detailLabel: string;
-  placeholder: string;
-  type: "number" | "textarea";
-  min?: number;
-}[] = [
-  {
-    key: "bagni",
-    label: "Bagni",
-    detailLabel: "Numero bagni",
-    placeholder: "Quanti?",
-    type: "number",
-    min: 1,
-  },
-  {
-    key: "controsoffitto",
-    label: "Controsoffitto",
-    detailLabel: "Metri quadri controsoffitto",
-    placeholder: "Indica i metri quadri",
-    type: "number",
-    min: 5,
-  },
-  {
-    key: "condizionatori",
-    label: "Condizionatori",
-    detailLabel: "Numero condizionatori",
-    placeholder: "Indica il numero",
-    type: "number",
-    min: 1,
-  },
-  {
-    key: "cucina",
-    label: "Cucina",
-    detailLabel: "Note cucina",
-    placeholder: "Materiali, disposizioni o esigenze particolari",
-    type: "textarea",
-  },
-];
 
 type PreventivoFormState = {
   squareMeters: string;
@@ -96,6 +39,7 @@ type PreventivoFormState = {
   email: string;
   phone: string;
   city: string;
+  address: string;
 };
 type SimpleFieldKey =
   | "squareMeters"
@@ -105,7 +49,8 @@ type SimpleFieldKey =
   | "fullName"
   | "email"
   | "phone"
-  | "city";
+  | "city"
+  | "address";
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
@@ -134,25 +79,52 @@ const createInitialFormState = (): PreventivoFormState => ({
   email: "",
   phone: "",
   city: "",
+  address: "",
 });
 
 export default function Preventivo() {
   const [voci, setVoci] = useState<
-    { id: string; voce: string; prezzo: string }[]
+    {
+      id: string;
+      tipo: "opera" | "impianto";
+      nome: string;
+      dettaglio?: string;
+      dettaglioTipo?: "text" | "number";
+    }[]
   >([]);
   const [formData, setFormData] = useState<PreventivoFormState>(
     createInitialFormState,
   );
   const [requestStatus, setRequestStatus] = useState<FormStatus>("idle");
+  // Chips autocomplete state
+  const [selectedOpere, setSelectedOpere] = useState<string[]>([]);
+  const [selectedImpianti, setSelectedImpianti] = useState<string[]>([]);
+  const [chipInput, setChipInput] = useState("");
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  // Stato per i dettagli delle opere selezionate
+  const [operaDetails, setOperaDetails] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const fetchVoci = async () => {
       const querySnapshot = await getDocs(collection(db, "preventivo"));
       setVoci(
         querySnapshot.docs.map((doc) => {
-          const data = doc.data() as { voce: string; prezzo: string };
-          return { id: doc.id, voce: data.voce, prezzo: data.prezzo };
+          const data = doc.data() as {
+            tipo?: "opera" | "impianto";
+            nome?: string;
+            voce?: string;
+            dettaglio?: string;
+            dettaglioTipo?: "text" | "number";
+          };
+          return {
+            id: doc.id,
+            tipo: data.tipo || "opera",
+            nome: data.nome || data.voce || "",
+            dettaglio: data.dettaglio || "",
+            dettaglioTipo: data.dettaglioTipo || "text",
+          };
         }),
       );
     };
@@ -180,58 +152,7 @@ export default function Preventivo() {
       resetFeedback();
     };
 
-  const toggleWork = (key: WorkToggleKey) => {
-    setFormData((prev) => {
-      const nextValue = !prev.works[key];
-      const updatedWorks = {
-        ...prev.works,
-        [key]: nextValue,
-      };
-
-      if (!nextValue) {
-        const detailKey = WORK_DETAIL_BY_TOGGLE[key];
-        updatedWorks[detailKey] = "";
-      }
-
-      return { ...prev, works: updatedWorks };
-    });
-    resetFeedback();
-  };
-
-  const handleWorkDetailChange =
-    (
-      field: WorkDetailKey,
-    ): ((
-      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    ) => void) =>
-    (event) => {
-      const value = event.target.value;
-      setFormData((prev) => ({
-        ...prev,
-        works: {
-          ...prev.works,
-          [field]: value,
-        },
-      }));
-      resetFeedback();
-    };
-
-  const togglePlant = (key: PlantKey) => {
-    setFormData((prev) => ({
-      ...prev,
-      plants: {
-        ...prev.plants,
-        [key]: !prev.plants[key],
-      },
-    }));
-    resetFeedback();
-  };
-
-  const hasWorksSelection = WORK_TOGGLE_FIELDS.some(
-    (field) => formData.works[field],
-  );
-  const showAnagrafica =
-    Boolean(formData.squareMeters && formData.floor) && hasWorksSelection;
+  const showAnagrafica = Boolean(formData.squareMeters && formData.floor);
   const descriptionChars = formData.description.length;
   const isSubmitting = requestStatus === "loading";
 
@@ -241,9 +162,7 @@ export default function Preventivo() {
     event.preventDefault();
 
     if (!showAnagrafica) {
-      setErrorMessage(
-        "Compila i dati dell'immobile e seleziona almeno un'opera richiesta prima di procedere.",
-      );
+      setErrorMessage("Compila i dati dell'immobile prima di procedere.");
       setRequestStatus("error");
       return;
     }
@@ -312,6 +231,7 @@ export default function Preventivo() {
       `- Email: ${formData.email}`,
       `- Telefono: ${formData.phone || "Non fornito"}`,
       `- Comune immobile: ${formData.city}`,
+      `- Indirizzo: ${formData.address || "Non fornito"}`,
     ];
 
     const readableMessage = formattedLines.join("\n");
@@ -327,6 +247,7 @@ export default function Preventivo() {
           email: formData.email,
           phone: formData.phone,
           city: formData.city,
+          address: formData.address,
           squareMeters: formData.squareMeters,
           floor: formData.floor,
           constructionYear: formData.constructionYear,
@@ -379,19 +300,19 @@ export default function Preventivo() {
           </span>
 
           <h2 className="text-3xl font-semibold text-[#1E2A22] mt-2">
-            Richiedi un preventivo professionale
+            Richiedi un preventivo
           </h2>
 
           <p className="text-[#6b7280] mt-3">
-            Inserisci i dati tecnici dell'immobile e raccontaci gli interventi
-            che vuoi realizzare. Ti ricontatteremo con una proposta cucita sul
-            tuo progetto.
+            Inserisci i dati tecnici dell&rsquo;immobile e raccontaci gli
+            interventi che vuoi realizzare. Ti ricontatteremo con una proposta
+            cucita sul tuo progetto.
           </p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-8">
             <div className="space-y-4">
               <p className="text-xs tracking-[0.35em] uppercase text-[#1E2A22]/60">
-                Dati dell'immobile
+                Dati dell&rsquo;immobile
               </p>
 
               <div className="grid gap-4 md:grid-cols-3">
@@ -420,7 +341,7 @@ export default function Preventivo() {
                     htmlFor="floor"
                     className="text-sm font-medium text-[#1E2A22]"
                   >
-                    Piano dell'immobile *
+                    Piano dell&rsquo;immobile *
                   </label>
 
                   <input
@@ -458,83 +379,214 @@ export default function Preventivo() {
               <p className="text-xs tracking-[0.35em] uppercase text-[#1E2A22]/60">
                 Opere richieste
               </p>
-
-              <div className="space-y-4">
-                {WORKS_UI_CONFIG.map((work) => {
-                  const detailKey = WORK_DETAIL_BY_TOGGLE[work.key];
-
-                  const detailValue = formData.works[detailKey];
-
-                  return (
-                    <div
-                      key={work.key}
-                      className="rounded-2xl border border-[#e5e7eb] p-4 shadow-sm bg-[#fdfdfd]"
-                    >
-                      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                        <label className="inline-flex items-center gap-3 text-[#1E2A22] font-semibold">
-                          <input
-                            type="checkbox"
-                            className="w-4 h-4 accent-[#1E2A22]"
-                            checked={formData.works[work.key]}
-                            onChange={() => toggleWork(work.key)}
-                          />
-
-                          {work.label}
-                        </label>
-
-                        {formData.works[work.key] &&
-                          (work.type === "textarea" ? (
-                            <textarea
-                              rows={3}
-                              placeholder={work.placeholder}
-                              className="w-full md:max-w-[320px] border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
-                              value={detailValue}
-                              onChange={handleWorkDetailChange(detailKey)}
-                              required
-                            />
-                          ) : (
-                            <input
-                              type="number"
-                              min={work.min}
-                              placeholder={work.placeholder}
-                              className="w-full md:max-w-[200px] border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
-                              value={detailValue}
-                              onChange={handleWorkDetailChange(detailKey)}
-                              required
-                            />
-                          ))}
-                      </div>
+              <div className="flex flex-row flex-wrap items-center border border-[#e5e7eb] rounded-xl px-3 py-2 bg-white min-h-[48px] gap-1">
+                {/* Solo input di ricerca, senza chips */}
+                <div
+                  className="relative flex-1 min-w-[120px]"
+                  style={{ minWidth: "120px", flexGrow: 1 }}
+                >
+                  <input
+                    type="text"
+                    value={chipInput || ""}
+                    onChange={(e) => {
+                      setChipInput(e.target.value);
+                      setSuggestionsOpen(true);
+                    }}
+                    onFocus={() => setSuggestionsOpen(true)}
+                    onBlur={() =>
+                      setTimeout(() => setSuggestionsOpen(false), 150)
+                    }
+                    placeholder="Aggiungi opera o impianto..."
+                    className="px-2 py-1 rounded border-none text-sm bg-white focus:outline-none w-full placeholder:text-[#444]"
+                    style={{
+                      minWidth: "80px",
+                      flexGrow: 1,
+                      background: "transparent",
+                    }}
+                  />
+                  {suggestionsOpen && (
+                    <div className="absolute left-0 top-full mt-1 w-full bg-white border border-[#e5e7eb] rounded-xl shadow-xl z-10">
+                      {voci
+                        .filter((item) => {
+                          const isSelected =
+                            item.tipo === "opera"
+                              ? selectedOpere.includes(item.id)
+                              : selectedImpianti.includes(item.id);
+                          return (
+                            !isSelected &&
+                            (chipInput.trim() === "" ||
+                              item.nome
+                                .toLowerCase()
+                                .includes(chipInput.toLowerCase()))
+                          );
+                        })
+                        .map((item) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            className="w-full text-left px-3 py-2 hover:bg-[#f5f6fa] text-[#1E2A22] text-sm"
+                            onMouseDown={() => {
+                              if (item.tipo === "opera")
+                                setSelectedOpere([...selectedOpere, item.id]);
+                              else
+                                setSelectedImpianti([
+                                  ...selectedImpianti,
+                                  item.id,
+                                ]);
+                              setChipInput("");
+                              setSuggestionsOpen(false);
+                            }}
+                          >
+                            {item.tipo === "opera" ? "🛠️" : "⚡"} {item.nome}
+                          </button>
+                        ))}
+                      {voci.filter((item) => {
+                        const isSelected =
+                          item.tipo === "opera"
+                            ? selectedOpere.includes(item.id)
+                            : selectedImpianti.includes(item.id);
+                        return (
+                          !isSelected &&
+                          (chipInput.trim() === "" ||
+                            item.nome
+                              .toLowerCase()
+                              .includes(chipInput.toLowerCase()))
+                        );
+                      }).length === 0 && (
+                        <div className="px-3 py-2 text-[#6b7280] text-sm">
+                          Nessuna voce trovata
+                        </div>
+                      )}
                     </div>
-                  );
-                })}
+                  )}
+                </div>
               </div>
+              {/* Visualizza opere selezionate come quadrati (3 colonne), titolo centrato, con 'x' per rimuovere */}
+              {selectedOpere.length === 0 && selectedImpianti.length === 0 ? (
+                <div className="w-full text-center text-[#6b7280] py-8 text-base">
+                  Nessuna voce selezionata
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                    {selectedOpere.map((id) => {
+                      const opera = voci.find((v) => v.id === id);
+                      if (!opera) return null;
+                      return (
+                        <div
+                          key={opera.id}
+                          className="rounded-xl border border-[#e5e7eb] p-4 shadow-sm bg-[#fdfdfd] flex flex-col h-full min-h-[170px] relative items-center"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedOpere(
+                                selectedOpere.filter((oid) => oid !== id),
+                              );
+                              setOperaDetails((prev) => {
+                                const copy = { ...prev };
+                                delete copy[id];
+                                return copy;
+                              });
+                            }}
+                            className="absolute top-2 right-2 text-[#1E2A22] hover:text-red-400 focus:outline-none"
+                            aria-label={`Rimuovi ${opera.nome}`}
+                            style={{
+                              fontWeight: "bold",
+                              fontSize: "1.1em",
+                              lineHeight: 1,
+                            }}
+                          >
+                            ×
+                          </button>
+                          <div className="w-full flex flex-col items-center">
+                            <span className="text-[#1E2A22] font-semibold mb-3 text-center w-full">
+                              {opera.nome}
+                            </span>
+                            {opera.dettaglio && (
+                              <div className="w-full flex flex-col items-center">
+                                {opera.dettaglioTipo === "number" ? (
+                                  <input
+                                    type="number"
+                                    className="border border-[#e5e7eb] rounded-lg px-2 py-1 w-full text-center text-[#1E2A22] placeholder:!text-[#444]"
+                                    min={0}
+                                    placeholder={opera.dettaglio}
+                                    value={operaDetails[id] || ""}
+                                    style={{ color: "#1E2A22" }}
+                                    onChange={(e) => {
+                                      const val = e.target.value;
+                                      setOperaDetails((prev) => ({
+                                        ...prev,
+                                        [id]: val,
+                                      }));
+                                    }}
+                                  />
+                                ) : (
+                                  <textarea
+                                    className="border border-[#e5e7eb] rounded-lg px-2 py-1 w-full text-center resize-none text-[#1E2A22] placeholder:!text-[#444]"
+                                    rows={2}
+                                    placeholder={opera.dettaglio}
+                                    value={operaDetails[id] || ""}
+                                    style={{ color: "#1E2A22" }}
+                                    onChange={(e) => {
+                                      const val = e.target.value;
+                                      setOperaDetails((prev) => ({
+                                        ...prev,
+                                        [id]: val,
+                                      }));
+                                    }}
+                                  />
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {/* Visualizza impianti selezionati come rettangoli sottili, stessa larghezza dei quadrati, con 'x' per rimuovere */}
+                  {selectedImpianti.length > 0 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                      {selectedImpianti.map((id) => {
+                        const impianto = voci.find((v) => v.id === id);
+                        if (!impianto) return null;
+                        return (
+                          <div
+                            key={impianto.id}
+                            className="rounded-xl border border-[#e5e7eb] bg-[#f8fafc] px-4 py-2 flex items-center min-h-[40px] relative"
+                          >
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setSelectedImpianti(
+                                  selectedImpianti.filter((iid) => iid !== id),
+                                )
+                              }
+                              className="absolute top-2 right-2 text-[#1E2A22] hover:text-red-400 focus:outline-none"
+                              aria-label={`Rimuovi ${impianto.nome}`}
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: "1.1em",
+                                lineHeight: 1,
+                              }}
+                            >
+                              ×
+                            </button>
+                            <span className="text-[#1E2A22] text-sm font-medium">
+                              ⚡ {impianto.nome}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Visualizza impianti selezionati come rettangoli sottili, stessa larghezza dei quadrati, con 'x' per rimuovere (unica visualizzazione) */}
             </div>
 
-            <div className="space-y-4">
-              <p className="text-xs tracking-[0.35em] uppercase text-[#1E2A22]/60">
-                Impianti
-              </p>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-                {PLANTS_OPTIONS.map(({ key, label }) => (
-                  <label
-                    key={key}
-                    className="flex items-center gap-3 border border-[#e5e7eb] rounded-2xl px-4 py-3 bg-[#f8fafc] hover:border-[#1E2A22]/40 transition"
-                  >
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4 accent-[#1E2A22]"
-                      checked={formData.plants[key]}
-                      onChange={() => togglePlant(key)}
-                    />
-
-                    <span className="text-sm font-medium text-[#1E2A22]">
-                      {label}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div>
+            {/* Sezione impianti rimossa, ora visualizzati sopra come chips e sotto come rettangoli sottili */}
 
             <div className="space-y-2">
               <p className="text-xs tracking-[0.35em] uppercase text-[#1E2A22]/60">
@@ -546,7 +598,6 @@ export default function Preventivo() {
                 name="description"
                 rows={6}
                 maxLength={2000}
-                required
                 placeholder="Descrivi cosa vuoi realizzare, materiali preferiti, tempistiche o note aggiuntive."
                 className="w-full border border-[#e5e7eb] rounded-2xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                 value={formData.description}
@@ -642,11 +693,30 @@ export default function Preventivo() {
                       onChange={handleFieldChange("city")}
                     />
                   </div>
+
+                  <div className="flex flex-col gap-2 md:col-span-2">
+                    <label
+                      htmlFor="address"
+                      className="text-sm font-medium text-[#1E2A22]"
+                    >
+                      Indirizzo immobile *
+                    </label>
+
+                    <input
+                      id="address"
+                      type="text"
+                      required
+                      placeholder="Via, numero civico, CAP"
+                      className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
+                      value={formData.address}
+                      onChange={handleFieldChange("address")}
+                    />
+                  </div>
                 </div>
               ) : (
                 <div className="rounded-2xl border border-dashed border-[#cfd3dc] bg-[#f9fbff] p-4 text-sm text-[#1E2A22]">
-                  Compila i dati dell'immobile e seleziona almeno un'opera per
-                  inserire i tuoi riferimenti di contatto.
+                  Indica i metri quadri e il piano dell&rsquo;immobile per
+                  inserire i tuoi riferimenti
                 </div>
               )}
             </div>
@@ -680,13 +750,6 @@ export default function Preventivo() {
               >
                 {isSubmitting ? "Invio in corso..." : "Richiedi preventivo"}
               </button>
-
-              {!showAnagrafica && (
-                <p className="text-xs text-[#6b7280] text-center">
-                  Per inviare la richiesta indica metri quadri, piano e almeno
-                  un'opera richiesta.
-                </p>
-              )}
             </div>
           </form>
         </div>

@@ -4,6 +4,7 @@ import {
   FaInstagram,
   FaEnvelope,
   FaWhatsapp,
+  FaLinkedin,
 } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
@@ -32,6 +33,12 @@ export default function SocialBar() {
   }, [open]);
 
   const links = [
+    {
+      href: "https://linkedin.com",
+      label: "LinkedIn",
+      icon: <FaLinkedin size={28} />,
+      className: "text-blue-600 hover:text-blue-800",
+    },
     {
       href: "https://facebook.com",
       label: "Facebook",
