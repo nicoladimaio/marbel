@@ -39,12 +39,9 @@ import {
   FaChevronRight,
   FaTags,
   FaBriefcase,
-  FaLayerGroup,
   FaImage,
-  FaBars,
   FaLock,
   FaClipboardList,
-  FaMapMarkerAlt,
 } from "react-icons/fa";
 
 // Colore blu scuro usato nella homepage
@@ -134,7 +131,6 @@ export default function Admin() {
       setHeroLoading(false);
     }
   }
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const router = useRouter();
 
@@ -221,25 +217,16 @@ export default function Admin() {
   > = {
     offerte: { label: "Offerte", icon: FaTags },
     portfolio: { label: "Portfolio", icon: FaBriefcase },
-    categorie: { label: "Gestione", icon: FaLayerGroup },
     homepage: { label: "Homepage", icon: FaImage },
     "cambia-password": { label: "Password", icon: FaLock },
     preventivo: { label: "Preventivo", icon: FaClipboardList },
-    luoghi: { label: "Luoghi", icon: FaMapMarkerAlt },
   };
-  const mobileDynamicTab = [
-    "homepage",
-    "cambia-password",
-    "preventivo",
-    "luoghi",
-  ].includes(activeTab)
-    ? activeTab
-    : "homepage";
   const mobilePrimaryTabs = [
     { key: "offerte", ...mobileTabMeta.offerte },
     { key: "portfolio", ...mobileTabMeta.portfolio },
-    { key: "categorie", ...mobileTabMeta.categorie },
-    { key: mobileDynamicTab, ...mobileTabMeta[mobileDynamicTab] },
+    { key: "homepage", ...mobileTabMeta.homepage },
+    { key: "cambia-password", ...mobileTabMeta["cambia-password"] },
+    { key: "preventivo", ...mobileTabMeta.preventivo },
   ];
 
   if (checkingAuth) {
@@ -256,31 +243,6 @@ export default function Admin() {
 
   return (
     <div className="bg-[#f6f8f7] font-sans min-h-screen sm:h-screen sm:overflow-hidden">
-      {/* Sidebar mobile overlay */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-[2px] flex">
-          <aside className="w-72 bg-[#1E2A22] text-white min-h-screen animate-slide-in-left relative shadow-2xl">
-            <button
-              className="absolute top-4 right-4 text-white/80 hover:text-white text-2xl"
-              onClick={() => setSidebarOpen(false)}
-              aria-label="Chiudi menu"
-            >
-              &times;
-            </button>
-            <AdminMenu
-              activeTab={activeTab}
-              setActiveTab={(tab) => {
-                setActiveTab(tab);
-                setSidebarOpen(false);
-              }}
-              onLogout={handleLogout}
-            />
-          </aside>
-          {/* Click outside to close */}
-          <div className="flex-1" onClick={() => setSidebarOpen(false)} />
-        </div>
-      )}
-
       {/* Sidebar desktop */}
       <div
         className={`hidden sm:block fixed left-0 top-0 h-screen z-20 transition-all duration-200 ${
@@ -318,16 +280,6 @@ export default function Admin() {
               </button>
             );
           })}
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="flex-1 min-w-0 flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 text-[#4b5a52] hover:bg-[#f3f6f4] transition-all"
-            aria-label="Apri altre sezioni"
-          >
-            <FaBars className="text-sm" />
-            <span className="text-[11px] font-semibold truncate max-w-full">
-              Altro
-            </span>
-          </button>
         </div>
       </div>
 

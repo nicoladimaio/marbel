@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { FaFacebook, FaInstagram, FaEnvelope } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -12,31 +11,6 @@ export default function Footer() {
           height={90}
           className="drop-shadow"
         />
-      </div>
-      <div className="flex items-center gap-6">
-        <a
-          href="https://facebook.com"
-          target="_blank"
-          rel="noopener"
-          className="text-blue-600 hover:text-blue-800"
-        >
-          <FaFacebook size={22} />
-        </a>
-        <a
-          href="https://instagram.com"
-          target="_blank"
-          rel="noopener"
-          className="text-pink-500 hover:text-pink-700"
-        >
-          <FaInstagram size={22} />
-        </a>
-        <a
-          href="mailto:info@impresaedile.it"
-          className="text-zinc-600 hover:text-blue-700"
-        >
-          <FaEnvelope size={22} />
-        </a>
-        <span className="text-zinc-500 text-sm ml-4">info@impresaedile.it</span>
       </div>
       <div className="text-zinc-500 text-sm text-center sm:text-right">
         © {new Date().getFullYear()} Tutti i diritti riservati

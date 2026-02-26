@@ -22,7 +22,6 @@ export default function Home() {
     useState<string>("center 0px");
   const [heroTitle, setHeroTitle] = useState<string>("");
   const [heroSubtitle, setHeroSubtitle] = useState<string>("");
-  const [isMobileViewport, setIsMobileViewport] = useState(false);
   useEffect(() => {
     (async () => {
       const snap = await getDoc(doc(db, "homepage", "hero"));
@@ -36,31 +35,6 @@ export default function Home() {
     })();
   }, []);
 
-  useEffect(() => {
-    const updateViewport = () => {
-      setIsMobileViewport(window.innerWidth < 768);
-    };
-
-    updateViewport();
-    window.addEventListener("resize", updateViewport);
-    return () => window.removeEventListener("resize", updateViewport);
-  }, []);
-
-  const extractHeroPositionPercentage = (value: string): number => {
-    const match = value.match(/center\s+(-?\d+)%/i);
-    if (!match) return 50;
-    return Number(match[1]);
-  };
-
-  const baseHeroPosition = heroImagePosition || "center 50%";
-  const baseHeroPositionPercentage = extractHeroPositionPercentage(baseHeroPosition);
-  const mobileHeroPositionPercentage = Math.min(
-    100,
-    Math.max(0, baseHeroPositionPercentage + 10),
-  );
-  const resolvedHeroPosition = isMobileViewport
-    ? `center ${mobileHeroPositionPercentage}%`
-    : baseHeroPosition;
   const cardReveal = (delay = 0) => ({
     initial: { opacity: 0, y: 28 },
     whileInView: { opacity: 1, y: 0 },
@@ -213,7 +187,7 @@ export default function Home() {
       <>
         {/* HERO SECTION */}
         <section className="w-full p-0 m-0">
-          <div className="relative w-full flex items-center justify-center overflow-hidden pt-hero-landscape md:h-screen md:min-h-screen">
+          <div className="relative w-full flex items-center justify-center overflow-hidden min-h-[100svh] pt-[80px] pt-hero-landscape md:h-screen md:min-h-screen">
             {/* Background image with subtle parallax */}
             <motion.div className="absolute inset-0 z-0" id="hero-bg-parallax">
               <motion.div className="relative w-full h-full overflow-hidden">
@@ -223,7 +197,7 @@ export default function Home() {
                   fill
                   priority
                   className="object-cover object-center will-change-transform"
-                  style={{ objectPosition: resolvedHeroPosition }}
+                  style={{ objectPosition: heroImagePosition || "center 50%" }}
                 />
               </motion.div>
             </motion.div>
@@ -240,7 +214,7 @@ export default function Home() {
             />
 
             {/* Content stack: logo, title, subtitle, cta */}
-            <div className="relative z-10 flex flex-col items-center justify-center gap-0 sm:gap-4 text-center px-4 ">
+            <div className="relative z-10 flex flex-col items-center justify-center gap-0 sm:gap-4 text-center px-4 pb-8 sm:pb-10 md:pb-0">
               {/* Logo (la tua immagine rimane) */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}

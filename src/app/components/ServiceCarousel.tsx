@@ -67,7 +67,7 @@ export default function ServiceCarousel() {
         {/* Gradienti laterali mobile */}
         <div
           ref={trackRef}
-          className="flex gap-6 overflow-x-auto pb-4 pt-8 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex gap-6 overflow-x-auto overflow-y-hidden pb-4 pt-8 px-2 sm:px-0 snap-x snap-mandatory touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {servicesList.map(
             ({ key, title, description, icon: Icon, href }, i) => (
@@ -114,7 +114,7 @@ export default function ServiceCarousel() {
             <span
               key={i}
               className={`block w-2 h-2 rounded-full transition-all duration-300 ${
-                i === activeIndex ? "bg-[#1E2A22]" : "bg-[#cbd5e1] opacity-60"
+                i === activeIndex ? "bg-white" : "bg-white/45"
               }`}
             />
           ))}
