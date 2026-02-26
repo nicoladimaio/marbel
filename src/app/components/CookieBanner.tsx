@@ -99,7 +99,11 @@ export default function CookieBanner() {
     if (typeof window === "undefined") return false;
     const storedConsent = localStorage.getItem(CONSENT_KEY);
     const storedPrefs = localStorage.getItem(PREF_KEY);
-    return !(storedPrefs || storedConsent === "accepted" || storedConsent === "rejected");
+    return !(
+      storedPrefs ||
+      storedConsent === "accepted" ||
+      storedConsent === "rejected"
+    );
   });
 
   useEffect(() => {
@@ -143,8 +147,8 @@ export default function CookieBanner() {
                     aggregate e migliorare i nostri servizi. Nessun dato
                     personale viene tracciato senza il tuo consenso. Puoi
                     accettare, rifiutare o modificare le tue preferenze in
-                    qualsiasi momento tramite il pulsante &quot;Gestisci preferenze
-                    cookie&quot; sempre visibile in basso a sinistra.
+                    qualsiasi momento tramite il pulsante &quot;Gestisci
+                    preferenze cookie&quot; sempre visibile in basso a sinistra.
                   </p>
                 </div>
 

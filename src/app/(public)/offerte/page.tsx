@@ -134,7 +134,8 @@ function OfferModal({
               Come vuoi essere contattato?
             </h3>
             <p className="text-sm text-[#475569] mb-5">
-              Scegli il metodo che preferisci per l&rsquo;offerta &ldquo;{title}&rdquo;.
+              Scegli il metodo che preferisci per l&rsquo;offerta &ldquo;{title}
+              &rdquo;.
             </p>
 
             {contactMode !== "form" && (

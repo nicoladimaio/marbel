@@ -135,6 +135,7 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setMenuOpen(false)}
+            onTouchStart={() => setMenuOpen(false)}
           >
             <motion.div
               initial={{ opacity: 0, y: -10 }}
@@ -142,8 +143,9 @@ export default function Navbar() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
               id="mobile-main-menu"
-              className="absolute top-0 left-0 w-full bg-white rounded-b-2xl shadow-2xl p-6 pt-16 pb-[max(1.25rem,env(safe-area-inset-bottom))] overflow-y-auto overscroll-contain max-h-[100dvh]"
+              className="absolute top-0 left-0 w-full bg-white rounded-b-2xl shadow-2xl p-6 pt-16 pb-[max(1.25rem,env(safe-area-inset-bottom))] overflow-y-auto overscroll-contain max-h-[82dvh]"
               onClick={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
             >
               <ul className="flex flex-col gap-3" role="menu">
                 {navItems.map((item) => {
