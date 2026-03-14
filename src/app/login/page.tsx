@@ -38,7 +38,7 @@ export default function Login() {
     <main className="min-h-screen bg-[#f5f6fa] flex flex-col items-center py-16 px-4 sm:px-8 font-sans relative">
       <button
         onClick={() => router.push("/")}
-        className="absolute top-6 left-6 p-2 rounded-full bg-white hover:bg-gray-200 shadow text-[#317614] text-3xl z-10"
+        className="absolute top-6 left-6 p-2 rounded-full bg-white hover:bg-gray-200 shadow text-[#1E2A22] text-3xl z-10"
         type="button"
         title="Torna alla homepage"
         aria-label="Torna alla homepage"
@@ -70,7 +70,7 @@ export default function Login() {
         />
         <button
           type="submit"
-          className="bg-[#317614] text-white py-2 rounded hover:bg-[#1E2A22] transition-colors"
+          className="bg-[#1E2A22] text-white py-2 rounded hover:bg-[#162019] transition-colors font-semibold"
           disabled={loading}
         >
           {loading ? "Accesso..." : "Accedi"}

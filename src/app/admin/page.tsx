@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AdminMenu from "../components/AdminMenu";
 import CategorieGestioneAdmin from "./CategorieGestioneAdmin";
 // Componente portfolio admin già definito in questo file
@@ -38,14 +38,17 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaTags,
-  FaBriefcase,
-  FaImage,
+  FaImages,
+  FaHome,
   FaLock,
   FaClipboardList,
+  FaSignOutAlt,
 } from "react-icons/fa";
 
 // Colore blu scuro usato nella homepage
 const bluScuro = "#1E2A22";
+const ADMIN_IDLE_TIMEOUT_MS = 15 * 60 * 1000;
+const ADMIN_LAST_ACTIVITY_KEY = "admin.lastActivityAt";
 // UID autorizzato da Firebase Console (sostituisci con quello reale)
 
 export default function Admin() {
@@ -156,35 +159,113 @@ export default function Admin() {
     }
   }, [sidebarCollapsed]);
 
-  // Logout automatico dopo 15 minuti di inattività
+  // Logout automatico dopo 15 minuti di inattività (anche tra sessioni)
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
+
     const logout = async () => {
+      try {
+        window.localStorage.removeItem(ADMIN_LAST_ACTIVITY_KEY);
+      } catch {
+        // ignore storage errors
+      }
       await signOut(auth);
-      router.push("/login");
     };
-    const resetTimer = () => {
+
+    const scheduleLogoutFromLastActivity = () => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(logout, 15 * 60 * 1000); // 15 minuti
+
+      let lastActivity = Date.now();
+      try {
+        const raw = window.localStorage.getItem(ADMIN_LAST_ACTIVITY_KEY);
+        const parsed = Number(raw);
+        if (!Number.isNaN(parsed) && parsed > 0) {
+          lastActivity = parsed;
+        }
+      } catch {
+        // ignore storage errors
+      }
+
+      const elapsed = Date.now() - lastActivity;
+      const remaining = ADMIN_IDLE_TIMEOUT_MS - elapsed;
+
+      if (remaining <= 0) {
+        void logout();
+        return;
+      }
+
+      timeoutId = setTimeout(() => {
+        void logout();
+      }, remaining);
     };
+
+    const markActivity = () => {
+      try {
+        window.localStorage.setItem(
+          ADMIN_LAST_ACTIVITY_KEY,
+          String(Date.now()),
+        );
+      } catch {
+        // ignore storage errors
+      }
+      scheduleLogoutFromLastActivity();
+    };
+
+    if (user) {
+      scheduleLogoutFromLastActivity();
+    }
+
     // Eventi che consideriamo "attività"
     const events = ["click", "keydown", "scroll", "mousemove", "touchstart"];
-    events.forEach((event) => window.addEventListener(event, resetTimer));
-    resetTimer();
+    events.forEach((event) => window.addEventListener(event, markActivity));
+
     return () => {
       clearTimeout(timeoutId);
-      events.forEach((event) => window.removeEventListener(event, resetTimer));
+      events.forEach((event) =>
+        window.removeEventListener(event, markActivity),
+      );
     };
-  }, [router]);
+  }, [router, user]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (!currentUser) {
         setUser(null);
         setCheckingAuth(false);
         router.push("/login");
         return;
       }
+
+      let mustLogout = false;
+      try {
+        const raw = window.localStorage.getItem(ADMIN_LAST_ACTIVITY_KEY);
+        const parsed = Number(raw);
+
+        if (!raw || Number.isNaN(parsed)) {
+          window.localStorage.setItem(
+            ADMIN_LAST_ACTIVITY_KEY,
+            String(Date.now()),
+          );
+        } else if (Date.now() - parsed >= ADMIN_IDLE_TIMEOUT_MS) {
+          mustLogout = true;
+        }
+      } catch {
+        // ignore storage errors and allow access
+      }
+
+      if (mustLogout) {
+        try {
+          window.localStorage.removeItem(ADMIN_LAST_ACTIVITY_KEY);
+        } catch {
+          // ignore storage errors
+        }
+        await signOut(auth);
+        setUser(null);
+        setCheckingAuth(false);
+        router.push("/login");
+        return;
+      }
+
       setUser(currentUser);
       setCheckingAuth(false);
     });
@@ -215,18 +296,18 @@ export default function Admin() {
       icon: typeof FaTags;
     }
   > = {
+    homepage: { label: "Homepage", icon: FaHome },
+    portfolio: { label: "Portfolio lavori", icon: FaImages },
     offerte: { label: "Offerte", icon: FaTags },
-    portfolio: { label: "Portfolio", icon: FaBriefcase },
-    homepage: { label: "Homepage", icon: FaImage },
-    "cambia-password": { label: "Password", icon: FaLock },
     preventivo: { label: "Preventivo", icon: FaClipboardList },
+    "cambia-password": { label: "Cambia Password", icon: FaLock },
   };
   const mobilePrimaryTabs = [
-    { key: "offerte", ...mobileTabMeta.offerte },
-    { key: "portfolio", ...mobileTabMeta.portfolio },
     { key: "homepage", ...mobileTabMeta.homepage },
-    { key: "cambia-password", ...mobileTabMeta["cambia-password"] },
+    { key: "portfolio", ...mobileTabMeta.portfolio },
+    { key: "offerte", ...mobileTabMeta.offerte },
     { key: "preventivo", ...mobileTabMeta.preventivo },
+    { key: "cambia-password", ...mobileTabMeta["cambia-password"] },
   ];
 
   if (checkingAuth) {
@@ -293,6 +374,15 @@ export default function Admin() {
               <h1 className="text-lg sm:text-xl font-bold text-[#1E2A22] tracking-tight">
                 {adminSectionLabel[activeTab] || "Area Admin"}
               </h1>
+              <button
+                type="button"
+                onClick={() => void handleLogout()}
+                className="sm:hidden h-9 w-9 rounded-lg border border-[#e2e8e4] bg-white text-[#1E2A22] hover:bg-[#f3f6f4] flex items-center justify-center"
+                title="Log out"
+                aria-label="Log out"
+              >
+                <FaSignOutAlt className="text-sm" />
+              </button>
               <div className="hidden lg:flex items-center gap-2 rounded-full bg-[#f3f6f4] px-2.5 py-1 border border-[#e2e8e4]">
                 <span className="h-2 w-2 rounded-full bg-emerald-500" />
                 <span className="text-[11px] font-semibold text-[#38443c] max-w-[240px] truncate">
@@ -433,14 +523,14 @@ export default function Admin() {
                       </div>
                       <div className="relative w-full h-56 rounded-lg overflow-hidden bg-gray-100">
                         {(heroImagePreview || heroImage) && (
-                          <Image
-                            src={heroImagePreview || heroImage}
-                            alt="Anteprima hero"
-                            fill
-                            className="object-cover"
+                          <div
+                            className="absolute inset-x-0 top-0 h-[130%] bg-no-repeat bg-cover will-change-transform"
                             style={{
-                              objectPosition: `center ${heroImagePosition}%`,
+                              backgroundImage: `url(${heroImagePreview || heroImage})`,
+                              backgroundPosition: "center center",
+                              transform: `translateY(${((50 - heroImagePosition) / 50) * 12}%)`,
                             }}
+                            aria-label="Anteprima hero"
                           />
                         )}
                         {!heroImagePreview && !heroImage && (
@@ -1163,38 +1253,72 @@ function OfferteAdmin() {
 
 function LuoghiAdmin() {
   const [luoghi, setLuoghi] = useState<{ id: string; nome: string }[]>([]);
+  const [luogoUsageMap, setLuogoUsageMap] = useState<Record<string, number>>(
+    {},
+  );
   const [newLuogo, setNewLuogo] = useState("");
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState<{
+    id: string;
+    nome: string;
+    usageCount: number;
+  } | null>(null);
+  const [addError, setAddError] = useState("");
   const [search, setSearch] = useState("");
   const [editId, setEditId] = useState<string | null>(null);
   const [editNome, setEditNome] = useState("");
   const [loading, setLoading] = useState(false);
   const [deleteError, setDeleteError] = useState("");
 
-  const fetchLuoghi = async () => {
+  const fetchLuoghi = useCallback(async () => {
     const snap = await getDocs(collection(db, "luoghi"));
     setLuoghi(
       snap.docs
         .map((doc) => ({ id: doc.id, nome: (doc.data().nome || "").trim() }))
         .filter((l) => l.nome),
     );
-  };
+  }, []);
+
+  const fetchLuoghiUsageMap = useCallback(async () => {
+    const portfolioSnap = await getDocs(collection(db, "portfolio"));
+    const usageMap = portfolioSnap.docs.reduce<Record<string, number>>(
+      (acc, portfolioDoc) => {
+        const luogoPortfolio = ((portfolioDoc.data().luogo as string) || "")
+          .trim()
+          .toLowerCase();
+
+        if (!luogoPortfolio) return acc;
+        acc[luogoPortfolio] = (acc[luogoPortfolio] || 0) + 1;
+        return acc;
+      },
+      {},
+    );
+
+    setLuogoUsageMap(usageMap);
+  }, []);
+
+  const refreshLuoghiData = useCallback(async () => {
+    await Promise.all([fetchLuoghi(), fetchLuoghiUsageMap()]);
+  }, [fetchLuoghi, fetchLuoghiUsageMap]);
 
   useEffect(() => {
-    fetchLuoghi();
-  }, []);
+    void refreshLuoghiData();
+  }, [refreshLuoghiData]);
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
+    setAddError("");
     const nome = newLuogo.trim();
     if (!nome) return;
     if (luoghi.some((l) => l.nome.toLowerCase() === nome.toLowerCase())) {
-      setNewLuogo("");
+      setAddError("Questo luogo esiste già.");
       return;
     }
     setLoading(true);
     await addDoc(collection(db, "luoghi"), { nome });
     setNewLuogo("");
-    await fetchLuoghi();
+    setShowAddForm(false);
+    await refreshLuoghiData();
     setLoading(false);
   };
 
@@ -1214,37 +1338,62 @@ function LuoghiAdmin() {
     await setDoc(doc(db, "luoghi", id), { nome }, { merge: true });
     setEditId(null);
     setEditNome("");
-    await fetchLuoghi();
+    await refreshLuoghiData();
     setLoading(false);
-  };
-
-  const getLuogoUsageCount = async (nomeLuogo: string) => {
-    const normalizedLuogo = nomeLuogo.trim().toLowerCase();
-    if (!normalizedLuogo) return 0;
-
-    const portfolioSnap = await getDocs(collection(db, "portfolio"));
-    return portfolioSnap.docs.reduce((count, portfolioDoc) => {
-      const luogoPortfolio = ((portfolioDoc.data().luogo as string) || "")
-        .trim()
-        .toLowerCase();
-      return luogoPortfolio === normalizedLuogo ? count + 1 : count;
-    }, 0);
   };
 
   const handleDelete = async (id: string, nome: string) => {
     setDeleteError("");
     setLoading(true);
     try {
-      const usageCount = await getLuogoUsageCount(nome);
+      const usageCount = luogoUsageMap[nome.trim().toLowerCase()] || 0;
       if (usageCount > 0) {
-        setDeleteError(
-          `Non puoi eliminare "${nome}" perché è usato in ${usageCount} ${usageCount === 1 ? "lavoro" : "lavori"} del portfolio.`,
-        );
+        setDeleteConfirm({ id, nome, usageCount });
         return;
       }
 
       await deleteDoc(doc(db, "luoghi", id));
-      await fetchLuoghi();
+      await refreshLuoghiData();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConfirmDeleteWithAssociations = async () => {
+    if (!deleteConfirm) return;
+
+    setDeleteError("");
+    setLoading(true);
+    try {
+      const normalizedLuogo = deleteConfirm.nome.trim().toLowerCase();
+      const portfolioSnap = await getDocs(collection(db, "portfolio"));
+
+      const linkedDocs = portfolioSnap.docs.filter((portfolioDoc) => {
+        const luogoPortfolio = ((portfolioDoc.data().luogo as string) || "")
+          .trim()
+          .toLowerCase();
+        return luogoPortfolio === normalizedLuogo;
+      });
+
+      for (const portfolioDoc of linkedDocs) {
+        const data = portfolioDoc.data() as { storagePath?: string };
+        if (data.storagePath) {
+          try {
+            await deleteObject(ref(storage, data.storagePath));
+          } catch {
+            // Continue even if a storage object is already missing.
+          }
+        }
+        await deleteDoc(doc(db, "portfolio", portfolioDoc.id));
+      }
+
+      await deleteDoc(doc(db, "luoghi", deleteConfirm.id));
+      setDeleteConfirm(null);
+      await refreshLuoghiData();
+    } catch {
+      setDeleteError(
+        "Errore durante l'eliminazione di città e immagini associate.",
+      );
     } finally {
       setLoading(false);
     }
@@ -1252,32 +1401,128 @@ function LuoghiAdmin() {
 
   const luoghiFiltrati = luoghi
     .filter((l) => l.nome.toLowerCase().includes(search.trim().toLowerCase()))
-    .sort((a, b) => a.nome.localeCompare(b.nome, "it"));
+    .sort((a, b) =>
+      a.nome.localeCompare(b.nome, "it", { sensitivity: "base" }),
+    );
 
   return (
     <section className="mb-8">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-extrabold" style={{ color: bluScuro }}>
-          Gestione luoghi
-        </h2>
+      <div className="flex justify-between items-center mb-5">
+        <div>
+          <h2 className="text-2xl font-extrabold" style={{ color: bluScuro }}>
+            Gestione luoghi
+          </h2>
+          <p className="text-sm text-[#5f6b63] mt-1">
+            Cerca, modifica o rimuovi i luoghi disponibili per i lavori.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            setShowAddForm(true);
+            setAddError("");
+            setNewLuogo("");
+          }}
+          className="bg-[#1E2A22] hover:bg-[#162019] text-white rounded-xl px-4 h-11 flex items-center justify-center shadow text-lg font-semibold"
+          title="Aggiungi luogo"
+        >
+          <span className="font-bold mr-1">+</span> Nuova
+        </button>
       </div>
 
-      <form onSubmit={handleAdd} className="flex gap-2 mb-4">
-        <input
-          type="text"
-          value={newLuogo}
-          onChange={(e) => setNewLuogo(e.target.value)}
-          placeholder="Nuovo luogo"
-          className="border rounded px-3 py-2 text-black flex-1"
-        />
-        <button
-          type="submit"
-          disabled={loading || !newLuogo.trim()}
-          className="bg-green-600 text-white px-4 py-2 rounded font-semibold hover:bg-green-700 disabled:bg-gray-300 disabled:text-gray-500"
-        >
-          Aggiungi
-        </button>
-      </form>
+      {showAddForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm px-3">
+          <div className="bg-white rounded-2xl border border-[#e2e8e4] shadow-xl p-6 w-full max-w-md relative">
+            <button
+              type="button"
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl"
+              onClick={() => {
+                setShowAddForm(false);
+                setAddError("");
+                setNewLuogo("");
+              }}
+              title="Chiudi"
+            >
+              &times;
+            </button>
+            <h3 className="text-xl font-bold pr-8" style={{ color: bluScuro }}>
+              Nuova città
+            </h3>
+            <form onSubmit={handleAdd} className="mt-4 flex flex-col gap-3">
+              <input
+                type="text"
+                value={newLuogo}
+                onChange={(e) => setNewLuogo(e.target.value)}
+                placeholder="Nome città"
+                className="border border-[#d7dfda] rounded-lg px-3 py-2.5 text-black w-full"
+                autoFocus
+              />
+              {addError && (
+                <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                  {addError}
+                </div>
+              )}
+              <div className="flex items-center gap-2">
+                <button
+                  type="submit"
+                  disabled={loading || !newLuogo.trim()}
+                  className="bg-[#1E2A22] text-white px-4 py-2.5 rounded-lg font-semibold hover:bg-[#162019] disabled:bg-gray-300 disabled:text-gray-500"
+                >
+                  Salva
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAddForm(false);
+                    setAddError("");
+                    setNewLuogo("");
+                  }}
+                  className="bg-gray-100 text-[#1E2A22] px-4 py-2.5 rounded-lg font-semibold hover:bg-gray-200"
+                >
+                  Annulla
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {deleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 backdrop-blur-sm px-3">
+          <div className="bg-white rounded-2xl border border-[#e2e8e4] shadow-xl p-6 w-full max-w-lg">
+            <h3 className="text-xl font-bold text-[#1E2A22] mb-3">
+              Conferma eliminazione
+            </h3>
+            <p className="text-sm text-[#33423a] leading-relaxed">
+              La città <strong>{deleteConfirm.nome}</strong> è associata a{" "}
+              <strong>
+                {deleteConfirm.usageCount}{" "}
+                {deleteConfirm.usageCount === 1 ? "immagine" : "immagini"}
+              </strong>
+              . Se elimini la città verranno eliminati anche i relativi lavori e
+              le immagini associate. Vuoi procedere?
+            </p>
+            <div className="mt-5 flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => void handleConfirmDeleteWithAssociations()}
+                disabled={loading}
+                className="bg-red-600 text-white px-4 py-2.5 rounded-lg font-semibold hover:bg-red-700 disabled:bg-gray-300 disabled:text-gray-500"
+              >
+                Elimina tutto
+              </button>
+              <button
+                type="button"
+                onClick={() => setDeleteConfirm(null)}
+                disabled={loading}
+                className="bg-gray-100 text-[#1E2A22] px-4 py-2.5 rounded-lg font-semibold hover:bg-gray-200"
+              >
+                Annulla
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <input
         type="text"
@@ -1296,14 +1541,16 @@ function LuoghiAdmin() {
         {luoghiFiltrati.length === 1 ? "luogo" : "luoghi"}
       </div>
 
-      <div className="space-y-2 pr-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pr-1">
         {luoghiFiltrati.length === 0 ? (
-          <div className="text-sm text-gray-500">Nessun luogo censito.</div>
+          <div className="text-sm text-gray-500 col-span-full">
+            Nessun luogo censito.
+          </div>
         ) : (
           luoghiFiltrati.map((luogo) => (
             <div
               key={luogo.id}
-              className="flex items-center gap-2 border rounded-lg px-3 py-2"
+              className="rounded-xl border border-[#e2e8e4] bg-white p-3 shadow-sm min-h-[102px] flex flex-col justify-between"
             >
               {editId === luogo.id ? (
                 <>
@@ -1311,50 +1558,66 @@ function LuoghiAdmin() {
                     type="text"
                     value={editNome}
                     onChange={(e) => setEditNome(e.target.value)}
-                    className="border rounded px-3 py-2 text-black flex-1"
+                    className="border rounded px-3 py-2 text-black w-full"
                     autoFocus
                   />
-                  <button
-                    type="button"
-                    onClick={() => handleSaveEdit(luogo.id)}
-                    className="bg-green-600 text-white px-3 py-2 rounded font-semibold hover:bg-green-700"
-                  >
-                    Salva
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEditId(null);
-                      setEditNome("");
-                    }}
-                    className="bg-gray-400 text-white px-3 py-2 rounded font-semibold hover:bg-gray-500"
-                  >
-                    Annulla
-                  </button>
+                  <div className="mt-2 flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleSaveEdit(luogo.id)}
+                      className="bg-[#1E2A22] text-white px-3 py-2 rounded-lg font-semibold hover:bg-[#162019] text-sm"
+                    >
+                      Salva
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditId(null);
+                        setEditNome("");
+                      }}
+                      className="bg-gray-100 text-[#1E2A22] px-3 py-2 rounded-lg font-semibold hover:bg-gray-200 text-sm"
+                    >
+                      Annulla
+                    </button>
+                  </div>
                 </>
               ) : (
                 <>
-                  <span className="flex-1 text-[#1E2A22] font-medium">
-                    {luogo.nome}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEditId(luogo.id);
-                      setEditNome(luogo.nome);
-                    }}
-                    className="bg-blue-600 text-white px-3 py-2 rounded font-semibold hover:bg-blue-700"
-                  >
-                    Modifica
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(luogo.id, luogo.nome)}
-                    disabled={loading}
-                    className="bg-red-600 text-white px-3 py-2 rounded font-semibold hover:bg-red-700 disabled:bg-gray-300 disabled:text-gray-500"
-                  >
-                    Elimina
-                  </button>
+                  <div>
+                    <span className="block text-[#1E2A22] font-semibold text-sm sm:text-base leading-tight break-words">
+                      {luogo.nome}
+                    </span>
+                    <span className="inline-flex mt-2 text-xs font-semibold rounded-full bg-[#eef3ef] text-[#425046] px-2.5 py-1">
+                      {luogoUsageMap[luogo.nome.toLowerCase()] || 0}{" "}
+                      {(luogoUsageMap[luogo.nome.toLowerCase()] || 0) === 1
+                        ? "immagine associata"
+                        : "immagini associate"}
+                    </span>
+                  </div>
+                  <div className="mt-3 flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditId(luogo.id);
+                        setEditNome(luogo.nome);
+                      }}
+                      className="h-8 w-8 rounded-md border border-[#d7dfda] bg-[#f4f7f5] text-[#1E2A22] hover:bg-[#e8eeea] flex items-center justify-center"
+                      title="Modifica luogo"
+                      aria-label={`Modifica ${luogo.nome}`}
+                    >
+                      <MdEdit className="text-sm" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(luogo.id, luogo.nome)}
+                      disabled={loading}
+                      className="h-8 w-8 rounded-md border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 flex items-center justify-center disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200"
+                      title="Elimina luogo"
+                      aria-label={`Elimina ${luogo.nome}`}
+                    >
+                      <FaTrash className="text-xs" />
+                    </button>
+                  </div>
                 </>
               )}
             </div>
@@ -2785,6 +3048,22 @@ function PreventivoAdmin() {
     setVoci(voci.filter((v) => v.id !== id));
   };
 
+  const impianti = voci
+    .filter((v) => v.tipo === "impianto")
+    .sort((a, b) =>
+      a.nome.localeCompare(b.nome, "it", { sensitivity: "base" }),
+    );
+  const opere = voci
+    .filter((v) => v.tipo === "opera")
+    .sort((a, b) =>
+      a.nome.localeCompare(b.nome, "it", { sensitivity: "base" }),
+    );
+
+  const getDettaglioTipoLabel = (tipo?: "text" | "number") => {
+    if (tipo === "number") return "Numero";
+    return "Testo libero";
+  };
+
   return (
     <section className="mb-8 text-black">
       <div className="flex items-center justify-between mb-5">
@@ -2865,7 +3144,7 @@ function PreventivoAdmin() {
                 <>
                   <input
                     type="text"
-                    placeholder="Dettaglio opera"
+                    placeholder="Domanda da mostrare al cliente (es. Quante finestre?)"
                     value={form.dettaglio}
                     onChange={(e) =>
                       setForm((f) => ({ ...f, dettaglio: e.target.value }))
@@ -2874,7 +3153,9 @@ function PreventivoAdmin() {
                     required
                   />
                   <div className="flex gap-2 items-center">
-                    <label className="font-semibold">Tipo dettaglio:</label>
+                    <label className="font-semibold">
+                      Tipo di risposta attesa:
+                    </label>
                     <select
                       value={form.dettaglioTipo}
                       onChange={(e) =>
@@ -2885,7 +3166,7 @@ function PreventivoAdmin() {
                       }
                       className="border rounded px-2 py-1 text-black"
                     >
-                      <option value="text">Testo</option>
+                      <option value="text">Testo libero</option>
                       <option value="number">Numero</option>
                     </select>
                   </div>
@@ -2912,42 +3193,106 @@ function PreventivoAdmin() {
           Nessuna voce presente nel preventivo.
         </div>
       ) : (
-        <ul className="space-y-3 text-black">
-          {voci.map((v) => (
-            <li
-              key={v.id}
-              className="border border-[#dbe3de] p-4 rounded-xl flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 bg-white"
-            >
-              <div className="text-black">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <strong className="text-[#1E2A22] text-base">{v.nome}</strong>
-                  <span className="text-xs bg-[#eef2ef] px-2 py-1 rounded-full text-[#38443c] font-semibold uppercase tracking-wide">
-                    {v.tipo}
-                  </span>
-                </div>
-                {v.tipo === "opera" && (
-                  <span className="mt-1 block text-sm text-[#4b5a52]">
-                    Dettaglio: {v.dettaglio} ({v.dettaglioTipo})
-                  </span>
-                )}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 text-black">
+          <div className="rounded-2xl border border-[#dbe3de] bg-[#f8faf9] p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-bold text-[#1E2A22]">Impianti</h3>
+              <span className="text-xs bg-white border border-[#dbe3de] px-2 py-1 rounded-full text-[#38443c] font-semibold">
+                {impianti.length}
+              </span>
+            </div>
+            {impianti.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-[#d1d9d3] bg-white p-4 text-sm text-[#5f6b63]">
+                Nessun impianto presente.
               </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => openEditModal(v)}
-                  className="bg-gray-200 text-[#1E2A22] px-3 py-2 rounded-lg hover:bg-gray-300 transition-colors font-semibold"
-                >
-                  Modifica
-                </button>
-                <button
-                  onClick={() => handleDelete(v.id)}
-                  className="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition-colors font-semibold"
-                >
-                  Elimina
-                </button>
+            ) : (
+              <ul className="grid grid-cols-2 gap-2">
+                {impianti.map((v) => (
+                  <li
+                    key={v.id}
+                    className="border border-[#dbe3de] p-2.5 rounded-lg bg-white min-h-[108px] flex flex-col justify-between"
+                  >
+                    <strong className="text-[#1E2A22] text-sm leading-tight break-words">
+                      {v.nome}
+                    </strong>
+                    <div className="flex gap-1.5">
+                      <button
+                        onClick={() => openEditModal(v)}
+                        className="h-8 w-8 rounded-md border border-[#d7dfda] bg-[#f4f7f5] text-[#1E2A22] hover:bg-[#e8eeea] flex items-center justify-center"
+                        title="Modifica voce"
+                        aria-label={`Modifica ${v.nome}`}
+                      >
+                        <MdEdit className="text-sm" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(v.id)}
+                        className="h-8 w-8 rounded-md border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 flex items-center justify-center"
+                        title="Elimina voce"
+                        aria-label={`Elimina ${v.nome}`}
+                      >
+                        <FaTrash className="text-xs" />
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="rounded-2xl border border-[#dbe3de] bg-[#f8faf9] p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-bold text-[#1E2A22]">Opere</h3>
+              <span className="text-xs bg-white border border-[#dbe3de] px-2 py-1 rounded-full text-[#38443c] font-semibold">
+                {opere.length}
+              </span>
+            </div>
+            {opere.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-[#d1d9d3] bg-white p-4 text-sm text-[#5f6b63]">
+                Nessuna opera presente.
               </div>
-            </li>
-          ))}
-        </ul>
+            ) : (
+              <ul className="grid grid-cols-2 gap-2">
+                {opere.map((v) => (
+                  <li
+                    key={v.id}
+                    className="border border-[#dbe3de] p-2.5 rounded-lg bg-white min-h-[108px] flex flex-col justify-between"
+                  >
+                    <div>
+                      <strong className="text-[#1E2A22] text-sm leading-tight break-words">
+                        {v.nome}
+                      </strong>
+                      <div className="mt-1 text-xs text-[#4b5a52] leading-tight">
+                        Domanda cliente: {v.dettaglio || "-"}
+                      </div>
+                      <div className="text-[11px] text-[#5f6b63] mt-1 leading-tight">
+                        Risposta attesa:{" "}
+                        {getDettaglioTipoLabel(v.dettaglioTipo)}
+                      </div>
+                    </div>
+                    <div className="flex gap-1.5">
+                      <button
+                        onClick={() => openEditModal(v)}
+                        className="h-8 w-8 rounded-md border border-[#d7dfda] bg-[#f4f7f5] text-[#1E2A22] hover:bg-[#e8eeea] flex items-center justify-center"
+                        title="Modifica voce"
+                        aria-label={`Modifica ${v.nome}`}
+                      >
+                        <MdEdit className="text-sm" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(v.id)}
+                        className="h-8 w-8 rounded-md border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 flex items-center justify-center"
+                        title="Elimina voce"
+                        aria-label={`Elimina ${v.nome}`}
+                      >
+                        <FaTrash className="text-xs" />
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
       )}
     </section>
   );

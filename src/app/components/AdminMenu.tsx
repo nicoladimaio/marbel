@@ -1,10 +1,10 @@
 import React from "react";
 import {
   FaTags,
-  FaBriefcase,
+  FaImages,
   FaLock,
   FaClipboardList,
-  FaImage,
+  FaHome,
   FaSignOutAlt,
   FaBars,
 } from "react-icons/fa";
@@ -26,11 +26,11 @@ export default function AdminMenu({
 }: AdminMenuProps) {
   const portfolioClusterTabs = ["portfolio", "categorie", "luoghi"];
   const menu = [
+    { key: "homepage", label: "Homepage", icon: FaHome },
+    { key: "portfolio", label: "Portfolio lavori", icon: FaImages },
     { key: "offerte", label: "Offerte", icon: FaTags },
-    { key: "portfolio", label: "Portfolio lavori", icon: FaBriefcase },
-    { key: "cambia-password", label: "Cambia Password", icon: FaLock },
     { key: "preventivo", label: "Preventivo", icon: FaClipboardList },
-    { key: "homepage", label: "Homepage", icon: FaImage },
+    { key: "cambia-password", label: "Cambia Password", icon: FaLock },
   ];
 
   return (

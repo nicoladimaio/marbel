@@ -8,7 +8,7 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
-import { FaPlus, FaTrash } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 
 export default function CategorieGestioneAdmin() {
@@ -139,11 +139,14 @@ export default function CategorieGestioneAdmin() {
         {/* Macrocategorie cards */}
         <div className="flex-1 min-w-[220px]">
           <div className="flex items-center mb-4">
-            <h3 className="text-xl font-bold text-[#111] flex-1">
-              Macrocategorie
-            </h3>
+            <div className="flex-1">
+              <h3 className="text-xl font-bold text-[#111]">Macrocategorie</h3>
+              <p className="text-xs text-[#5f6b63] mt-1">
+                Seleziona una macrocategoria per gestire le categorie collegate.
+              </p>
+            </div>
             <button
-              className="bg-green-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-lg shadow-lg hover:bg-green-700 transition ml-2"
+              className="bg-[#1E2A22] hover:bg-[#162019] text-white rounded-xl px-4 h-11 flex items-center justify-center shadow text-sm font-semibold ml-2"
               title="Aggiungi macrocategoria"
               onClick={() => {
                 setPopupValue("");
@@ -151,21 +154,15 @@ export default function CategorieGestioneAdmin() {
                 setShowMacroPopup(true);
               }}
             >
-              <FaPlus />
+              <span className="font-bold mr-1">+</span> Nuova
             </button>
           </div>
           <div className="flex flex-col gap-4">
             {macros.map((m) => (
               <div
                 key={m.id}
-                className={`group shadow-lg rounded-xl px-4 py-3 flex items-center transition-all cursor-pointer ${macroSel === m.id ? "bg-green-50 border border-green-600 scale-[1.03]" : "bg-white hover:bg-green-100"}`}
+                className={`group rounded-xl px-4 py-3 flex items-center transition-all cursor-pointer border ${macroSel === m.id ? "bg-green-50 border-green-600 ring-2 ring-green-200" : "bg-white border-[#e2e8e4] hover:bg-green-100"}`}
                 onClick={() => setMacroSel(m.id)}
-                style={{
-                  boxShadow:
-                    macroSel === m.id
-                      ? "0 4px 16px #25602933"
-                      : "0 2px 8px #e3e8f0",
-                }}
               >
                 <span className="text-lg font-semibold text-[#256029] flex-1">
                   {m.nome}
@@ -200,23 +197,33 @@ export default function CategorieGestioneAdmin() {
         <div className="flex-1 min-w-[220px] relative">
           <div className="flex items-center mb-4">
             <h3 className="text-xl font-bold text-[#111] flex-1">Categorie</h3>
-            {macroSel && (
-              <button
-                className="bg-green-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-lg shadow-lg hover:bg-green-700 transition ml-2"
-                title="Aggiungi categoria"
-                onClick={() => {
-                  setPopupValue("");
-                  setEditCatId(null);
-                  setShowCatPopup(true);
-                }}
-              >
-                <FaPlus />
-              </button>
-            )}
+            <button
+              className={`rounded-xl px-4 h-11 flex items-center justify-center shadow text-sm font-semibold ml-2 ${macroSel ? "bg-[#1E2A22] hover:bg-[#162019] text-white" : "bg-gray-100 text-gray-500 cursor-not-allowed"}`}
+              title={
+                macroSel
+                  ? "Aggiungi categoria"
+                  : "Seleziona prima una macrocategoria"
+              }
+              disabled={!macroSel}
+              onClick={() => {
+                setPopupValue("");
+                setEditCatId(null);
+                setShowCatPopup(true);
+              }}
+            >
+              <span className="font-bold mr-1">+</span> Nuova
+            </button>
           </div>
           {!macroSel && (
-            <div className="text-xs text-gray-500 mb-2">
-              Seleziona una macrocategoria per vedere le categorie collegate
+            <div className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-800 mb-3">
+              Seleziona una macrocategoria per visualizzare e aggiungere le
+              categorie.
+            </div>
+          )}
+          {macroSel && filteredCategories.length === 0 && (
+            <div className="rounded-lg border border-[#dbe3de] bg-[#f6faf7] px-3 py-2 text-sm text-[#4b5a52] mb-3">
+              Nessuna categoria presente per questa macrocategoria. Usa “Nuova”
+              per aggiungere la prima.
             </div>
           )}
           <div className="flex flex-wrap gap-2">

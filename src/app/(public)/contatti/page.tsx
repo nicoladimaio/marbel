@@ -4,9 +4,59 @@ import SocialBar from "../../components/SocialBar";
 import PreventivoFooter from "../../components/PreventivoFooter";
 import { motion } from "framer-motion";
 import { cubicBezier } from "framer-motion";
+import { useState } from "react";
 import { PhoneIcon, EnvelopeIcon, MapPinIcon } from "@heroicons/react/24/solid";
 
+const CONTACT_ENDPOINT =
+  process.env.NEXT_PUBLIC_CONTACT_ENDPOINT ?? "/api/contact";
+
+type ContactStatus = "idle" | "loading" | "success" | "error";
+
 export default function Contatti() {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState<ContactStatus>("idle");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setStatus("loading");
+    setError("");
+
+    try {
+      const response = await fetch(CONTACT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName,
+          email,
+          phone,
+          message,
+          body: message,
+        }),
+      });
+
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        throw new Error(payload?.error || "Invio non riuscito.");
+      }
+
+      setStatus("success");
+      setFullName("");
+      setEmail("");
+      setPhone("");
+      setMessage("");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Errore inatteso.";
+      setError(msg);
+      setStatus("error");
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[#f5f6fa] text-[#1E2A22]">
       <SocialBar />
@@ -99,35 +149,59 @@ export default function Contatti() {
             <h3 className="text-3xl font-semibold text-[#1E2A22] mt-2">
               Richiedi informazioni
             </h3>
-            <form className="mt-6 space-y-4 flex-1">
+            <form className="mt-6 space-y-4 flex-1" onSubmit={handleSubmit}>
               <input
                 type="text"
                 placeholder="Nome"
                 className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                 required
+                value={fullName}
+                onChange={(event) => setFullName(event.target.value)}
+                disabled={status === "loading"}
               />
               <input
                 type="email"
                 placeholder="Email"
                 className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                 required
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                disabled={status === "loading"}
               />
               <input
                 type="tel"
                 placeholder="Telefono"
                 className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
+                value={phone}
+                onChange={(event) => setPhone(event.target.value)}
+                disabled={status === "loading"}
               />
               <textarea
                 placeholder="Messaggio"
                 rows={5}
                 className="w-full border border-[#e5e7eb] rounded-xl px-4 py-3 text-[#1E2A22] focus:outline-none focus:ring-2 focus:ring-[#1E2A22]/40"
                 required
+                value={message}
+                onChange={(event) => setMessage(event.target.value)}
+                disabled={status === "loading"}
               />
+              {status === "error" && error && (
+                <p className="text-sm text-red-600" role="alert">
+                  {error}
+                </p>
+              )}
+              {status === "success" && (
+                <p className="text-sm text-emerald-600" role="status">
+                  Richiesta inviata correttamente. Ti risponderemo il prima
+                  possibile.
+                </p>
+              )}
               <button
                 type="submit"
+                disabled={status === "loading"}
                 className="w-full bg-[#1E2A22] text-white font-semibold rounded-xl py-3 hover:bg-[#102046] transition-colors"
               >
-                Invia richiesta
+                {status === "loading" ? "Invio in corso..." : "Invia richiesta"}
               </button>
             </form>
           </motion.div>

@@ -56,3 +56,19 @@ npm run dev
 
 - Il componente `PreventivoFooter` usa automaticamente immagine e posizione del hero homepage come sfondo CTA (con fallback locale).
 - Le pagine pubbliche usano `next/link` per navigazione interna e `next/image` per ottimizzazione immagini.
+
+## Setup email (preventivi/contatti)
+
+Il form `preventivo` e il form `contatti` inviano i dati alla route API `POST /api/contact`.
+
+1. Copia `.env.example` in `.env.local`
+2. Imposta le variabili:
+
+```bash
+NEXT_PUBLIC_CONTACT_ENDPOINT=/api/contact
+RESEND_API_KEY=...
+CONTACT_FROM="MarBel <onboarding@resend.dev>"
+CONTACT_TO=info@marbel.it
+```
+
+3. Riavvia il server locale dopo aver aggiornato `.env.local`.
